@@ -1,6 +1,6 @@
 import json
 import re
-import requests
+import google.generativeai as genai
 from django.conf import settings
 from .models import BancoObservaciones
 
@@ -38,18 +38,11 @@ Formato exacto:
 
 Si el informe cumple con todo, devuelve una lista vacia: []"""
 
-    response = requests.post(
-        f"{settings.OLLAMA_URL}/api/generate",
-        json={
-            "model": settings.OLLAMA_MODEL,
-            "prompt": prompt,
-            "stream": False,
-        },
-        timeout=120,
-    )
-    response.raise_for_status()
+    genai.configure(api_key=settings.GEMINI_API_KEY)
+    model = genai.GenerativeModel("gemini-1.5-flash")
+    response = model.generate_content(prompt)
 
-    texto = response.json()["response"].strip()
+    texto = response.text.strip()
     texto = re.sub(r'```(?:json)?\s*', '', texto).strip('`').strip()
 
     return json.loads(texto)

@@ -68,7 +68,6 @@ MEDIA_ROOT = BASE_DIR / 'media'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-OLLAMA_URL = config('OLLAMA_URL', default='http://host.docker.internal:11434')
-OLLAMA_MODEL = config('OLLAMA_MODEL', default='llama3.2')
+GEMINI_API_KEY = config('GEMINI_API_KEY', default='')
 
 SESSION_ENGINE = 'django.contrib.sessions.backends.db'
