@@ -1,6 +1,6 @@
 import json
 import re
-import google.generativeai as genai
+import requests
 from django.conf import settings
 from .models import BancoObservaciones
 
@@ -38,11 +38,22 @@ Formato exacto:
 
 Si el informe cumple con todo, devuelve una lista vacia: []"""
 
-    genai.configure(api_key=settings.GEMINI_API_KEY)
-    model = genai.GenerativeModel("gemini-1.5-flash")
-    response = model.generate_content(prompt)
+    url = (
+        "https://generativelanguage.googleapis.com/v1beta/models/"
+        "gemini-1.5-flash:generateContent"
+    )
+    response = requests.post(
+        url,
+        headers={
+            "Content-Type": "application/json",
+            "X-goog-api-key": settings.GEMINI_API_KEY,
+        },
+        json={"contents": [{"parts": [{"text": prompt}]}]},
+        timeout=60,
+    )
+    response.raise_for_status()
 
-    texto = response.text.strip()
+    texto = response.json()["candidates"][0]["content"]["parts"][0]["text"].strip()
     texto = re.sub(r'```(?:json)?\s*', '', texto).strip('`').strip()
 
     return json.loads(texto)
