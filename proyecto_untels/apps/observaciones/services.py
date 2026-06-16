@@ -38,22 +38,22 @@ Formato exacto:
 
 Si el informe cumple con todo, devuelve una lista vacia: []"""
 
-    url = (
-        "https://generativelanguage.googleapis.com/v1beta/models/"
-        "gemini-2.0-flash:generateContent"
-    )
     response = requests.post(
-        url,
+        "https://api.groq.com/openai/v1/chat/completions",
         headers={
             "Content-Type": "application/json",
-            "Authorization": f"Bearer {settings.GEMINI_API_KEY}",
+            "Authorization": f"Bearer {settings.GROQ_API_KEY}",
         },
-        json={"contents": [{"parts": [{"text": prompt}]}]},
+        json={
+            "model": "llama-3.3-70b-versatile",
+            "messages": [{"role": "user", "content": prompt}],
+            "temperature": 0.2,
+        },
         timeout=60,
     )
     response.raise_for_status()
 
-    texto = response.json()["candidates"][0]["content"]["parts"][0]["text"].strip()
+    texto = response.json()["choices"][0]["message"]["content"].strip()
     texto = re.sub(r'```(?:json)?\s*', '', texto).strip('`').strip()
 
     return json.loads(texto)

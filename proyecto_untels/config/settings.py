@@ -68,6 +68,6 @@ MEDIA_ROOT = BASE_DIR / 'media'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-GEMINI_API_KEY = config('GEMINI_API_KEY', default='')
+GROQ_API_KEY = config('GROQ_API_KEY', default='')
 
 SESSION_ENGINE = 'django.contrib.sessions.backends.db'
