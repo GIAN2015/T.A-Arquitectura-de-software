@@ -1,6 +1,6 @@
 import json
 import re
-import anthropic
+import requests
 from django.conf import settings
 from .models import BancoObservaciones
 
@@ -12,11 +12,11 @@ def obtener_observaciones() -> str:
     return '\n'.join(lineas)
 
 def validar_informe(contenido_informe: str, reglamento: str, observaciones: str) -> list:
-    prompt = f"""Eres un evaluador académico de la UNTELS (Universidad Nacional Tecnológica de Lima Sur).
-Analiza el siguiente informe de prácticas preprofesionales.
+    prompt = f"""Eres un evaluador academico de la UNTELS (Universidad Nacional Tecnologica de Lima Sur).
+Analiza el siguiente informe de practicas preprofesionales.
 Compara el contenido con el reglamento y el banco de observaciones proporcionados.
 
-REGLAMENTO DE EVALUACIÓN:
+REGLAMENTO DE EVALUACION:
 {reglamento}
 
 BANCO DE OBSERVACIONES FRECUENTES:
@@ -25,27 +25,31 @@ BANCO DE OBSERVACIONES FRECUENTES:
 INFORME A EVALUAR:
 {contenido_informe}
 
-Devuelve ÚNICAMENTE una lista JSON válida (sin markdown, sin explicaciones) con las observaciones encontradas.
+Devuelve UNICAMENTE una lista JSON valida (sin markdown, sin explicaciones) con las observaciones encontradas.
 Formato exacto:
 [
   {{
     "id": 1,
-    "seccion": "nombre de la sección",
-    "observacion": "descripción del problema encontrado",
+    "seccion": "nombre de la seccion",
+    "observacion": "descripcion del problema encontrado",
     "ubicacion": "lugar donde se encuentra el error"
   }}
 ]
 
-Si el informe cumple con todo, devuelve una lista vacía: []"""
+Si el informe cumple con todo, devuelve una lista vacia: []"""
 
-    client = anthropic.Anthropic(api_key=settings.ANTHROPIC_API_KEY)
-    response = client.messages.create(
-        model="claude-sonnet-4-6",
-        max_tokens=2048,
-        messages=[{"role": "user", "content": prompt}]
+    response = requests.post(
+        f"{settings.OLLAMA_URL}/api/generate",
+        json={
+            "model": settings.OLLAMA_MODEL,
+            "prompt": prompt,
+            "stream": False,
+        },
+        timeout=120,
     )
+    response.raise_for_status()
 
-    texto = response.content[0].text.strip()
+    texto = response.json()["response"].strip()
     texto = re.sub(r'```(?:json)?\s*', '', texto).strip('`').strip()
 
     return json.loads(texto)

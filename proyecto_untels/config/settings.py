@@ -68,6 +68,7 @@ MEDIA_ROOT = BASE_DIR / 'media'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-ANTHROPIC_API_KEY = config('ANTHROPIC_API_KEY', default='')
+OLLAMA_URL = config('OLLAMA_URL', default='http://host.docker.internal:11434')
+OLLAMA_MODEL = config('OLLAMA_MODEL', default='llama3.2')
 
 SESSION_ENGINE = 'django.contrib.sessions.backends.db'
