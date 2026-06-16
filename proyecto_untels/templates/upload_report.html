@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row justify-content-center mt-4">
+  <div class="col-md-6">
+    <div class="card">
+      <div class="card-header-untels">
+        <h5 class="mb-0">Carga de Informe de Prácticas</h5>
+        <small class="text-warning">Sube tu informe en formato .docx</small>
+      </div>
+      <div class="card-body p-4">
+
+        <!-- Info del usuario -->
+        <div class="bg-light rounded p-3 mb-4">
+          <div class="row g-2">
+            <div class="col-6">
+              <small class="text-muted d-block">Código</small>
+              <strong>{{ codigo }}</strong>
+            </div>
+            <div class="col-6">
+              <small class="text-muted d-block">Tipo de Usuario</small>
+              <span class="badge {% if tipo == 'estudiante' %}badge-estudiante{% else %}badge-egresado{% endif %}">
+                {{ tipo|title }}
+              </span>
+            </div>
+            <div class="col-12">
+              <small class="text-muted d-block">Nombre</small>
+              <strong>{{ nombre }}</strong>
+            </div>
+          </div>
+        </div>
+
+        <!-- Formulario de carga -->
+        <form method="POST" enctype="multipart/form-data">
+          {% csrf_token %}
+          <div class="mb-4">
+            <label class="form-label fw-semibold">Seleccionar Informe</label>
+            <input type="file" name="informe" class="form-control form-control-lg"
+                   accept=".docx" required>
+            <div class="form-text">Solo se aceptan archivos .docx</div>
+          </div>
+          <div class="d-grid">
+            <button type="submit" class="btn btn-untels btn-lg">
+              ⚙️ Validar Informe
+            </button>
+          </div>
+        </form>
+
+      </div>
+    </div>
+
+    <div class="text-center mt-3">
+      <a href="{% url 'login' %}" class="text-muted" style="font-size:0.85rem;">
+        ← Volver al inicio
+      </a>
+    </div>
+  </div>
+</div>
+{% endblock %}

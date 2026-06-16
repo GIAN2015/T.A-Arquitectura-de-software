@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row justify-content-center mt-4">
+  <div class="col-md-5">
+    <div class="card">
+      <div class="card-header-untels">
+        <h5 class="mb-0">Identificación de Usuario</h5>
+        <small class="text-warning">Ingresa tus datos para continuar</small>
+      </div>
+      <div class="card-body p-4">
+        <form method="POST">
+          {% csrf_token %}
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Código Universitario</label>
+            <input type="text" name="codigo" class="form-control form-control-lg"
+                   placeholder="Ej: 2021101234" required maxlength="20">
+          </div>
+          <div class="mb-4">
+            <label class="form-label fw-semibold">Nombre Completo</label>
+            <input type="text" name="nombre" class="form-control form-control-lg"
+                   placeholder="Ej: Juan Carlos Pérez Gómez" required maxlength="200">
+          </div>
+          <div class="d-grid">
+            <button type="submit" class="btn btn-untels btn-lg">
+              Validar Usuario →
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <p class="text-center text-muted mt-3" style="font-size:0.82rem;">
+      Universidad Nacional Tecnológica de Lima Sur
+    </p>
+  </div>
+</div>
+{% endblock %}
