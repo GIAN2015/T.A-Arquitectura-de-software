@@ -46,22 +46,35 @@ def upload_view(request):
             from apps.usuarios.models import Usuario
             usuario = Usuario.objects.get(id=request.session['usuario_id'])
             contenido = leer_archivo(archivo)
+
+            # Estado 1: ENVIADO — se registra la solicitud
             informe = Informe.objects.create(
                 usuario=usuario,
                 nombre_archivo=archivo.name,
-                contenido=contenido
+                contenido=contenido,
+                estado=Informe.ESTADO_ENVIADO,
             )
+
+            # Estado 2: EN REVISIÓN — la IA empieza a procesar
+            informe.estado = Informe.ESTADO_EN_REVISION
+            informe.save()
+
             reglamento = obtener_reglamento()
             observaciones_banco = obtener_observaciones()
             resultado = validar_informe(contenido, reglamento, observaciones_banco)
 
-            for i, obs in enumerate(resultado, start=1):
+            for obs in resultado:
                 ObservacionGenerada.objects.create(
                     informe=informe,
                     seccion=obs.get('seccion', ''),
                     observacion=obs.get('observacion', ''),
                     ubicacion_error=obs.get('ubicacion', '')
                 )
+
+            # Estado 3: COMPLETADO — revisión finalizada
+            informe.estado = Informe.ESTADO_COMPLETADO
+            informe.save()
+
             return redirect('resultado', informe_id=informe.id)
         except Exception as e:
             messages.error(request, f'Error al procesar el informe: {str(e)}')
