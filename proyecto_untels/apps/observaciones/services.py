@@ -40,14 +40,11 @@ Si el informe cumple con todo, devuelve una lista vacia: []"""
 
     url = (
         "https://generativelanguage.googleapis.com/v1beta/models/"
-        "gemini-1.5-flash:generateContent"
+        f"gemini-2.0-flash:generateContent?key={settings.GEMINI_API_KEY}"
     )
     response = requests.post(
         url,
-        headers={
-            "Content-Type": "application/json",
-            "X-goog-api-key": settings.GEMINI_API_KEY,
-        },
+        headers={"Content-Type": "application/json"},
         json={"contents": [{"parts": [{"text": prompt}]}]},
         timeout=60,
     )
