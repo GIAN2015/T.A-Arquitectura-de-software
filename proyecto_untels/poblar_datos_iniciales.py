@@ -1,0 +1,251 @@
+"""
+Script para poblar datos iniciales del sistema
+Ejecutar con: python poblar_datos_iniciales.py
+"""
+
+import os
+import django
+
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings')
+django.setup()
+
+from apps.reglamento.models import Reglamento
+from apps.observaciones.models import BancoObservaciones
+from apps.usuarios.models import Usuario
+
+def poblar_reglamento():
+    """Crear reglamento inicial"""
+    if Reglamento.objects.filter(activo=True).exists():
+        print("✓ Ya existe un reglamento activo")
+        return
+    
+    contenido_reglamento = """
+REGLAMENTO DE INFORMES DE PRÁCTICAS PREPROFESIONALES - UNTELS
+
+1. ESTRUCTURA DEL INFORME
+   1.1. Carátula institucional con datos completos
+   1.2. Índice numerado
+   1.3. Introducción (mínimo 1 página)
+   1.4. Descripción de la empresa
+   1.5. Actividades realizadas (detalladas)
+   1.6. Conclusiones y recomendaciones
+   1.7. Anexos (evidencias fotográficas, documentos)
+
+2. FORMATO Y PRESENTACIÓN
+   2.1. Tamaño: A4
+   2.2. Márgenes: Superior e inferior 2.5cm, izquierdo y derecho 3cm
+   2.3. Fuente: Arial 12 o Times New Roman 12
+   2.4. Interlineado: 1.5
+   2.5. Numeración de páginas
+
+3. CONTENIDO ACADÉMICO
+   3.1. Mínimo 20 páginas de contenido
+   3.2. Redacción formal y técnica
+   3.3. Sin faltas ortográficas
+   3.4. Citas y referencias según normas APA
+   3.5. Coherencia y cohesión textual
+
+4. REQUISITOS ESPECÍFICOS
+   4.1. Duración mínima de prácticas: 3 meses
+   4.2. Constancia de prácticas adjunta
+   4.3. Carta de presentación de la empresa
+   4.4. Plan de actividades firmado por supervisor
+    """
+    
+    Reglamento.objects.create(
+        nombre="Reglamento de Informes PPP 2024",
+        contenido=contenido_reglamento,
+        activo=True
+    )
+    print("✓ Reglamento creado exitosamente")
+
+def poblar_observaciones():
+    """Crear banco de observaciones frecuentes"""
+    if BancoObservaciones.objects.exists():
+        print("✓ Ya existen observaciones en el banco")
+        return
+    
+    observaciones = [
+        # Carátula
+        {
+            "seccion": "Carátula",
+            "descripcion": "Falta el logo oficial de la UNTELS"
+        },
+        {
+            "seccion": "Carátula",
+            "descripcion": "Datos incompletos del estudiante (falta código o escuela profesional)"
+        },
+        {
+            "seccion": "Carátula",
+            "descripcion": "Falta el nombre completo del asesor"
+        },
+        
+        # Formato
+        {
+            "seccion": "Formato",
+            "descripcion": "Márgenes incorrectos, no cumplen con lo especificado (3cm izq/der, 2.5cm sup/inf)"
+        },
+        {
+            "seccion": "Formato",
+            "descripcion": "Fuente incorrecta o tamaño inadecuado (debe ser Arial o Times 12)"
+        },
+        {
+            "seccion": "Formato",
+            "descripcion": "Interlineado incorrecto (debe ser 1.5)"
+        },
+        {
+            "seccion": "Formato",
+            "descripcion": "Falta numeración de páginas"
+        },
+        
+        # Índice
+        {
+            "seccion": "Índice",
+            "descripcion": "Índice sin numeración de páginas"
+        },
+        {
+            "seccion": "Índice",
+            "descripcion": "Índice desactualizado, no coincide con el contenido"
+        },
+        
+        # Introducción
+        {
+            "seccion": "Introducción",
+            "descripcion": "Introducción muy breve (menos de 1 página)"
+        },
+        {
+            "seccion": "Introducción",
+            "descripcion": "No presenta objetivos de las prácticas"
+        },
+        
+        # Descripción de empresa
+        {
+            "seccion": "Descripción de Empresa",
+            "descripcion": "Descripción incompleta de la empresa (falta misión, visión o actividad principal)"
+        },
+        {
+            "seccion": "Descripción de Empresa",
+            "descripcion": "No especifica el área donde realizó las prácticas"
+        },
+        
+        # Actividades
+        {
+            "seccion": "Actividades Realizadas",
+            "descripcion": "Descripción muy general de las actividades, falta detalle técnico"
+        },
+        {
+            "seccion": "Actividades Realizadas",
+            "descripcion": "No relaciona las actividades con su formación profesional"
+        },
+        {
+            "seccion": "Actividades Realizadas",
+            "descripcion": "Falta cronograma o línea de tiempo de actividades"
+        },
+        
+        # Conclusiones
+        {
+            "seccion": "Conclusiones",
+            "descripcion": "Conclusiones muy breves o poco fundamentadas"
+        },
+        {
+            "seccion": "Conclusiones",
+            "descripcion": "No presenta recomendaciones"
+        },
+        
+        # Anexos
+        {
+            "seccion": "Anexos",
+            "descripcion": "Faltan evidencias fotográficas de las actividades"
+        },
+        {
+            "seccion": "Anexos",
+            "descripcion": "No adjunta constancia de prácticas"
+        },
+        {
+            "seccion": "Anexos",
+            "descripcion": "Imágenes de baja calidad o sin pie de foto"
+        },
+        
+        # Redacción
+        {
+            "seccion": "Redacción",
+            "descripcion": "Múltiples errores ortográficos detectados"
+        },
+        {
+            "seccion": "Redacción",
+            "descripcion": "Redacción informal o coloquial, debe ser técnico-profesional"
+        },
+        {
+            "seccion": "Redacción",
+            "descripcion": "Falta coherencia entre párrafos"
+        },
+        
+        # Referencias
+        {
+            "seccion": "Referencias",
+            "descripcion": "Referencias bibliográficas no siguen formato APA"
+        },
+        {
+            "seccion": "Referencias",
+            "descripcion": "Citas en el texto sin referencia bibliográfica"
+        },
+    ]
+    
+    for obs in observaciones:
+        BancoObservaciones.objects.create(**obs)
+    
+    print(f"✓ {len(observaciones)} observaciones agregadas al banco")
+
+def crear_usuarios_demo():
+    """Crear usuarios de demostración"""
+    # Docente
+    if not Usuario.objects.filter(codigo='DOCENTE001').exists():
+        docente = Usuario.objects.create(
+            codigo='DOCENTE001',
+            nombre='Prof. María García',
+            tipo_usuario='docente'
+        )
+        docente.set_password('docente123')
+        print("✓ Usuario docente creado: DOCENTE001 / docente123")
+    else:
+        print("✓ Usuario docente ya existe")
+    
+    # Estudiante
+    if not Usuario.objects.filter(codigo='2021101234').exists():
+        estudiante = Usuario.objects.create(
+            codigo='2021101234',
+            nombre='Juan Pérez López',
+            tipo_usuario='estudiante'
+        )
+        estudiante.set_password('estudiante123')
+        print("✓ Usuario estudiante creado: 2021101234 / estudiante123")
+    else:
+        print("✓ Usuario estudiante ya existe")
+
+if __name__ == '__main__':
+    print("\n" + "="*60)
+    print("POBLANDO DATOS INICIALES DEL SISTEMA")
+    print("="*60 + "\n")
+    
+    print("1. Creando reglamento...")
+    poblar_reglamento()
+    
+    print("\n2. Creando banco de observaciones...")
+    poblar_observaciones()
+    
+    print("\n3. Creando usuarios de demostración...")
+    crear_usuarios_demo()
+    
+    print("\n" + "="*60)
+    print("✓ PROCESO COMPLETADO EXITOSAMENTE")
+    print("="*60)
+    print("\nCredenciales de acceso:")
+    print("\nDOCENTE:")
+    print("  URL: http://127.0.0.1:8000/docente/login/")
+    print("  Código: DOCENTE001")
+    print("  Contraseña: docente123")
+    print("\nESTUDIANTE:")
+    print("  URL: http://127.0.0.1:8000/")
+    print("  Código: 2021101234")
+    print("  Contraseña: estudiante123")
+    print("\n" + "="*60 + "\n")

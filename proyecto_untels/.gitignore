@@ -1,14 +1,51 @@
+# Environment variables
 .env
+.env.local
+.env.production
+
+# Python
 __pycache__/
 *.pyc
 *.pyo
 *.pyd
 .Python
+*.py[cod]
+*$py.class
+*.so
+
+# Virtual environments
+venv/
+env/
+ENV/
+.venv
+
+# Django
 *.db
 db.sqlite3
+db.sqlite3-journal
 media/
 staticfiles/
-.DS_Store
 *.log
+local_settings.py
+
+# IDEs
+.DS_Store
 .idea/
 .vscode/
+*.swp
+*.swo
+*~
+
+# Testing
+.coverage
+htmlcov/
+.pytest_cache/
+.tox/
+
+# Docker
+*.pid
+*.seed
+*.pid.lock
+
+# OS
+Thumbs.db

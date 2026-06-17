@@ -1,0 +1,159 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ usuario_detalle.nombre }}{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+  <div class="col-12">
+    <div class="d-flex justify-content-between align-items-center">
+      <div>
+        <h2 class="fw-bold text-untels-blue mb-1">Detalle de Usuario</h2>
+        <p class="text-muted">Información completa e historial de informes</p>
+      </div>
+      <div>
+        <a href="{% url 'admin_usuarios' %}" class="btn btn-outline-untels">
+          ← Volver a Usuarios
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Información del Usuario -->
+<div class="row mb-4">
+  <div class="col-md-4 mb-3">
+    <div class="card border-0 shadow-sm h-100">
+      <div class="card-body text-center">
+        <div class="mb-3" style="font-size: 4rem;">
+          {% if usuario_detalle.tipo_usuario == 'estudiante' %}
+            📚
+          {% elif usuario_detalle.tipo_usuario == 'egresado' %}
+            🎓
+          {% elif usuario_detalle.tipo_usuario == 'docente' %}
+            👨‍🏫
+          {% endif %}
+        </div>
+        <h4 class="fw-bold mb-2">{{ usuario_detalle.nombre }}</h4>
+        <p class="text-muted mb-3">
+          <code class="text-dark fs-5">{{ usuario_detalle.codigo }}</code>
+        </p>
+        {% if usuario_detalle.tipo_usuario == 'estudiante' %}
+          <span class="badge bg-info fs-6 px-3 py-2">📚 Estudiante</span>
+        {% elif usuario_detalle.tipo_usuario == 'egresado' %}
+          <span class="badge bg-success fs-6 px-3 py-2">🎓 Egresado</span>
+        {% elif usuario_detalle.tipo_usuario == 'docente' %}
+          <span class="badge bg-warning text-dark fs-6 px-3 py-2">👨‍🏫 Docente</span>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-8 mb-3">
+    <div class="card border-0 shadow-sm h-100">
+      <div class="card-header bg-light border-0">
+        <h5 class="mb-0 fw-bold">📊 Estadísticas</h5>
+      </div>
+      <div class="card-body">
+        <div class="row g-3">
+          <div class="col-md-4">
+            <div class="p-3 bg-light rounded text-center">
+              <h3 class="fw-bold text-primary mb-0">{{ total_informes }}</h3>
+              <small class="text-muted">Total de Informes</small>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="p-3 bg-light rounded text-center">
+              <h3 class="fw-bold text-success mb-0">{{ informes_completados }}</h3>
+              <small class="text-muted">Informes Completados</small>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="p-3 bg-light rounded text-center">
+              <h3 class="fw-bold text-danger mb-0">{{ total_observaciones }}</h3>
+              <small class="text-muted">Total Observaciones</small>
+            </div>
+          </div>
+        </div>
+
+        {% if total_informes > 0 %}
+        <div class="mt-4">
+          <div class="d-flex justify-content-between mb-2">
+            <small class="text-muted">Tasa de Completitud</small>
+            <small class="fw-semibold">{% widthratio informes_completados total_informes 100 %}%</small>
+          </div>
+          <div class="progress" style="height: 8px;">
+            <div class="progress-bar bg-success" role="progressbar" 
+                 style="width: {% widthratio informes_completados total_informes 100 %}%">
+            </div>
+          </div>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Historial de Informes -->
+<div class="row">
+  <div class="col-12">
+    <div class="card border-0 shadow-sm">
+      <div class="card-header bg-light border-0">
+        <h5 class="mb-0 fw-bold">📄 Historial de Informes ({{ informes|length }})</h5>
+      </div>
+      <div class="card-body p-0">
+        {% if informes %}
+          <div class="table-responsive">
+            <table class="table table-hover mb-0">
+              <thead class="table-light">
+                <tr>
+                  <th>Fecha</th>
+                  <th>Archivo</th>
+                  <th>Estado</th>
+                  <th>Observaciones</th>
+                  <th class="text-center">Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for informe in informes %}
+                <tr>
+                  <td>
+                    <small class="text-muted">{{ informe.fecha_registro|date:"d/m/Y H:i" }}</small>
+                  </td>
+                  <td>
+                    <strong>{{ informe.nombre_archivo|truncatechars:40 }}</strong>
+                  </td>
+                  <td>
+                    {% if informe.estado == 'completado' %}
+                      <span class="badge bg-success">✓ Completado</span>
+                    {% elif informe.estado == 'en_revision' %}
+                      <span class="badge bg-warning text-dark">⚙ En Revisión</span>
+                    {% else %}
+                      <span class="badge bg-secondary">Enviado</span>
+                    {% endif %}
+                  </td>
+                  <td>
+                    <span class="badge bg-danger rounded-pill">
+                      {{ informe.observaciongenerada_set.count }} observación{{ informe.observaciongenerada_set.count|pluralize:"es" }}
+                    </span>
+                  </td>
+                  <td class="text-center">
+                    <a href="{% url 'resultado' informe.id %}" class="btn btn-sm btn-outline-primary">
+                      Ver Detalle →
+                    </a>
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        {% else %}
+          <div class="text-center py-5">
+            <div class="mb-3" style="font-size: 3rem; opacity: 0.3;">📄</div>
+            <p class="text-muted">Este usuario no ha enviado informes</p>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

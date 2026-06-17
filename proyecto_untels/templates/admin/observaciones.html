@@ -1,0 +1,194 @@
+{% extends 'base.html' %}
+
+{% block title %}Banco de Observaciones{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+  <div class="col-12">
+    <div class="d-flex justify-content-between align-items-center">
+      <div>
+        <h2 class="fw-bold text-untels-blue mb-1">Banco de Observaciones</h2>
+        <p class="text-muted">Gestión de observaciones frecuentes para validación</p>
+      </div>
+      <div>
+        <a href="{% url 'admin_dashboard' %}" class="btn btn-outline-untels">
+          ← Volver al Dashboard
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Navegación del Admin -->
+<div class="row mb-4">
+  <div class="col-12">
+    <div class="card border-0 shadow-sm">
+      <div class="card-body p-3">
+        <nav class="nav nav-pills nav-fill">
+          <a class="nav-link" href="{% url 'admin_dashboard' %}">
+            📊 Dashboard
+          </a>
+          <a class="nav-link" href="{% url 'admin_usuarios' %}">
+            👥 Usuarios
+          </a>
+          <a class="nav-link" href="{% url 'admin_reglamento' %}">
+            📋 Reglamento
+          </a>
+          <a class="nav-link active" href="{% url 'admin_observaciones' %}">
+            📝 Banco de Observaciones
+          </a>
+          <a class="nav-link" href="{% url 'admin_reportes' %}">
+            📈 Reportes
+          </a>
+        </nav>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Formulario para Agregar Observación -->
+<div class="row mb-4">
+  <div class="col-12">
+    <div class="card border-0 shadow-sm">
+      <div class="card-header bg-untels text-white border-0">
+        <h5 class="mb-0 fw-bold">➕ Agregar Nueva Observación</h5>
+      </div>
+      <div class="card-body">
+        <div class="alert alert-info border-0">
+          <strong>ℹ️ Nota:</strong> Las observaciones agregadas al banco podrán ser utilizadas automáticamente 
+          por el sistema de validación cuando detecte patrones similares en los informes.
+        </div>
+
+        <form method="post">
+          {% csrf_token %}
+          <div class="row g-3">
+            <div class="col-md-4">
+              <label for="seccion" class="form-label fw-semibold">
+                Sección <span class="text-danger">*</span>
+              </label>
+              <select class="form-select" id="seccion" name="seccion" required>
+                <option value="">Seleccione una sección</option>
+                <option value="Portada">Portada</option>
+                <option value="Resumen">Resumen</option>
+                <option value="Introducción">Introducción</option>
+                <option value="Marco Teórico">Marco Teórico</option>
+                <option value="Metodología">Metodología</option>
+                <option value="Resultados">Resultados</option>
+                <option value="Conclusiones">Conclusiones</option>
+                <option value="Bibliografía">Bibliografía</option>
+                <option value="Anexos">Anexos</option>
+                <option value="Formato General">Formato General</option>
+              </select>
+            </div>
+            <div class="col-md-8">
+              <label for="descripcion" class="form-label fw-semibold">
+                Descripción de la Observación <span class="text-danger">*</span>
+              </label>
+              <input type="text" class="form-control" id="descripcion" name="descripcion" 
+                     placeholder="Ej: Falta numeración en páginas" required>
+            </div>
+            <div class="col-12">
+              <button type="submit" class="btn btn-untels">
+                ➕ Agregar al Banco
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Lista de Observaciones -->
+<div class="row">
+  <div class="col-12">
+    <div class="card border-0 shadow-sm">
+      <div class="card-header bg-light border-0">
+        <h5 class="mb-0 fw-bold">📚 Observaciones en el Banco ({{ observaciones|length }})</h5>
+      </div>
+      <div class="card-body p-0">
+        {% if observaciones %}
+          <div class="table-responsive">
+            <table class="table table-hover mb-0">
+              <thead class="table-light">
+                <tr>
+                  <th style="width: 20%;">Sección</th>
+                  <th>Descripción</th>
+                  <th class="text-center" style="width: 150px;">Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% regroup observaciones by seccion as observaciones_agrupadas %}
+                {% for grupo in observaciones_agrupadas %}
+                  <!-- Encabezado de Sección -->
+                  <tr class="table-active">
+                    <td colspan="3" class="fw-bold text-untels-blue">
+                      📌 {{ grupo.grouper }} ({{ grupo.list|length }} observación{{ grupo.list|length|pluralize:"es" }})
+                    </td>
+                  </tr>
+                  
+                  <!-- Observaciones de esta sección -->
+                  {% for obs in grupo.list %}
+                  <tr>
+                    <td>
+                      <span class="badge bg-secondary">{{ obs.seccion }}</span>
+                    </td>
+                    <td>
+                      {{ obs.descripcion }}
+                    </td>
+                    <td class="text-center">
+                      <form method="post" action="{% url 'admin_observacion_eliminar' obs.id %}" 
+                            onsubmit="return confirm('¿Está seguro de eliminar esta observación?');" 
+                            style="display: inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-sm btn-outline-danger">
+                          🗑️ Eliminar
+                        </button>
+                      </form>
+                    </td>
+                  </tr>
+                  {% endfor %}
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        {% else %}
+          <div class="text-center py-5">
+            <div class="mb-3" style="font-size: 3rem; opacity: 0.3;">📝</div>
+            <p class="text-muted">No hay observaciones en el banco</p>
+            <p class="text-muted small">Agregue observaciones utilizando el formulario superior</p>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Estadísticas por Sección -->
+{% if observaciones %}
+<div class="row mt-4">
+  <div class="col-12">
+    <div class="card border-0 shadow-sm">
+      <div class="card-header bg-light border-0">
+        <h5 class="mb-0 fw-bold">📊 Distribución por Sección</h5>
+      </div>
+      <div class="card-body">
+        <div class="row g-3">
+          {% regroup observaciones by seccion as observaciones_stats %}
+          {% for grupo in observaciones_stats %}
+          <div class="col-md-4 col-lg-3">
+            <div class="p-3 bg-light rounded">
+              <div class="d-flex justify-content-between align-items-center">
+                <small class="text-muted">{{ grupo.grouper }}</small>
+                <span class="badge bg-primary rounded-pill">{{ grupo.list|length }}</span>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endif %}
+{% endblock %}

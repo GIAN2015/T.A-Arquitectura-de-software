@@ -1,0 +1,106 @@
+{% comment %}
+  COMPONENTE: Alert (Notificación)
+  
+  Uso:
+    {% include 'components/alert.html' with type='error' title='Error de validación' message='El archivo no cumple con los requisitos' %}
+  
+  Parámetros:
+    - type: success | error | warning | info
+    - title: Título de la alerta
+    - message: Mensaje detallado
+    - icon: (opcional) Ícono personalizado
+{% endcomment %}
+
+{% if type == 'error' %}
+  {% with bg_color='#dc3545' icon='✕' %}
+    <div class="alert alert-danger alert-dismissible fade show border-0 shadow-sm mb-3" role="alert" 
+         style="border-left: 4px solid {{ bg_color }} !important;">
+      <div class="d-flex align-items-start">
+        <div class="flex-shrink-0 me-3">
+          <span class="badge bg-danger rounded-circle" style="width: 32px; height: 32px; display: inline-flex; align-items: center; justify-content: center; font-size: 16px;">
+            {{ icon|default:'✕' }}
+          </span>
+        </div>
+        <div class="flex-grow-1">
+          <h6 class="alert-heading mb-1 fw-bold">{{ title|default:'Error' }}</h6>
+          <p class="mb-0 small">{{ message }}</p>
+          {% if details %}
+            <hr class="my-2">
+            <p class="mb-0 small text-muted">{{ details }}</p>
+          {% endif %}
+        </div>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+      </div>
+    </div>
+  {% endwith %}
+
+{% elif type == 'success' %}
+  {% with bg_color='#198754' icon='✓' %}
+    <div class="alert alert-success alert-dismissible fade show border-0 shadow-sm mb-3" role="alert"
+         style="border-left: 4px solid {{ bg_color }} !important;">
+      <div class="d-flex align-items-start">
+        <div class="flex-shrink-0 me-3">
+          <span class="badge bg-success rounded-circle" style="width: 32px; height: 32px; display: inline-flex; align-items: center; justify-content: center; font-size: 16px;">
+            {{ icon|default:'✓' }}
+          </span>
+        </div>
+        <div class="flex-grow-1">
+          <h6 class="alert-heading mb-1 fw-bold">{{ title|default:'Operación exitosa' }}</h6>
+          <p class="mb-0 small">{{ message }}</p>
+          {% if details %}
+            <hr class="my-2">
+            <p class="mb-0 small text-muted">{{ details }}</p>
+          {% endif %}
+        </div>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+      </div>
+    </div>
+  {% endwith %}
+
+{% elif type == 'warning' %}
+  {% with bg_color='#ffc107' icon='⚠' %}
+    <div class="alert alert-warning alert-dismissible fade show border-0 shadow-sm mb-3" role="alert"
+         style="border-left: 4px solid {{ bg_color }} !important;">
+      <div class="d-flex align-items-start">
+        <div class="flex-shrink-0 me-3">
+          <span class="badge bg-warning text-dark rounded-circle" style="width: 32px; height: 32px; display: inline-flex; align-items: center; justify-content: center; font-size: 16px;">
+            {{ icon|default:'⚠' }}
+          </span>
+        </div>
+        <div class="flex-grow-1">
+          <h6 class="alert-heading mb-1 fw-bold">{{ title|default:'Advertencia' }}</h6>
+          <p class="mb-0 small">{{ message }}</p>
+          {% if details %}
+            <hr class="my-2">
+            <p class="mb-0 small text-muted">{{ details }}</p>
+          {% endif %}
+        </div>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+      </div>
+    </div>
+  {% endwith %}
+
+{% elif type == 'info' %}
+  {% with bg_color='#0dcaf0' icon='ℹ' %}
+    <div class="alert alert-info alert-dismissible fade show border-0 shadow-sm mb-3" role="alert"
+         style="border-left: 4px solid {{ bg_color }} !important;">
+      <div class="d-flex align-items-start">
+        <div class="flex-shrink-0 me-3">
+          <span class="badge bg-info text-dark rounded-circle" style="width: 32px; height: 32px; display: inline-flex; align-items: center; justify-content: center; font-size: 16px;">
+            {{ icon|default:'ℹ' }}
+          </span>
+        </div>
+        <div class="flex-grow-1">
+          <h6 class="alert-heading mb-1 fw-bold">{{ title|default:'Información' }}</h6>
+          <p class="mb-0 small">{{ message }}</p>
+          {% if details %}
+            <hr class="my-2">
+            <p class="mb-0 small text-muted">{{ details }}</p>
+          {% endif %}
+        </div>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+      </div>
+    </div>
+  {% endwith %}
+
+{% endif %}

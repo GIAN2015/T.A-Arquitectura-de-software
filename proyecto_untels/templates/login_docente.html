@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+
+{% block title %}Login Docente{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center mt-5">
+  <div class="col-lg-5 col-md-7">
+    <!-- Encabezado de página -->
+    <div class="text-center mb-4">
+      <h2 class="fw-bold text-untels-blue">Portal Docente</h2>
+      <p class="text-muted">Sistema de Validación de Informes de Prácticas Preprofesionales</p>
+    </div>
+
+    <!-- Tarjeta de Login -->
+    <div class="card shadow-untels">
+      <div class="card-header-untels">
+        <div class="d-flex align-items-center">
+          <span class="me-2" style="font-size: 1.5rem;">👨‍🏫</span>
+          <div>
+            <h5 class="mb-0 fw-bold">Acceso Docentes</h5>
+            <small class="text-white-50">Panel de Revisión y Gestión</small>
+          </div>
+        </div>
+      </div>
+      <div class="card-body p-4">
+        <form method="POST" novalidate>
+          {% csrf_token %}
+          
+          <!-- Campo Código -->
+          <div class="mb-4">
+            <label for="id_codigo" class="form-label">Código de Docente <span class="text-danger">*</span></label>
+            <input type="text" 
+                   name="codigo" 
+                   id="id_codigo"
+                   class="form-control form-control-lg"
+                   placeholder="Ejemplo: DOCENTE001" 
+                   required 
+                   maxlength="20"
+                   autocomplete="username"
+                   autofocus>
+            <div class="form-text">Ingrese su código de docente</div>
+          </div>
+          
+          <!-- Campo Contraseña -->
+          <div class="mb-4">
+            <label for="id_password" class="form-label">Contraseña <span class="text-danger">*</span></label>
+            <input type="password" 
+                   name="password" 
+                   id="id_password"
+                   class="form-control form-control-lg"
+                   placeholder="••••••••"
+                   autocomplete="current-password"
+                   required>
+            <div class="form-text">Ingrese su contraseña institucional</div>
+          </div>
+          
+          <!-- Botón Submit -->
+          <div class="d-grid mb-3">
+            {% include 'components/button.html' with type='untels' text='Iniciar Sesión' icon='→' form_submit=True size='lg' %}
+          </div>
+        </form>
+
+        <!-- Separador -->
+        <hr class="my-4">
+
+        <!-- Enlaces adicionales -->
+        <div class="text-center">
+          <p class="mb-2">
+            <a href="{% url 'login' %}" class="text-untels-blue fw-semibold text-decoration-none">
+              ¿Eres estudiante? Inicia sesión aquí
+            </a>
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer institucional -->
+    <div class="text-center mt-4">
+      <small class="text-muted">
+        <strong>Universidad Nacional Tecnológica de Lima Sur</strong><br>
+        Sistema Institucional de Gestión Académica - Panel Docente
+      </small>
+    </div>
+  </div>
+</div>
+{% endblock %}

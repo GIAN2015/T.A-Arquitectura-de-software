@@ -1,0 +1,58 @@
+version: '3.9'
+
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: untels-postgres-prod
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-untels_db}
+      POSTGRES_USER: ${POSTGRES_USER:-untels_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - untels-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U untels_user"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: untels-django-prod
+    restart: unless-stopped
+    command: >
+      sh -c "python manage.py migrate --settings=config.settings.production &&
+             python manage.py collectstatic --noinput --settings=config.settings.production &&
+             gunicorn config.wsgi:application --bind 0.0.0.0:8000 --workers 4 --timeout 120"
+    volumes:
+      - ./media:/app/media
+      - ./staticfiles:/app/staticfiles
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    environment:
+      - DJANGO_SETTINGS_MODULE=config.settings.production
+      - DATABASE_URL=postgresql://${POSTGRES_USER:-untels_user}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB:-untels_db}
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - untels-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+volumes:
+  postgres_data:
+
+networks:
+  untels-network:
+    driver: bridge

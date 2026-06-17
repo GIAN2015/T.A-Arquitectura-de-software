@@ -1,0 +1,55 @@
+{% comment %}
+  COMPONENTE: Badge (Etiqueta de estado)
+  
+  Uso:
+    {% include 'components/badge.html' with type='success' text='Completado' %}
+  
+  Parámetros:
+    - type: primary | success | danger | warning | info | secondary
+    - text: Texto del badge
+    - icon: Ícono opcional
+    - size: sm | md | lg (default: md)
+{% endcomment %}
+
+{% if type == 'success' %}
+  <span class="badge bg-success d-inline-flex align-items-center gap-1 px-3 py-2 {% if size == 'sm' %}fs-7{% elif size == 'lg' %}fs-6{% endif %}">
+    {% if icon %}{{ icon }}{% else %}✓{% endif %}
+    <span>{{ text }}</span>
+  </span>
+
+{% elif type == 'danger' or type == 'error' %}
+  <span class="badge bg-danger d-inline-flex align-items-center gap-1 px-3 py-2 {% if size == 'sm' %}fs-7{% elif size == 'lg' %}fs-6{% endif %}">
+    {% if icon %}{{ icon }}{% else %}✕{% endif %}
+    <span>{{ text }}</span>
+  </span>
+
+{% elif type == 'warning' %}
+  <span class="badge bg-warning text-dark d-inline-flex align-items-center gap-1 px-3 py-2 {% if size == 'sm' %}fs-7{% elif size == 'lg' %}fs-6{% endif %}">
+    {% if icon %}{{ icon }}{% else %}⚠{% endif %}
+    <span>{{ text }}</span>
+  </span>
+
+{% elif type == 'info' %}
+  <span class="badge bg-info text-dark d-inline-flex align-items-center gap-1 px-3 py-2 {% if size == 'sm' %}fs-7{% elif size == 'lg' %}fs-6{% endif %}">
+    {% if icon %}{{ icon }}{% else %}ℹ{% endif %}
+    <span>{{ text }}</span>
+  </span>
+
+{% elif type == 'primary' %}
+  <span class="badge d-inline-flex align-items-center gap-1 px-3 py-2 {% if size == 'sm' %}fs-7{% elif size == 'lg' %}fs-6{% endif %}" style="background-color: var(--untels-blue);">
+    {% if icon %}<span>{{ icon }}</span>{% endif %}
+    <span>{{ text }}</span>
+  </span>
+
+{% elif type == 'secondary' %}
+  <span class="badge bg-secondary d-inline-flex align-items-center gap-1 px-3 py-2 {% if size == 'sm' %}fs-7{% elif size == 'lg' %}fs-6{% endif %}">
+    {% if icon %}<span>{{ icon }}</span>{% endif %}
+    <span>{{ text }}</span>
+  </span>
+
+{% else %}
+  <span class="badge bg-light text-dark border d-inline-flex align-items-center gap-1 px-3 py-2 {% if size == 'sm' %}fs-7{% elif size == 'lg' %}fs-6{% endif %}">
+    {% if icon %}<span>{{ icon }}</span>{% endif %}
+    <span>{{ text }}</span>
+  </span>
+{% endif %}

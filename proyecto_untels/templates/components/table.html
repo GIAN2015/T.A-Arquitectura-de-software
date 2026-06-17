@@ -1,0 +1,51 @@
+{% comment %}
+  COMPONENTE: Table (Tabla formal)
+  
+  Uso:
+    {% include 'components/table.html' with headers=headers_list data=data_list %}
+  
+  Parámetros:
+    - headers: Lista de encabezados
+    - data: Lista de filas (cada fila es una lista de valores)
+    - striped: Boolean para filas alternas (default: True)
+    - hover: Boolean para efecto hover (default: True)
+{% endcomment %}
+
+<div class="table-responsive">
+  <table class="table table-borderless {% if striped|default:True %}table-striped{% endif %} {% if hover|default:True %}table-hover{% endif %} align-middle mb-0">
+    {% if headers %}
+    <thead class="bg-light">
+      <tr>
+        {% for header in headers %}
+        <th scope="col" class="fw-semibold text-muted small text-uppercase px-3 py-3" style="border-bottom: 2px solid var(--untels-blue);">
+          {{ header }}
+        </th>
+        {% endfor %}
+      </tr>
+    </thead>
+    {% endif %}
+    <tbody>
+      {% if data %}
+        {% for row in data %}
+        <tr>
+          {% for cell in row %}
+          <td class="px-3 py-3">{{ cell|safe }}</td>
+          {% endfor %}
+        </tr>
+        {% endfor %}
+      {% else %}
+        <tr>
+          <td colspan="{{ headers|length }}" class="text-center text-muted py-5">
+            <div class="py-4">
+              <svg class="mb-3" width="48" height="48" fill="currentColor" viewBox="0 0 16 16">
+                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
+              </svg>
+              <p class="mb-0">{{ empty_message|default:'No hay datos para mostrar' }}</p>
+            </div>
+          </td>
+        </tr>
+      {% endif %}
+    </tbody>
+  </table>
+</div>

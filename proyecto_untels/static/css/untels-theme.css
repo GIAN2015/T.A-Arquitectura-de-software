@@ -1,0 +1,516 @@
+/**
+ * UNTELS - Sistema de Validación de Informes
+ * Tema institucional formal
+ * 
+ * Clean Architecture: Estilos separados y reutilizables
+ */
+
+/* ========================================
+   VARIABLES CSS (Design System)
+   ======================================== */
+:root {
+  /* Colores Institucionales UNTELS */
+  --untels-blue: #1a3a6b;
+  --untels-blue-dark: #0f2342;
+  --untels-blue-light: #2d5a9b;
+  --untels-gold: #f0a500;
+  --untels-gold-light: #ffc547;
+  --untels-gold-dark: #c78600;
+  
+  /* Colores de Estado */
+  --color-success: #198754;
+  --color-danger: #dc3545;
+  --color-warning: #ffc107;
+  --color-info: #0dcaf0;
+  --color-secondary: #6c757d;
+  
+  /* Grises */
+  --gray-50: #f8f9fa;
+  --gray-100: #f4f6f9;
+  --gray-200: #e9ecef;
+  --gray-300: #dee2e6;
+  --gray-400: #ced4da;
+  --gray-500: #adb5bd;
+  --gray-600: #6c757d;
+  --gray-700: #495057;
+  --gray-800: #343a40;
+  --gray-900: #212529;
+  
+  /* Sombras */
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.12);
+  
+  /* Bordes */
+  --border-radius: 0.375rem;
+  --border-radius-lg: 0.5rem;
+  --border-radius-xl: 0.75rem;
+  
+  /* Espaciado */
+  --spacing-xs: 0.25rem;
+  --spacing-sm: 0.5rem;
+  --spacing-md: 1rem;
+  --spacing-lg: 1.5rem;
+  --spacing-xl: 2rem;
+  
+  /* Tipografía */
+  --font-family-base: 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+  --font-family-headings: 'Segoe UI Semibold', 'Roboto Medium', sans-serif;
+  
+  /* Transiciones */
+  --transition-base: all 0.2s ease-in-out;
+  --transition-fast: all 0.15s ease-in-out;
+}
+
+/* ========================================
+   BASE - Estilos globales
+   ======================================== */
+body {
+  background-color: var(--gray-100);
+  font-family: var(--font-family-base);
+  color: var(--gray-900);
+  line-height: 1.6;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-family-headings);
+  font-weight: 600;
+  color: var(--untels-blue);
+  margin-bottom: var(--spacing-md);
+}
+
+/* ========================================
+   NAVBAR - Barra de navegación institucional
+   ======================================== */
+.navbar-untels {
+  background: linear-gradient(135deg, var(--untels-blue) 0%, var(--untels-blue-dark) 100%);
+  box-shadow: var(--shadow-md);
+  padding: var(--spacing-md) 0;
+  border-bottom: 3px solid var(--untels-gold);
+}
+
+.navbar-untels .navbar-brand {
+  color: #ffffff !important;
+  font-weight: 700;
+  font-size: 1.25rem;
+  letter-spacing: 0.5px;
+  transition: var(--transition-base);
+}
+
+.navbar-untels .navbar-brand:hover {
+  color: var(--untels-gold-light) !important;
+  transform: translateY(-1px);
+}
+
+.navbar-untels .navbar-text {
+  color: var(--untels-gold) !important;
+  font-size: 0.9rem;
+  font-weight: 500;
+  letter-spacing: 0.3px;
+}
+
+/* ========================================
+   CARDS - Tarjetas formales
+   ======================================== */
+.card {
+  border: none;
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-sm);
+  transition: var(--transition-base);
+  overflow: hidden;
+}
+
+.card:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+
+.card-header-untels {
+  background: linear-gradient(135deg, var(--untels-blue) 0%, var(--untels-blue-light) 100%);
+  color: #ffffff;
+  border-radius: var(--border-radius-lg) var(--border-radius-lg) 0 0 !important;
+  padding: var(--spacing-lg);
+  border-bottom: 2px solid var(--untels-gold);
+}
+
+.card-header-untels h5 {
+  color: #ffffff;
+  margin-bottom: var(--spacing-xs);
+}
+
+.card-header-untels small {
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 0.875rem;
+}
+
+.card-body {
+  padding: var(--spacing-xl);
+}
+
+/* ========================================
+   BOTONES - Estilos formales
+   ======================================== */
+.btn-untels {
+  background-color: var(--untels-blue);
+  border: 2px solid var(--untels-blue);
+  color: #ffffff;
+  font-weight: 600;
+  padding: 0.625rem 1.5rem;
+  border-radius: var(--border-radius);
+  transition: var(--transition-base);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-size: 0.875rem;
+}
+
+.btn-untels:hover {
+  background-color: var(--untels-gold);
+  border-color: var(--untels-gold);
+  color: var(--untels-blue);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.btn-untels:active {
+  transform: translateY(0);
+}
+
+.btn-untels:focus {
+  box-shadow: 0 0 0 0.25rem rgba(26, 58, 107, 0.25);
+}
+
+.btn-outline-untels {
+  background-color: transparent;
+  border: 2px solid var(--untels-blue);
+  color: var(--untels-blue);
+  font-weight: 600;
+  padding: 0.625rem 1.5rem;
+  border-radius: var(--border-radius);
+  transition: var(--transition-base);
+}
+
+.btn-outline-untels:hover {
+  background-color: var(--untels-blue);
+  color: #ffffff;
+}
+
+/* ========================================
+   BADGES - Etiquetas de estado
+   ======================================== */
+.badge {
+  padding: 0.5rem 0.875rem;
+  font-weight: 600;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-radius: var(--border-radius);
+}
+
+.badge-estudiante {
+  background-color: var(--untels-blue);
+  color: #ffffff;
+}
+
+.badge-egresado {
+  background-color: var(--gray-600);
+  color: #ffffff;
+}
+
+.badge-docente {
+  background-color: var(--untels-gold);
+  color: var(--untels-blue);
+  font-weight: 700;
+}
+
+/* Estados de informe */
+.badge-enviado {
+  background-color: var(--gray-500);
+  color: #ffffff;
+}
+
+.badge-en_revision {
+  background-color: var(--color-warning);
+  color: var(--gray-900);
+}
+
+.badge-completado {
+  background-color: var(--color-success);
+  color: #ffffff;
+}
+
+/* ========================================
+   ALERTAS - Notificaciones formales
+   ======================================== */
+.alert {
+  border: none;
+  border-radius: var(--border-radius-lg);
+  padding: var(--spacing-lg);
+  margin-bottom: var(--spacing-lg);
+  box-shadow: var(--shadow-sm);
+}
+
+.alert-danger {
+  background-color: #fff5f5;
+  color: #842029;
+  border-left: 4px solid var(--color-danger);
+}
+
+.alert-success {
+  background-color: #f0f9f4;
+  color: #0f5132;
+  border-left: 4px solid var(--color-success);
+}
+
+.alert-warning {
+  background-color: #fffbeb;
+  color: #664d03;
+  border-left: 4px solid var(--color-warning);
+}
+
+.alert-info {
+  background-color: #e7f6fd;
+  color: #055160;
+  border-left: 4px solid var(--color-info);
+}
+
+.alert-heading {
+  font-weight: 700;
+  font-size: 1rem;
+  margin-bottom: var(--spacing-sm);
+}
+
+/* ========================================
+   TABLAS - Tablas formales
+   ======================================== */
+.table {
+  background-color: #ffffff;
+  border-radius: var(--border-radius-lg);
+  overflow: hidden;
+}
+
+.table thead th {
+  background-color: var(--gray-50);
+  color: var(--gray-700);
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.5px;
+  border-bottom: 2px solid var(--untels-blue);
+  padding: var(--spacing-md) var(--spacing-lg);
+}
+
+.table tbody tr {
+  transition: var(--transition-fast);
+}
+
+.table-hover tbody tr:hover {
+  background-color: var(--gray-50);
+  transform: scale(1.01);
+  box-shadow: var(--shadow-sm);
+}
+
+.table tbody td {
+  padding: var(--spacing-md) var(--spacing-lg);
+  vertical-align: middle;
+  color: var(--gray-800);
+  font-size: 0.9375rem;
+}
+
+/* ========================================
+   FORMULARIOS - Inputs formales
+   ======================================== */
+.form-label {
+  font-weight: 600;
+  color: var(--gray-700);
+  margin-bottom: var(--spacing-sm);
+  font-size: 0.9375rem;
+}
+
+.form-control {
+  border: 2px solid var(--gray-300);
+  border-radius: var(--border-radius);
+  padding: 0.75rem 1rem;
+  transition: var(--transition-base);
+  font-size: 0.9375rem;
+}
+
+.form-control:focus {
+  border-color: var(--untels-blue);
+  box-shadow: 0 0 0 0.25rem rgba(26, 58, 107, 0.15);
+}
+
+.form-select {
+  border: 2px solid var(--gray-300);
+  border-radius: var(--border-radius);
+  padding: 0.75rem 1rem;
+  transition: var(--transition-base);
+}
+
+.form-select:focus {
+  border-color: var(--untels-blue);
+  box-shadow: 0 0 0 0.25rem rgba(26, 58, 107, 0.15);
+}
+
+.form-text {
+  color: var(--gray-600);
+  font-size: 0.875rem;
+  margin-top: var(--spacing-xs);
+}
+
+/* ========================================
+   CONTENEDORES
+   ======================================== */
+.container {
+  max-width: 1200px;
+}
+
+.page-header {
+  background: linear-gradient(135deg, var(--untels-blue) 0%, var(--untels-blue-light) 100%);
+  color: #ffffff;
+  padding: var(--spacing-xl) 0;
+  margin-bottom: var(--spacing-xl);
+  box-shadow: var(--shadow-md);
+}
+
+.info-box {
+  background-color: var(--gray-50);
+  border-radius: var(--border-radius-lg);
+  padding: var(--spacing-lg);
+  margin-bottom: var(--spacing-lg);
+  border: 1px solid var(--gray-200);
+}
+
+.info-box-title {
+  font-weight: 600;
+  color: var(--untels-blue);
+  margin-bottom: var(--spacing-sm);
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* ========================================
+   UTILIDADES
+   ======================================== */
+.text-untels-blue {
+  color: var(--untels-blue) !important;
+}
+
+.text-untels-gold {
+  color: var(--untels-gold) !important;
+}
+
+.bg-untels-blue {
+  background-color: var(--untels-blue) !important;
+}
+
+.bg-untels-gold {
+  background-color: var(--untels-gold) !important;
+}
+
+.border-untels {
+  border-color: var(--untels-blue) !important;
+}
+
+/* Sombras */
+.shadow-untels {
+  box-shadow: var(--shadow-md) !important;
+}
+
+.shadow-untels-lg {
+  box-shadow: var(--shadow-lg) !important;
+}
+
+/* Espaciado */
+.p-untels {
+  padding: var(--spacing-lg) !important;
+}
+
+.m-untels {
+  margin: var(--spacing-lg) !important;
+}
+
+/* ========================================
+   ANIMACIONES
+   ======================================== */
+@keyframes slideInDown {
+  from {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.animate-slide-in {
+  animation: slideInDown 0.3s ease-out;
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-out;
+}
+
+/* ========================================
+   RESPONSIVE
+   ======================================== */
+@media (max-width: 768px) {
+  .card-body {
+    padding: var(--spacing-md);
+  }
+  
+  .table {
+    font-size: 0.875rem;
+  }
+  
+  .btn-untels {
+    padding: 0.5rem 1rem;
+    font-size: 0.8125rem;
+  }
+}
+
+/* ========================================
+   ACCESIBILIDAD
+   ======================================== */
+:focus-visible {
+  outline: 2px solid var(--untels-gold);
+  outline-offset: 2px;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* ========================================
+   PRINT
+   ======================================== */
+@media print {
+  .navbar-untels,
+  .btn,
+  .alert {
+    display: none;
+  }
+  
+  .card {
+    box-shadow: none;
+    border: 1px solid var(--gray-300);
+  }
+}

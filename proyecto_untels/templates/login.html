@@ -1,38 +1,91 @@
 {% extends 'base.html' %}
 
+{% block title %}Iniciar Sesión{% endblock %}
+
 {% block content %}
-<div class="row justify-content-center mt-4">
-  <div class="col-md-5">
-    <div class="card">
+<div class="row justify-content-center mt-5">
+  <div class="col-lg-5 col-md-7">
+    <!-- Encabezado de página -->
+    <div class="text-center mb-4">
+      <h2 class="fw-bold text-untels-blue">Portal Estudiantes</h2>
+      <p class="text-muted">Sistema de Validación de Informes de Prácticas Preprofesionales</p>
+    </div>
+
+    <!-- Tarjeta de Login -->
+    <div class="card shadow-untels">
       <div class="card-header-untels">
-        <h5 class="mb-0">Identificación de Usuario</h5>
-        <small class="text-warning">Ingresa tus datos para continuar</small>
+        <div class="d-flex align-items-center">
+          <span class="me-2" style="font-size: 1.5rem;">🎓</span>
+          <div>
+            <h5 class="mb-0 fw-bold">Acceso Estudiantes</h5>
+            <small class="text-white-50">Envía y consulta tus informes</small>
+          </div>
+        </div>
       </div>
       <div class="card-body p-4">
-        <form method="POST">
+        <form method="POST" novalidate>
           {% csrf_token %}
-          <div class="mb-3">
-            <label class="form-label fw-semibold">Código Universitario</label>
-            <input type="text" name="codigo" class="form-control form-control-lg"
-                   placeholder="Ej: 2021101234" required maxlength="20">
-          </div>
+          
+          <!-- Campo Código -->
           <div class="mb-4">
-            <label class="form-label fw-semibold">Nombre Completo</label>
-            <input type="text" name="nombre" class="form-control form-control-lg"
-                   placeholder="Ej: Juan Carlos Pérez Gómez" required maxlength="200">
+            <label for="id_codigo" class="form-label">Código Universitario <span class="text-danger">*</span></label>
+            <input type="text" 
+                   name="codigo" 
+                   id="id_codigo"
+                   class="form-control form-control-lg"
+                   placeholder="Ejemplo: 2021101234" 
+                   required 
+                   maxlength="20"
+                   autocomplete="username"
+                   autofocus>
+            <div class="form-text">Ingrese su código de estudiante o docente</div>
           </div>
-          <div class="d-grid">
-            <button type="submit" class="btn btn-untels btn-lg">
-              Validar Usuario →
-            </button>
+          
+          <!-- Campo Contraseña -->
+          <div class="mb-4">
+            <label for="id_password" class="form-label">Contraseña <span class="text-danger">*</span></label>
+            <input type="password" 
+                   name="password" 
+                   id="id_password"
+                   class="form-control form-control-lg"
+                   placeholder="••••••••"
+                   autocomplete="current-password"
+                   required>
+            <div class="form-text">Ingrese su contraseña institucional</div>
+          </div>
+          
+          <!-- Botón Submit -->
+          <div class="d-grid mb-3">
+            {% include 'components/button.html' with type='untels' text='Iniciar Sesión' icon='→' form_submit=True size='lg' %}
           </div>
         </form>
+
+        <!-- Separador -->
+        <hr class="my-4">
+
+        <!-- Enlaces adicionales -->
+        <div class="text-center">
+          <p class="mb-2">
+            <a href="{% url 'registro' %}" class="text-untels-blue fw-semibold text-decoration-none">
+              ¿No tiene cuenta? Registrarse aquí
+            </a>
+          </p>
+          <p class="mb-0">
+            <a href="{% url 'login_docente' %}" class="text-muted text-decoration-none">
+              ¿Eres docente? Accede aquí
+            </a>
+          </p>
+        </div>
       </div>
     </div>
 
-    <p class="text-center text-muted mt-3" style="font-size:0.82rem;">
-      Universidad Nacional Tecnológica de Lima Sur
-    </p>
+    <!-- Footer institucional -->
+    <div class="text-center mt-4">
+      <small class="text-muted">
+        <strong>Universidad Nacional Tecnológica de Lima Sur</strong><br>
+        Sistema Institucional de Gestión Académica
+      </small>
+    </div>
   </div>
 </div>
 {% endblock %}

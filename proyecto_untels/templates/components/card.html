@@ -1,0 +1,47 @@
+{% comment %}
+  COMPONENTE: Card (Tarjeta formal)
+  
+  Uso:
+    {% include 'components/card.html' with title='Título' subtitle='Subtítulo opcional' %}
+      ... contenido ...
+    {% endinclude %}
+  
+  Parámetros:
+    - title: Título de la tarjeta (requerido)
+    - subtitle: Subtítulo (opcional)
+    - icon: Ícono (opcional)
+    - header_bg: Color de fondo del header (opcional, default: var(--untels-blue))
+{% endcomment %}
+
+<div class="card border-0 shadow-sm mb-4">
+  <div class="card-header text-white" style="background-color: {{ header_bg|default:'var(--untels-blue)' }}; border-radius: 0.375rem 0.375rem 0 0;">
+    <div class="d-flex align-items-center">
+      {% if icon %}
+      <span class="me-2" style="font-size: 1.25rem;">{{ icon }}</span>
+      {% endif %}
+      <div class="flex-grow-1">
+        <h5 class="card-title mb-0 fw-bold">{{ title }}</h5>
+        {% if subtitle %}
+        <small class="text-white-50">{{ subtitle }}</small>
+        {% endif %}
+      </div>
+      {% if actions %}
+      <div class="ms-auto">
+        {{ actions }}
+      </div>
+      {% endif %}
+    </div>
+  </div>
+  <div class="card-body p-4">
+    {% if content %}
+      {{ content|safe }}
+    {% else %}
+      {{ block.super }}
+    {% endif %}
+  </div>
+  {% if footer %}
+  <div class="card-footer bg-light border-0">
+    {{ footer|safe }}
+  </div>
+  {% endif %}
+</div>

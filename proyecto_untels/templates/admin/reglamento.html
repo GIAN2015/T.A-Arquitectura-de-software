@@ -1,0 +1,183 @@
+{% extends 'base.html' %}
+
+{% block title %}Gestión de Reglamento{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+  <div class="col-12">
+    <div class="d-flex justify-content-between align-items-center">
+      <div>
+        <h2 class="fw-bold text-untels-blue mb-1">Gestión de Reglamento</h2>
+        <p class="text-muted">Actualizar reglamento institucional de informes</p>
+      </div>
+      <div>
+        <a href="{% url 'admin_dashboard' %}" class="btn btn-outline-untels">
+          ← Volver al Dashboard
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Navegación del Admin -->
+<div class="row mb-4">
+  <div class="col-12">
+    <div class="card border-0 shadow-sm">
+      <div class="card-body p-3">
+        <nav class="nav nav-pills nav-fill">
+          <a class="nav-link" href="{% url 'admin_dashboard' %}">
+            📊 Dashboard
+          </a>
+          <a class="nav-link" href="{% url 'admin_usuarios' %}">
+            👥 Usuarios
+          </a>
+          <a class="nav-link active" href="{% url 'admin_reglamento' %}">
+            📋 Reglamento
+          </a>
+          <a class="nav-link" href="{% url 'admin_observaciones' %}">
+            📝 Banco de Observaciones
+          </a>
+          <a class="nav-link" href="{% url 'admin_reportes' %}">
+            📈 Reportes
+          </a>
+        </nav>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Formulario para Actualizar Reglamento -->
+<div class="row mb-4">
+  <div class="col-12">
+    <div class="card border-0 shadow-sm">
+      <div class="card-header bg-untels text-white border-0">
+        <h5 class="mb-0 fw-bold">✏️ Actualizar Reglamento</h5>
+      </div>
+      <div class="card-body">
+        <div class="alert alert-info border-0">
+          <strong>ℹ️ Nota:</strong> Al actualizar el reglamento, la versión anterior se desactivará automáticamente. 
+          El nuevo reglamento será utilizado para validar todos los informes a partir de este momento.
+        </div>
+
+        <form method="post">
+          {% csrf_token %}
+          <div class="mb-3">
+            <label for="nombre" class="form-label fw-semibold">
+              Nombre del Reglamento <span class="text-danger">*</span>
+            </label>
+            <input type="text" class="form-control" id="nombre" name="nombre" 
+                   placeholder="Ej: Reglamento de Informes 2024 - Versión 2.0" required>
+            <small class="text-muted">
+              Ingrese un nombre descriptivo para identificar esta versión del reglamento
+            </small>
+          </div>
+
+          <div class="mb-3">
+            <label for="contenido" class="form-label fw-semibold">
+              Contenido del Reglamento <span class="text-danger">*</span>
+            </label>
+            <textarea class="form-control font-monospace" id="contenido" name="contenido" 
+                      rows="15" required placeholder="Pegue aquí el contenido completo del reglamento..."></textarea>
+            <small class="text-muted">
+              El contenido será utilizado como contexto para la IA en la validación de informes
+            </small>
+          </div>
+
+          <div class="d-grid gap-2">
+            <button type="submit" class="btn btn-untels btn-lg">
+              💾 Actualizar Reglamento
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Historial de Reglamentos -->
+<div class="row">
+  <div class="col-12">
+    <div class="card border-0 shadow-sm">
+      <div class="card-header bg-light border-0">
+        <h5 class="mb-0 fw-bold">📚 Historial de Reglamentos</h5>
+      </div>
+      <div class="card-body p-0">
+        {% if reglamentos %}
+          <div class="table-responsive">
+            <table class="table table-hover mb-0">
+              <thead class="table-light">
+                <tr>
+                  <th>Estado</th>
+                  <th>Nombre</th>
+                  <th>Fecha de Creación</th>
+                  <th>Longitud</th>
+                  <th class="text-center">Vista Previa</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for reglamento in reglamentos %}
+                <tr {% if reglamento.activo %}class="table-success"{% endif %}>
+                  <td>
+                    {% if reglamento.activo %}
+                      <span class="badge bg-success">✓ Activo</span>
+                    {% else %}
+                      <span class="badge bg-secondary">Inactivo</span>
+                    {% endif %}
+                  </td>
+                  <td>
+                    <strong>{{ reglamento.nombre }}</strong>
+                    {% if reglamento.activo %}
+                      <span class="badge bg-warning text-dark ms-2">Actual</span>
+                    {% endif %}
+                  </td>
+                  <td>
+                    <small class="text-muted">{{ reglamento.fecha_creacion|date:"d/m/Y H:i" }}</small>
+                  </td>
+                  <td>
+                    <span class="badge bg-info">{{ reglamento.contenido|length }} caracteres</span>
+                  </td>
+                  <td class="text-center">
+                    <button type="button" class="btn btn-sm btn-outline-primary" 
+                            data-bs-toggle="modal" data-bs-target="#modal{{ reglamento.id }}">
+                      Ver Contenido
+                    </button>
+                  </td>
+                </tr>
+
+                <!-- Modal para Vista Previa -->
+                <div class="modal fade" id="modal{{ reglamento.id }}" tabindex="-1">
+                  <div class="modal-dialog modal-lg modal-dialog-scrollable">
+                    <div class="modal-content">
+                      <div class="modal-header bg-untels text-white">
+                        <h5 class="modal-title">{{ reglamento.nombre }}</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                      </div>
+                      <div class="modal-body">
+                        <div class="alert alert-info border-0">
+                          <strong>Fecha de creación:</strong> {{ reglamento.fecha_creacion|date:"d/m/Y H:i" }}<br>
+                          <strong>Estado:</strong> {% if reglamento.activo %}Activo{% else %}Inactivo{% endif %}
+                        </div>
+                        <pre class="bg-light p-3 rounded" style="white-space: pre-wrap; font-size: 0.9em;">{{ reglamento.contenido }}</pre>
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        {% else %}
+          <div class="text-center py-5">
+            <div class="mb-3" style="font-size: 3rem; opacity: 0.3;">📋</div>
+            <p class="text-muted">No hay reglamentos registrados</p>
+            <p class="text-muted small">Cree el primer reglamento utilizando el formulario superior</p>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

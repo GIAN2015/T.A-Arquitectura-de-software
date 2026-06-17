@@ -1,0 +1,111 @@
+{% extends 'base.html' %}
+
+{% block title %}Mi Historial{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center mt-4">
+  <div class="col-md-11">
+    <div class="card">
+      <div class="card-header-untels d-flex justify-content-between align-items-center">
+        <div>
+          <h5 class="mb-0">📋 Historial de Mis Informes</h5>
+          <small class="text-warning">{{ nombre }} - {{ codigo }}</small>
+        </div>
+        <div>
+          <a href="{% url 'upload' %}" class="btn btn-sm btn-light me-2">📤 Subir Nuevo Informe</a>
+          <a href="{% url 'logout' %}" class="btn btn-sm btn-outline-light">Cerrar Sesión</a>
+        </div>
+      </div>
+      <div class="card-body p-4">
+
+        {% if informes %}
+          <div class="mb-3">
+            <p class="text-muted mb-0">Total: <strong>{{ informes|length }}</strong> informe(s) enviado(s)</p>
+          </div>
+          
+          <div class="table-responsive">
+            <table class="table table-hover align-middle">
+              <thead class="table-light">
+                <tr>
+                  <th>#</th>
+                  <th>Archivo</th>
+                  <th>Versión</th>
+                  <th>Fecha de Envío</th>
+                  <th>Estado</th>
+                  <th>Observaciones</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for informe in informes %}
+                <tr>
+                  <td><strong>{{ forloop.counter }}</strong></td>
+                  <td>
+                    <strong>{{ informe.nombre_archivo|truncatechars:30 }}</strong>
+                    {% if informe.informe_anterior %}
+                      <br><small class="text-muted">↻ Reenvío del informe #{{ informe.informe_anterior.id }}</small>
+                    {% endif %}
+                  </td>
+                  <td>
+                    <span class="badge bg-info">v{{ informe.version }}</span>
+                  </td>
+                  <td>
+                    <small class="text-muted">{{ informe.fecha_registro|date:"d/m/Y H:i" }}</small>
+                  </td>
+                  <td>
+                    {% if informe.estado == 'enviado' %}
+                      <span class="badge bg-secondary">📨 Enviado</span>
+                    {% elif informe.estado == 'validando' %}
+                      <span class="badge bg-info">🔄 Validando con IA</span>
+                    {% elif informe.estado == 'observado' %}
+                      <span class="badge bg-warning text-dark">⚠️ Con Observaciones</span>
+                    {% elif informe.estado == 'revision_docente' %}
+                      <span class="badge bg-primary">👨‍🏫 En Revisión Docente</span>
+                    {% elif informe.estado == 'rechazado' %}
+                      <span class="badge bg-danger">❌ Rechazado</span>
+                    {% elif informe.estado == 'aprobado' %}
+                      <span class="badge bg-success">✅ Aprobado</span>
+                    {% elif informe.estado == 'completado' %}
+                      <span class="badge bg-success">✅ Completado</span>
+                    {% endif %}
+                  </td>
+                  <td>
+                    {% with obs_count=informe.observaciones.count %}
+                      {% if obs_count > 0 %}
+                        <span class="badge bg-danger rounded-pill">{{ obs_count }}</span>
+                      {% else %}
+                        <span class="badge bg-success rounded-pill">0</span>
+                      {% endif %}
+                    {% endwith %}
+                  </td>
+                  <td>
+                    <a href="{% url 'resultado' informe.id %}" class="btn btn-sm btn-untels">
+                      👁️ Ver Detalle
+                    </a>
+                    {% if informe.estado == 'rechazado' %}
+                      <a href="{% url 'upload' %}" class="btn btn-sm btn-warning">
+                        📤 Reenviar
+                      </a>
+                    {% endif %}
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        {% else %}
+          <div class="text-center py-5">
+            <div style="font-size: 4rem; opacity: 0.3;">📋</div>
+            <h5 class="text-muted mt-3">No has subido ningún informe aún</h5>
+            <p class="text-muted">Comienza subiendo tu primer informe de prácticas preprofesionales</p>
+            <a href="{% url 'upload' %}" class="btn btn-untels btn-lg mt-3">
+              📤 Subir mi Primer Informe
+            </a>
+          </div>
+        {% endif %}
+
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
