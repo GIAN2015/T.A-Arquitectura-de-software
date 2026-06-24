@@ -1,0 +1,137 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row mt-4">
+  <div class="col-12">
+    <div class="card">
+      <div class="card-header-untels d-flex justify-content-between align-items-center">
+        <div>
+          <h5 class="mb-0">Panel del Docente</h5>
+          <small class="text-warning">{{ nombre }} ({{ codigo }}) - Revision de Informes</small>
+        </div>
+        <a href="{% url 'logout' %}" class="btn btn-sm btn-outline-light">Cerrar Sesion</a>
+      </div>
+      <div class="card-body p-4">
+
+        <!-- Estadisticas -->
+        <div class="row mb-4 g-3">
+          <div class="col-md-3">
+            <div class="card border-warning">
+              <div class="card-body text-center">
+                <h6 class="text-muted mb-1">Pendientes</h6>
+                <h2 class="text-warning mb-0">{{ total_pendientes }}</h2>
+                <small class="text-muted">por revisar</small>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="card border-success">
+              <div class="card-body text-center">
+                <h6 class="text-muted mb-1">Aprobados</h6>
+                <h2 class="text-success mb-0">{{ total_aprobados }}</h2>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="card border-danger">
+              <div class="card-body text-center">
+                <h6 class="text-muted mb-1">Rechazados</h6>
+                <h2 class="text-danger mb-0">{{ total_rechazados }}</h2>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="card border-info">
+              <div class="card-body text-center">
+                <h6 class="text-muted mb-1">Total</h6>
+                <h2 class="text-info mb-0">{{ total_informes }}</h2>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Filtros -->
+        <div class="mb-3">
+          <div class="btn-group" role="group">
+            <a href="?estado=pendientes" class="btn btn-sm {% if filtro_estado == 'pendientes' %}btn-warning{% else %}btn-outline-warning{% endif %}">
+              Pendientes ({{ total_pendientes }})
+            </a>
+            <a href="?estado=aprobados" class="btn btn-sm {% if filtro_estado == 'aprobados' %}btn-success{% else %}btn-outline-success{% endif %}">
+              Aprobados ({{ total_aprobados }})
+            </a>
+            <a href="?estado=rechazados" class="btn btn-sm {% if filtro_estado == 'rechazados' %}btn-danger{% else %}btn-outline-danger{% endif %}">
+              Rechazados ({{ total_rechazados }})
+            </a>
+            <a href="?estado=todos" class="btn btn-sm {% if filtro_estado == 'todos' %}btn-info{% else %}btn-outline-info{% endif %}">
+              Todos ({{ total_informes }})
+            </a>
+          </div>
+        </div>
+
+        {% if informes %}
+          <div class="table-responsive">
+            <table class="table table-hover align-middle">
+              <thead style="background-color:#1a3a6b; color:#fff;">
+                <tr>
+                  <th>#</th>
+                  <th>Estudiante</th>
+                  <th>Codigo</th>
+                  <th>Archivo</th>
+                  <th>Version</th>
+                  <th>Fecha</th>
+                  <th>Estado</th>
+                  <th class="text-center">Obs.</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for informe in informes %}
+                <tr>
+                  <td><strong>{{ informe.id }}</strong></td>
+                  <td><strong>{{ informe.usuario.nombre }}</strong></td>
+                  <td><code>{{ informe.usuario.codigo }}</code></td>
+                  <td>{{ informe.nombre_archivo|truncatechars:25 }}</td>
+                  <td><span class="badge bg-info">v{{ informe.version }}</span></td>
+                  <td><small class="text-muted">{{ informe.fecha_registro|date:"d/m/Y H:i" }}</small></td>
+                  <td>
+                    {% if informe.estado == 'observado' %}
+                      <span class="badge bg-warning text-dark">Con Observaciones</span>
+                    {% elif informe.estado == 'revision_docente' %}
+                      <span class="badge bg-primary">En Revision</span>
+                    {% elif informe.estado == 'rechazado' %}
+                      <span class="badge bg-danger">Rechazado</span>
+                    {% elif informe.estado == 'aprobado' %}
+                      <span class="badge bg-success">Aprobado</span>
+                    {% else %}
+                      <span class="badge bg-secondary">{{ informe.get_estado_display }}</span>
+                    {% endif %}
+                  </td>
+                  <td class="text-center">
+                    {% with obs_count=informe.observaciones.count %}
+                      <span class="badge {% if obs_count > 0 %}bg-danger{% else %}bg-success{% endif %} rounded-pill">{{ obs_count }}</span>
+                    {% endwith %}
+                  </td>
+                  <td>
+                    {% if informe.estado == 'observado' or informe.estado == 'revision_docente' %}
+                      <a href="{% url 'revisar_informe' informe.id %}" class="btn btn-sm btn-warning">Revisar</a>
+                    {% else %}
+                      <a href="{% url 'resultado' informe.id %}" class="btn btn-sm btn-outline-primary">Ver</a>
+                    {% endif %}
+                    <a href="{% url 'exportar_excel' informe.id %}" class="btn btn-sm btn-outline-success">Excel</a>
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        {% else %}
+          <div class="text-center py-5">
+            <h5 class="text-muted">No hay informes en esta categoria</h5>
+          </div>
+        {% endif %}
+
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

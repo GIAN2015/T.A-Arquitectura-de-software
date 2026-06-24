@@ -1,0 +1,105 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row justify-content-center mt-3">
+  <div class="col-lg-11">
+
+    <div class="card mb-4">
+      <div class="card-header-untels">
+        <h5 class="mb-0">Revisar Informe</h5>
+        <small class="text-warning">{{ informe.nombre_archivo }} - v{{ informe.version }}</small>
+      </div>
+      <div class="card-body p-3">
+        <div class="row g-2 text-center">
+          <div class="col-3">
+            <small class="text-muted d-block">Alumno</small>
+            <strong>{{ informe.usuario.nombre }}</strong>
+          </div>
+          <div class="col-3">
+            <small class="text-muted d-block">Codigo</small>
+            <strong>{{ informe.usuario.codigo }}</strong>
+          </div>
+          <div class="col-3">
+            <small class="text-muted d-block">Fecha de envio</small>
+            <strong>{{ informe.fecha_registro|date:"d/m/Y H:i" }}</strong>
+          </div>
+          <div class="col-3">
+            <small class="text-muted d-block">Revisor</small>
+            <strong>{{ nombre }}</strong>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <form method="POST">
+      {% csrf_token %}
+
+      <div class="card mb-4">
+        <div class="card-body p-0">
+          <div class="table-responsive">
+            <table class="table table-bordered table-hover mb-0">
+              <thead style="background-color:#1a3a6b; color:#fff;">
+                <tr>
+                  <th width="50" class="text-center">ITEM</th>
+                  <th width="220">DESCRIPCION</th>
+                  <th>OBSERVACION (IA)</th>
+                  <th width="130">SUSTENTO</th>
+                  <th width="100" class="text-center">ESTADO</th>
+                  <th width="230">COMENTARIO DOCENTE</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for obs in observaciones %}
+                <tr>
+                  <td class="fw-bold text-center">{{ forloop.counter }}</td>
+                  <td>{{ obs.seccion }}</td>
+                  <td>{{ obs.observacion }}</td>
+                  <td><small>{{ obs.sustento }}</small></td>
+                  <td class="text-center">
+                    {% if obs.estado_conformidad == 'Conforme' %}
+                      <span class="badge bg-success px-2 py-1">Conforme</span>
+                    {% else %}
+                      <span class="badge bg-warning text-dark px-2 py-1">Observado</span>
+                    {% endif %}
+                  </td>
+                  <td>
+                    <textarea name="obs_comentario_{{ obs.id }}" class="form-control form-control-sm"
+                              rows="2" placeholder="Comentario...">{{ obs.comentario_docente }}</textarea>
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Comentario general -->
+      <div class="card mb-4">
+        <div class="card-body">
+          <label class="form-label fw-semibold">Comentario General (opcional)</label>
+          <textarea name="comentario_general" class="form-control" rows="3"
+                    placeholder="Comentario general sobre el informe...">{{ informe.comentario_docente }}</textarea>
+        </div>
+      </div>
+
+      <!-- Botones de accion -->
+      <div class="d-flex justify-content-center gap-3 mb-4">
+        <button type="submit" name="accion" value="aprobar" class="btn btn-success btn-lg px-4">
+          Aprobar Informe
+        </button>
+        <button type="submit" name="accion" value="rechazar" class="btn btn-danger btn-lg px-4">
+          Rechazar (Requiere Correcciones)
+        </button>
+        <a href="{% url 'exportar_excel' informe.id %}" class="btn btn-outline-success btn-lg px-4">
+          Exportar Excel
+        </a>
+        <a href="{% url 'panel_docente' %}" class="btn btn-outline-secondary btn-lg px-4">
+          Volver al Panel
+        </a>
+      </div>
+    </form>
+
+  </div>
+</div>
+{% endblock %}

@@ -1,4 +1,3 @@
-version: '3.9'
 services:
   db:
     image: postgres:16
@@ -14,7 +13,7 @@ services:
   web:
     build: .
     container_name: django-app
-    command: sh -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+    command: sh -c "python manage.py makemigrations usuarios informes reglamento observaciones && python manage.py migrate && python crear_docente.py && python manage.py runserver 0.0.0.0:8000"
     volumes:
       - .:/app
     ports:

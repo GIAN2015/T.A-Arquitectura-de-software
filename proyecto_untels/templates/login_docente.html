@@ -4,22 +4,22 @@
 <div class="row justify-content-center mt-5">
   <div class="col-lg-5 col-md-7">
     <div class="text-center mb-4">
-      <h2 class="fw-bold" style="color:#1a3a6b;">Portal Estudiantes</h2>
+      <h2 class="fw-bold" style="color:#1a3a6b;">Portal Docente</h2>
       <p class="text-muted">Sistema de Validacion de Informes de Practicas Preprofesionales</p>
     </div>
 
     <div class="card">
       <div class="card-header-untels">
-        <h5 class="mb-0">Acceso Estudiantes</h5>
-        <small class="text-warning">Envia y consulta tus informes</small>
+        <h5 class="mb-0">Acceso Docentes</h5>
+        <small class="text-warning">Panel de Revision y Gestion</small>
       </div>
       <div class="card-body p-4">
         <form method="POST">
           {% csrf_token %}
           <div class="mb-3">
-            <label class="form-label fw-semibold">Codigo Universitario</label>
+            <label class="form-label fw-semibold">Codigo de Docente</label>
             <input type="text" name="codigo" class="form-control form-control-lg"
-                   placeholder="Ej: 2021101234" required maxlength="20" autofocus>
+                   placeholder="Ej: DOCENTE001" required maxlength="20" autofocus>
           </div>
           <div class="mb-4">
             <label class="form-label fw-semibold">Contrasena</label>
@@ -32,22 +32,15 @@
         </form>
         <hr class="my-4">
         <div class="text-center">
-          <p class="mb-2">
-            <a href="{% url 'registro' %}" class="fw-semibold text-decoration-none" style="color:#1a3a6b;">
-              No tienes cuenta? Registrate aqui
-            </a>
-          </p>
-          <p class="mb-0">
-            <a href="{% url 'login_docente' %}" class="text-muted text-decoration-none">
-              Eres docente? Accede aqui
-            </a>
-          </p>
+          <a href="{% url 'login' %}" class="text-muted text-decoration-none">
+            Eres estudiante? Inicia sesion aqui
+          </a>
         </div>
       </div>
     </div>
 
     <p class="text-center text-muted mt-3" style="font-size:0.82rem;">
-      Universidad Nacional Tecnologica de Lima Sur
+      Universidad Nacional Tecnologica de Lima Sur - Panel Docente
     </p>
   </div>
 </div>

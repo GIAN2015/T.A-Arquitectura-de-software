@@ -1,11 +1,13 @@
 from .models import Usuario
 
-def identificar_usuario(codigo: str, nombre: str) -> Usuario:
-    try:
-        year = int(codigo[:4])
-        tipo = 'egresado' if year < 2020 else 'estudiante'
-    except (ValueError, IndexError):
-        tipo = 'estudiante'
+
+def identificar_usuario(codigo: str, nombre: str, tipo: str = None) -> Usuario:
+    if not tipo:
+        try:
+            year = int(codigo[:4])
+            tipo = 'egresado' if year < 2020 else 'estudiante'
+        except (ValueError, IndexError):
+            tipo = 'estudiante'
 
     usuario, _ = Usuario.objects.get_or_create(
         codigo=codigo,
@@ -14,4 +16,26 @@ def identificar_usuario(codigo: str, nombre: str) -> Usuario:
     usuario.nombre = nombre
     usuario.tipo_usuario = tipo
     usuario.save()
+    return usuario
+
+
+def autenticar_usuario(codigo: str, password: str):
+    try:
+        usuario = Usuario.objects.get(codigo=codigo)
+        if usuario.check_password(password):
+            return usuario
+        return None
+    except Usuario.DoesNotExist:
+        return None
+
+
+def registrar_usuario(codigo: str, nombre: str, password: str, tipo_usuario: str = 'estudiante'):
+    if Usuario.objects.filter(codigo=codigo).exists():
+        return None
+    usuario = Usuario.objects.create(
+        codigo=codigo,
+        nombre=nombre,
+        tipo_usuario=tipo_usuario
+    )
+    usuario.set_password(password)
     return usuario

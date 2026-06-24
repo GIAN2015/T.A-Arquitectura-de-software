@@ -2,19 +2,24 @@
 
 {% block content %}
 <div class="row justify-content-center mt-4">
-  <div class="col-md-6">
+  <div class="col-md-7">
     <div class="card">
-      <div class="card-header-untels">
-        <h5 class="mb-0">Carga de Informe de Prácticas</h5>
-        <small class="text-warning">Sube tu informe en formato .docx</small>
+      <div class="card-header-untels d-flex justify-content-between align-items-center">
+        <div>
+          <h5 class="mb-0">Carga de Informe de Practicas</h5>
+          <small class="text-warning">Sube tu informe en formato .docx</small>
+        </div>
+        <div>
+          <a href="{% url 'historial' %}" class="btn btn-sm btn-light me-2">Historial</a>
+          <a href="{% url 'logout' %}" class="btn btn-sm btn-outline-light">Salir</a>
+        </div>
       </div>
       <div class="card-body p-4">
 
-        <!-- Info del usuario -->
         <div class="bg-light rounded p-3 mb-4">
           <div class="row g-2">
             <div class="col-6">
-              <small class="text-muted d-block">Código</small>
+              <small class="text-muted d-block">Codigo</small>
               <strong>{{ codigo }}</strong>
             </div>
             <div class="col-6">
@@ -30,30 +35,41 @@
           </div>
         </div>
 
-        <!-- Formulario de carga -->
+        <div class="alert alert-info border-0 mb-4">
+          <strong>Como funciona?</strong>
+          <ol class="mb-0 mt-2">
+            <li>Sube tu informe en formato .docx</li>
+            <li>La IA analizara el contenido automaticamente</li>
+            <li>El docente revisara y dara su veredicto final</li>
+            <li>Si es rechazado, podras corregir y reenviar</li>
+          </ol>
+        </div>
+
         <form method="POST" enctype="multipart/form-data">
           {% csrf_token %}
           <div class="mb-4">
-            <label class="form-label fw-semibold">Seleccionar Informe</label>
+            <label class="form-label fw-semibold">Seleccionar Informe (.docx)</label>
             <input type="file" name="informe" class="form-control form-control-lg"
                    accept=".docx" required>
             <div class="form-text">Solo se aceptan archivos .docx</div>
           </div>
           <div class="d-grid">
-            <button type="submit" class="btn btn-untels btn-lg">
-              ⚙️ Validar Informe
+            <button type="submit" class="btn btn-untels btn-lg" id="btnSubmit">
+              Validar Informe con IA
             </button>
           </div>
         </form>
 
       </div>
     </div>
-
-    <div class="text-center mt-3">
-      <a href="{% url 'login' %}" class="text-muted" style="font-size:0.85rem;">
-        ← Volver al inicio
-      </a>
-    </div>
   </div>
 </div>
+
+<script>
+  document.querySelector('form').addEventListener('submit', function() {
+    var btn = document.getElementById('btnSubmit');
+    btn.disabled = true;
+    btn.innerHTML = 'Procesando... La IA esta analizando tu informe (30-60 segundos)';
+  });
+</script>
 {% endblock %}

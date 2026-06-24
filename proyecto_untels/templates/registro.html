@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row justify-content-center mt-4">
+  <div class="col-md-6">
+    <div class="card">
+      <div class="card-header-untels">
+        <h5 class="mb-0">Registro de Usuario</h5>
+        <small class="text-warning">Crea tu cuenta para acceder al sistema</small>
+      </div>
+      <div class="card-body p-4">
+        <form method="POST">
+          {% csrf_token %}
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label class="form-label fw-semibold">Codigo Universitario</label>
+              <input type="text" name="codigo" class="form-control"
+                     placeholder="Ej: 2021101234" required maxlength="20">
+            </div>
+            <div class="col-md-6 mb-3">
+              <label class="form-label fw-semibold">Tipo de Usuario</label>
+              <select name="tipo_usuario" class="form-select" required>
+                <option value="estudiante">Estudiante</option>
+                <option value="egresado">Egresado</option>
+              </select>
+            </div>
+          </div>
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Nombre Completo</label>
+            <input type="text" name="nombre" class="form-control"
+                   placeholder="Ej: Juan Carlos Perez Gomez" required maxlength="200">
+          </div>
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Contrasena</label>
+            <input type="password" name="password" class="form-control"
+                   placeholder="Minimo 6 caracteres" required minlength="6">
+          </div>
+          <div class="mb-4">
+            <label class="form-label fw-semibold">Confirmar Contrasena</label>
+            <input type="password" name="password_confirm" class="form-control"
+                   placeholder="Repite tu contrasena" required minlength="6">
+          </div>
+          <div class="d-grid">
+            <button type="submit" class="btn btn-untels btn-lg">Registrarse</button>
+          </div>
+        </form>
+        <div class="text-center mt-3">
+          <a href="{% url 'login' %}" class="text-muted">Ya tienes cuenta? Inicia sesion</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
