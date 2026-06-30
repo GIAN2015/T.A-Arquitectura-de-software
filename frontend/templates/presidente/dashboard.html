@@ -1,0 +1,160 @@
+{% extends 'presidente/base_presidente.html' %}
+{% block title %}Dashboard - Presidente{% endblock %}
+{% block nav_dashboard %}active{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+  <div class="row mb-4">
+    <div class="col-12">
+      <h2 class="mb-1"><i class="bi bi-speedometer2 text-danger me-2"></i>Dashboard de Presidente</h2>
+      <p class="text-muted">{{ request.user.escuela.nombre }}</p>
+    </div>
+  </div>
+
+  <div class="row mb-4">
+    <div class="col-lg-4 col-md-6 mb-3">
+      <div class="card stat-card border-warning">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <p class="text-muted mb-1 small">Pendientes de Asignar</p>
+              <h3 class="mb-0 text-warning fw-bold">{{ estadisticas.pendientes_asignar }}</h3>
+            </div>
+            <div class="bg-warning bg-opacity-10 rounded-circle p-3">
+              <i class="bi bi-person-plus-fill text-warning fs-4"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="col-lg-4 col-md-6 mb-3">
+      <div class="card stat-card border-info">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <p class="text-muted mb-1 small">En Revisión</p>
+              <h3 class="mb-0 text-info fw-bold">{{ estadisticas.en_revision }}</h3>
+            </div>
+            <div class="bg-info bg-opacity-10 rounded-circle p-3">
+              <i class="bi bi-hourglass-split text-info fs-4"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="col-lg-4 col-md-6 mb-3">
+      <div class="card stat-card border-danger">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <p class="text-muted mb-1 small">Pendientes de Aprobar</p>
+              <h3 class="mb-0 text-danger fw-bold">{{ estadisticas.pendientes_aprobar }}</h3>
+            </div>
+            <div class="bg-danger bg-opacity-10 rounded-circle p-3">
+              <i class="bi bi-clipboard-check-fill text-danger fs-4"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row mb-4">
+    <div class="col-12">
+      <div class="card shadow-sm">
+        <div class="card-header bg-danger text-white">
+          <h5 class="mb-0"><i class="bi bi-inbox-fill me-2"></i>Informes Pendientes de Asignar Docente</h5>
+        </div>
+        <div class="card-body">
+          {% if informes_pendientes %}
+            <div class="table-responsive">
+              <table class="table table-hover">
+                <thead class="table-light">
+                  <tr>
+                    <th>ID</th>
+                    <th>Estudiante</th>
+                    <th>Fecha Derivación</th>
+                    <th>Acciones</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for informe in informes_pendientes %}
+                  <tr>
+                    <td><span class="badge bg-secondary">#{{ informe.id }}</span></td>
+                    <td><strong>{{ informe.usuario.get_full_name|default:informe.usuario.username }}</strong></td>
+                    <td><small>{{ informe.fecha_derivacion_secretaria|date:"d/m/Y H:i" }}</small></td>
+                    <td>
+                      <a href="{% url 'presidente_designar' informe.id %}" class="btn btn-sm btn-danger">
+                        <i class="bi bi-person-plus"></i> Designar Docente
+                      </a>
+                    </td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          {% else %}
+            <div class="text-center py-5">
+              <i class="bi bi-inbox text-muted" style="font-size: 4rem;"></i>
+              <p class="text-muted mt-3">No hay informes pendientes</p>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-12">
+      <div class="card shadow-sm">
+        <div class="card-header bg-warning">
+          <h5 class="mb-0"><i class="bi bi-clipboard-check me-2"></i>Dictámenes Pendientes de Revisión</h5>
+        </div>
+        <div class="card-body">
+          {% if informes_pendientes_aprobar %}
+            <div class="table-responsive">
+              <table class="table table-hover">
+                <thead class="table-light">
+                  <tr>
+                    <th>ID</th>
+                    <th>Estudiante</th>
+                    <th>Docente Revisor</th>
+                    <th>Recomendación</th>
+                    <th>Acciones</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for informe in informes_pendientes_aprobar %}
+                  <tr>
+                    <td><span class="badge bg-warning text-dark">#{{ informe.id }}</span></td>
+                    <td><strong>{{ informe.usuario.get_full_name|default:informe.usuario.username }}</strong></td>
+                    <td>{{ informe.docente_asignado.get_full_name|default:informe.docente_asignado.username }}</td>
+                    <td>
+                      <span class="badge {% if informe.recomendacion_docente == 'aprobar' %}bg-success{% else %}bg-danger{% endif %}">
+                        {{ informe.get_recomendacion_docente_display }}
+                      </span>
+                    </td>
+                    <td>
+                      <a href="{% url 'presidente_revisar' informe.id %}" class="btn btn-sm btn-warning text-dark">
+                        <i class="bi bi-eye-fill"></i> Revisar
+                      </a>
+                    </td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          {% else %}
+            <div class="text-center py-5">
+              <i class="bi bi-clipboard-check text-muted" style="font-size: 4rem;"></i>
+              <p class="text-muted mt-3">No hay dictámenes pendientes</p>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

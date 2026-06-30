@@ -1,0 +1,48 @@
+{% extends 'base_v2.html' %}
+
+{% block navbar_home %}{% url 'panel_docente' %}{% endblock %}
+
+{% block role_badge_class %}bg-success{% endblock %}
+{% block role_name %}Docente{% endblock %}
+
+{% block notificaciones_url %}{% url 'docente_notificaciones' %}{% endblock %}
+{% block profile_url %}#{% endblock %}
+
+{% block navbar_links %}
+<li class="nav-item">
+  <a class="nav-link {% block nav_dashboard %}{% endblock %}" href="{% url 'panel_docente' %}">
+    <i class="bi bi-speedometer2 me-1"></i>Dashboard
+  </a>
+</li>
+<li class="nav-item">
+  <a class="nav-link {% block nav_banco %}{% endblock %}" href="{% url 'docente_banco' %}">
+    <i class="bi bi-book me-1"></i>Mi Banco
+  </a>
+</li>
+<li class="nav-item">
+  <a class="nav-link {% block nav_historial %}{% endblock %}" href="{% url 'docente_historial' %}">
+    <i class="bi bi-clock-history me-1"></i>Historial
+  </a>
+</li>
+<li class="nav-item">
+  <a class="nav-link {% block nav_notificaciones %}{% endblock %}" href="{% url 'docente_notificaciones' %}">
+    <i class="bi bi-bell me-1"></i>Notificaciones
+    {% if notificaciones_count > 0 %}
+      <span class="badge bg-danger ms-1">{{ notificaciones_count }}</span>
+    {% endif %}
+  </a>
+</li>
+{% endblock %}
+
+{% block extra_css %}
+{{ block.super }}
+<style>
+  .stat-card {
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .stat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  }
+</style>
+{% endblock %}

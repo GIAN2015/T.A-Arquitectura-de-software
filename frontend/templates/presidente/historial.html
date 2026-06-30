@@ -1,0 +1,66 @@
+{% extends 'presidente/base_presidente.html' %}
+{% block title %}Historial - Presidente{% endblock %}
+{% block nav_historial %}active{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+  <div class="row mb-4">
+    <div class="col-12">
+      <h2><i class="bi bi-clock-history text-danger me-2"></i>Historial de la Escuela</h2>
+      <p class="text-muted">{{ request.user.escuela.nombre }}</p>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-12">
+      {% if informes %}
+        <div class="card shadow-sm">
+          <div class="card-body">
+            <div class="table-responsive">
+              <table class="table table-hover">
+                <thead class="table-light">
+                  <tr>
+                    <th>ID</th>
+                    <th>Estudiante</th>
+                    <th>Docente</th>
+                    <th>Estado</th>
+                    <th>Fecha</th>
+                    <th>Acciones</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for informe in informes %}
+                  <tr>
+                    <td><span class="badge bg-secondary">#{{ informe.id }}</span></td>
+                    <td>{{ informe.usuario.get_full_name|default:informe.usuario.username }}</td>
+                    <td>{{ informe.docente_asignado.get_full_name|default:informe.docente_asignado.username|default:"-" }}</td>
+                    <td>
+                      <span class="badge bg-{% if 'aprobado' in informe.estado %}success{% elif 'rechazado' in informe.estado %}danger{% else %}warning{% endif %}">
+                        {{ informe.get_estado_display }}
+                      </span>
+                    </td>
+                    <td><small>{{ informe.fecha_envio|date:"d/m/Y" }}</small></td>
+                    <td>
+                      <a href="{% url 'presidente_ver' informe.id %}" class="btn btn-sm btn-outline-secondary">
+                        <i class="bi bi-eye"></i>
+                      </a>
+                    </td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      {% else %}
+        <div class="card shadow-sm">
+          <div class="card-body text-center py-5">
+            <i class="bi bi-clock-history text-muted" style="font-size: 4rem;"></i>
+            <p class="text-muted mt-3">No hay informes en el historial</p>
+          </div>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,328 @@
+{% extends 'base.html' %}
+
+{% block title %}Panel de Administración{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+  <div class="col-12">
+    <div class="d-flex justify-content-between align-items-center">
+      <div>
+        <h2 class="fw-bold text-untels-blue mb-1">Panel de Administración</h2>
+        <p class="text-muted">Gestión completa del sistema de validación</p>
+      </div>
+      <div>
+        <a href="{% url 'panel_docente' %}" class="btn btn-outline-untels me-2">
+          Ver Informes
+        </a>
+        <a href="{% url 'panel_docente' %}" class="btn btn-outline-untels me-2">
+          Portal Docente
+        </a>
+        <a href="{% url 'logout' %}" class="btn btn-outline-secondary">
+          Cerrar Sesión
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Navegación del Admin -->
+<div class="row mb-4">
+  <div class="col-12">
+    <div class="card border-0 shadow-sm">
+      <div class="card-body p-3">
+        <nav class="nav nav-pills nav-fill">
+          <a class="nav-link active" href="{% url 'admin_dashboard' %}">
+            📊 Dashboard
+          </a>
+          <a class="nav-link" href="{% url 'admin_usuarios' %}">
+            👥 Usuarios
+          </a>
+          <a class="nav-link" href="{% url 'admin_reglamento' %}">
+            📋 Reglamento
+          </a>
+          <a class="nav-link" href="{% url 'admin_observaciones' %}">
+            📝 Banco de Observaciones
+          </a>
+          <a class="nav-link" href="{% url 'admin_reportes' %}">
+            📈 Reportes
+          </a>
+        </nav>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Estadísticas en Cards -->
+<div class="row mb-4">
+  <!-- Usuarios -->
+  <div class="col-md-3 mb-3">
+    <div class="card border-0 shadow-sm h-100">
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-start">
+          <div>
+            <h6 class="text-muted text-uppercase small mb-2">Total Usuarios</h6>
+            <h2 class="fw-bold text-untels-blue mb-0">{{ total_usuarios }}</h2>
+          </div>
+          <span class="badge bg-primary rounded-circle p-3">👥</span>
+        </div>
+        <hr class="my-2">
+        <small class="text-muted">
+          {{ total_estudiantes }} estudiantes • {{ total_egresados }} egresados • {{ total_docentes }} docentes
+        </small>
+      </div>
+    </div>
+  </div>
+
+  <!-- Informes Totales -->
+  <div class="col-md-3 mb-3">
+    <div class="card border-0 shadow-sm h-100">
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-start">
+          <div>
+            <h6 class="text-muted text-uppercase small mb-2">Total Informes</h6>
+            <h2 class="fw-bold text-untels-blue mb-0">{{ total_informes }}</h2>
+          </div>
+          <span class="badge bg-info rounded-circle p-3">📄</span>
+        </div>
+        <hr class="my-2">
+        <small class="text-muted">
+          {{ informes_recientes }} en los últimos 7 días
+        </small>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pendientes Revisión Docente -->
+  <div class="col-md-3 mb-3">
+    <div class="card border-0 shadow-sm h-100">
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-start">
+          <div>
+            <h6 class="text-muted text-uppercase small mb-2">Pendientes Revisar</h6>
+            <h2 class="fw-bold text-warning mb-0">{{ informes_observado }}</h2>
+          </div>
+          <span class="badge bg-warning text-dark rounded-circle p-3">⚠️</span>
+        </div>
+        <hr class="my-2">
+        <small class="text-muted">
+          {{ informes_revision_docente }} en revisión
+        </small>
+      </div>
+    </div>
+  </div>
+
+  <!-- Aprobados -->
+  <div class="col-md-3 mb-3">
+    <div class="card border-0 shadow-sm h-100">
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-start">
+          <div>
+            <h6 class="text-muted text-uppercase small mb-2">Aprobados</h6>
+            <h2 class="fw-bold text-success mb-0">{{ informes_aprobado }}</h2>
+          </div>
+          <span class="badge bg-success rounded-circle p-3">✓</span>
+        </div>
+        <hr class="my-2">
+        <small class="text-muted">
+          {{ informes_rechazado }} rechazados
+        </small>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Distribución Detallada de Estados -->
+<div class="row mb-4">
+  <div class="col-12">
+    <div class="card border-0 shadow-sm">
+      <div class="card-header bg-light border-0">
+        <h5 class="mb-0 fw-bold">📊 Distribución Detallada de Informes por Estado</h5>
+      </div>
+      <div class="card-body">
+        <div class="row g-3">
+          <div class="col-md-3 col-sm-6">
+            <div class="p-3 bg-secondary bg-opacity-10 rounded text-center">
+              <h4 class="fw-bold text-secondary mb-1">{{ informes_enviados }}</h4>
+              <small class="text-muted">Enviados</small>
+            </div>
+          </div>
+          <div class="col-md-3 col-sm-6">
+            <div class="p-3 bg-info bg-opacity-10 rounded text-center">
+              <h4 class="fw-bold text-info mb-1">{{ informes_validando }}</h4>
+              <small class="text-muted">Validando con IA</small>
+            </div>
+          </div>
+          <div class="col-md-3 col-sm-6">
+            <div class="p-3 bg-warning bg-opacity-10 rounded text-center">
+              <h4 class="fw-bold text-warning mb-1">{{ informes_observado }}</h4>
+              <small class="text-muted">Con Observaciones</small>
+            </div>
+          </div>
+          <div class="col-md-3 col-sm-6">
+            <div class="p-3 bg-primary bg-opacity-10 rounded text-center">
+              <h4 class="fw-bold text-primary mb-1">{{ informes_revision_docente }}</h4>
+              <small class="text-muted">En Revisión Docente</small>
+            </div>
+          </div>
+          <div class="col-md-3 col-sm-6">
+            <div class="p-3 bg-danger bg-opacity-10 rounded text-center">
+              <h4 class="fw-bold text-danger mb-1">{{ informes_rechazado }}</h4>
+              <small class="text-muted">Rechazados</small>
+            </div>
+          </div>
+          <div class="col-md-3 col-sm-6">
+            <div class="p-3 bg-success bg-opacity-10 rounded text-center">
+              <h4 class="fw-bold text-success mb-1">{{ informes_aprobado }}</h4>
+              <small class="text-muted">Aprobados</small>
+            </div>
+          </div>
+          <div class="col-md-3 col-sm-6">
+            <div class="p-3 bg-success bg-opacity-10 rounded text-center">
+              <h4 class="fw-bold text-success mb-1">{{ informes_completados }}</h4>
+              <small class="text-muted">Completados</small>
+            </div>
+          </div>
+          <div class="col-md-3 col-sm-6">
+            <div class="p-3 bg-dark bg-opacity-10 rounded text-center">
+              <h4 class="fw-bold text-dark mb-1">{{ total_informes }}</h4>
+              <small class="text-muted fw-bold">TOTAL</small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Observaciones Frecuentes y Últimos Informes -->
+<div class="row">
+  <!-- Observaciones Más Frecuentes -->
+  <div class="col-md-6 mb-4">
+    <div class="card border-0 shadow-sm h-100">
+      <div class="card-header bg-light border-0">
+        <h5 class="mb-0 fw-bold">📝 Secciones con Más Observaciones</h5>
+      </div>
+      <div class="card-body">
+        {% if observaciones_frecuentes %}
+          <div class="list-group list-group-flush">
+            {% for obs in observaciones_frecuentes %}
+            <div class="list-group-item px-0 d-flex justify-content-between align-items-center">
+              <span class="fw-semibold">{{ obs.seccion }}</span>
+              <span class="badge bg-danger rounded-pill">{{ obs.total }}</span>
+            </div>
+            {% endfor %}
+          </div>
+        {% else %}
+          <p class="text-muted text-center py-3">No hay observaciones registradas</p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <!-- Últimos Informes -->
+  <div class="col-md-6 mb-4">
+    <div class="card border-0 shadow-sm h-100">
+      <div class="card-header bg-light border-0">
+        <h5 class="mb-0 fw-bold">📄 Últimos Informes</h5>
+      </div>
+      <div class="card-body">
+        {% if ultimos_informes %}
+          <div class="list-group list-group-flush">
+            {% for informe in ultimos_informes %}
+            <div class="list-group-item px-0">
+              <div class="d-flex justify-content-between align-items-start">
+                <div class="flex-grow-1">
+                  <h6 class="mb-1">{{ informe.nombre_archivo|truncatechars:40 }}</h6>
+                  <small class="text-muted">{{ informe.usuario.nombre }} • {{ informe.fecha_registro|date:"d/m/Y H:i" }}</small>
+                </div>
+                {% if informe.estado == 'enviado' %}
+                  <span class="badge bg-secondary">Enviado</span>
+                {% elif informe.estado == 'validando' %}
+                  <span class="badge bg-info">🔄 Validando</span>
+                {% elif informe.estado == 'observado' %}
+                  <span class="badge bg-warning text-dark">⚠️ Observado</span>
+                {% elif informe.estado == 'revision_docente' %}
+                  <span class="badge bg-primary">👨‍🏫 Revisión Docente</span>
+                {% elif informe.estado == 'rechazado' %}
+                  <span class="badge bg-danger">❌ Rechazado</span>
+                {% elif informe.estado == 'aprobado' %}
+                  <span class="badge bg-success">✅ Aprobado</span>
+                {% elif informe.estado == 'completado' %}
+                  <span class="badge bg-success">✓ Completado</span>
+                {% else %}
+                  <span class="badge bg-secondary">{{ informe.get_estado_display }}</span>
+                {% endif %}
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+          <div class="text-center mt-3">
+            <a href="{% url 'panel_docente' %}" class="btn btn-sm btn-outline-untels">
+              Ver Todos los Informes →
+            </a>
+          </div>
+        {% else %}
+          <p class="text-muted text-center py-3">No hay informes registrados</p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Accesos Rápidos -->
+<div class="row">
+  <div class="col-12">
+    <div class="card border-0 shadow-sm">
+      <div class="card-header bg-light border-0">
+        <h5 class="mb-0 fw-bold">⚡ Accesos Rápidos</h5>
+      </div>
+      <div class="card-body">
+        <div class="row g-3">
+          <div class="col-md-4">
+            <a href="{% url 'panel_docente' %}" class="btn btn-warning w-100 py-3 text-white">
+              <div class="mb-2" style="font-size: 2rem;">⚙️</div>
+              <div class="fw-semibold">Revisar Informes</div>
+              <small class="text-white opacity-75">{{ informes_observado }} pendientes de revisar</small>
+            </a>
+          </div>
+          <div class="col-md-4">
+            <a href="{% url 'admin_usuarios' %}" class="btn btn-outline-primary w-100 py-3">
+              <div class="mb-2" style="font-size: 2rem;">👥</div>
+              <div class="fw-semibold">Gestionar Usuarios</div>
+              <small class="text-muted">{{ total_usuarios }} usuarios registrados</small>
+            </a>
+          </div>
+          <div class="col-md-4">
+            <a href="{% url 'admin_reglamento' %}" class="btn btn-outline-primary w-100 py-3">
+              <div class="mb-2" style="font-size: 2rem;">📋</div>
+              <div class="fw-semibold">Actualizar Reglamento</div>
+              <small class="text-muted">Gestionar reglamento institucional</small>
+            </a>
+          </div>
+          <div class="col-md-4">
+            <a href="{% url 'admin_observaciones' %}" class="btn btn-outline-primary w-100 py-3">
+              <div class="mb-2" style="font-size: 2rem;">📝</div>
+              <div class="fw-semibold">Banco de Observaciones</div>
+              <small class="text-muted">Gestionar observaciones frecuentes</small>
+            </a>
+          </div>
+          <div class="col-md-4">
+            <a href="{% url 'admin_reportes' %}" class="btn btn-outline-primary w-100 py-3">
+              <div class="mb-2" style="font-size: 2rem;">📈</div>
+              <div class="fw-semibold">Ver Reportes</div>
+              <small class="text-muted">Estadísticas y análisis</small>
+            </a>
+          </div>
+          <div class="col-md-4">
+            <a href="{% url 'panel_docente' %}" class="btn btn-outline-secondary w-100 py-3">
+              <div class="mb-2" style="font-size: 2rem;">📤</div>
+              <div class="fw-semibold">Ir al Panel</div>
+              <small class="text-muted">Vista principal del docente</small>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,251 @@
+{% extends 'secretaria/base_secretaria.html' %}
+
+{% block title %}Dashboard - Secretaria{% endblock %}
+
+{% block nav_dashboard %}active{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+  <!-- HEADER -->
+  <div class="row mb-4">
+    <div class="col-12">
+      <h2 class="mb-1">
+        <i class="bi bi-speedometer2 text-purple me-2"></i>
+        Dashboard de Secretaria
+      </h2>
+      <p class="text-muted">
+        Gestión de informes del sistema – Universidad Nacional Tecnológica de Lima Sur
+      </p>
+    </div>
+  </div>
+
+  <!-- ESTADÍSTICAS -->
+  <div class="row mb-4">
+    <!-- Informes Pendientes -->
+    <div class="col-lg-3 col-md-6 mb-3">
+      <div class="card stat-card border-purple">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <p class="text-muted mb-1 small">Pendientes de Derivar</p>
+              <h3 class="mb-0 text-purple fw-bold">{{ estadisticas.pendientes }}</h3>
+            </div>
+            <div class="bg-purple bg-opacity-10 rounded-circle p-3">
+              <i class="bi bi-inbox-fill text-purple fs-4"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Informes Derivados -->
+    <div class="col-lg-3 col-md-6 mb-3">
+      <div class="card stat-card border-info">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <p class="text-muted mb-1 small">Derivados a Presidentes</p>
+              <h3 class="mb-0 text-info fw-bold">{{ estadisticas.derivados }}</h3>
+            </div>
+            <div class="bg-info bg-opacity-10 rounded-circle p-3">
+              <i class="bi bi-send-fill text-info fs-4"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Aprobados Pendientes -->
+    <div class="col-lg-3 col-md-6 mb-3">
+      <div class="card stat-card border-success">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <p class="text-muted mb-1 small">Aprobados Pendientes</p>
+              <h3 class="mb-0 text-success fw-bold">{{ estadisticas.aprobados_pendientes }}</h3>
+            </div>
+            <div class="bg-success bg-opacity-10 rounded-circle p-3">
+              <i class="bi bi-check-circle-fill text-success fs-4"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Total Procesados -->
+    <div class="col-lg-3 col-md-6 mb-3">
+      <div class="card stat-card border-secondary">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <p class="text-muted mb-1 small">Total Procesados</p>
+              <h3 class="mb-0 text-secondary fw-bold">{{ estadisticas.total_procesados }}</h3>
+            </div>
+            <div class="bg-secondary bg-opacity-10 rounded-circle p-3">
+              <i class="bi bi-file-earmark-check-fill text-secondary fs-4"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- INFORMES PENDIENTES DE DERIVAR -->
+  <div class="row mb-4">
+    <div class="col-12">
+      <div class="card shadow-sm">
+        <div class="card-header bg-purple text-white">
+          <h5 class="mb-0">
+            <i class="bi bi-inbox-fill me-2"></i>
+            Informes Pendientes de Derivar
+            <span class="badge bg-white text-purple ms-2">{{ informes_pendientes|length }}</span>
+          </h5>
+        </div>
+        <div class="card-body">
+          {% if informes_pendientes %}
+            <div class="table-responsive">
+              <table class="table table-hover align-middle">
+                <thead class="table-light">
+                  <tr>
+                    <th>ID</th>
+                    <th>Estudiante</th>
+                    <th>Fecha Envío</th>
+                    <th>Archivo</th>
+                    <th class="text-center">Acciones</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for informe in informes_pendientes %}
+                  <tr>
+                    <td><span class="badge bg-secondary">#{{ informe.id }}</span></td>
+                    <td>
+                      <div class="d-flex align-items-center">
+                        <i class="bi bi-person-circle text-purple me-2 fs-5"></i>
+                        <div>
+                          <strong>{{ informe.usuario.get_full_name|default:informe.usuario.username }}</strong>
+                          <br><small class="text-muted">{{ informe.usuario.username }}</small>
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <small>
+                        <i class="bi bi-calendar3 me-1"></i>
+                        {{ informe.fecha_envio|date:"d/m/Y H:i" }}
+                      </small>
+                    </td>
+                    <td>
+                      <a href="{{ informe.archivo.url }}" target="_blank" class="btn btn-sm btn-outline-primary">
+                        <i class="bi bi-file-earmark-pdf"></i>
+                        Ver PDF
+                      </a>
+                    </td>
+                    <td class="text-center">
+                      <a href="{% url 'secretaria_derivar' informe.id %}" class="btn btn-sm btn-purple text-white">
+                        <i class="bi bi-send"></i>
+                        Derivar
+                      </a>
+                      <a href="{% url 'secretaria_ver' informe.id %}" class="btn btn-sm btn-outline-secondary">
+                        <i class="bi bi-eye"></i>
+                        Ver
+                      </a>
+                    </td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          {% else %}
+            <div class="text-center py-5">
+              <i class="bi bi-inbox text-muted" style="font-size: 4rem;"></i>
+              <p class="text-muted mt-3 mb-0">No hay informes pendientes de derivar</p>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- INFORMES APROBADOS PENDIENTES DE NOTIFICAR -->
+  <div class="row mb-4">
+    <div class="col-12">
+      <div class="card shadow-sm">
+        <div class="card-header bg-success text-white">
+          <h5 class="mb-0">
+            <i class="bi bi-check-circle-fill me-2"></i>
+            Informes Aprobados Pendientes de Notificar
+            <span class="badge bg-white text-success ms-2">{{ informes_aprobados_pendientes|length }}</span>
+          </h5>
+        </div>
+        <div class="card-body">
+          {% if informes_aprobados_pendientes %}
+            <div class="table-responsive">
+              <table class="table table-hover align-middle">
+                <thead class="table-light">
+                  <tr>
+                    <th>ID</th>
+                    <th>Estudiante</th>
+                    <th>Escuela</th>
+                    <th>Fecha Aprobación</th>
+                    <th class="text-center">Acciones</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for informe in informes_aprobados_pendientes %}
+                  <tr>
+                    <td><span class="badge bg-success">#{{ informe.id }}</span></td>
+                    <td>
+                      <div class="d-flex align-items-center">
+                        <i class="bi bi-person-circle text-success me-2 fs-5"></i>
+                        <div>
+                          <strong>{{ informe.usuario.get_full_name|default:informe.usuario.username }}</strong>
+                          <br><small class="text-muted">{{ informe.usuario.username }}</small>
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <span class="badge bg-info">{{ informe.escuela.nombre|truncatewords:3 }}</span>
+                    </td>
+                    <td>
+                      <small>
+                        <i class="bi bi-calendar3 me-1"></i>
+                        {{ informe.fecha_revision_presidente|date:"d/m/Y H:i" }}
+                      </small>
+                    </td>
+                    <td class="text-center">
+                      <a href="{% url 'secretaria_notificar' informe.id %}" class="btn btn-sm btn-success">
+                        <i class="bi bi-bell"></i>
+                        Notificar Estudiante
+                      </a>
+                      <a href="{% url 'secretaria_ver' informe.id %}" class="btn btn-sm btn-outline-secondary">
+                        <i class="bi bi-eye"></i>
+                        Ver
+                      </a>
+                    </td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          {% else %}
+            <div class="text-center py-5">
+              <i class="bi bi-check-circle text-muted" style="font-size: 4rem;"></i>
+              <p class="text-muted mt-3 mb-0">No hay informes aprobados pendientes de notificar</p>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .btn-purple {
+    background-color: #7c3aed;
+    border-color: #7c3aed;
+  }
+  .btn-purple:hover {
+    background-color: #6d28d9;
+    border-color: #6d28d9;
+  }
+</style>
+{% endblock %}

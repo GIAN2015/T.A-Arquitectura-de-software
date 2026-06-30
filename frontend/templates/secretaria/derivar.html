@@ -1,0 +1,203 @@
+{% extends 'secretaria/base_secretaria.html' %}
+
+{% block title %}Derivar Informe - Secretaria{% endblock %}
+
+{% block content %}
+<div class="container">
+  <!-- HEADER -->
+  <div class="row mb-4">
+    <div class="col-12">
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="{% url 'secretaria_dashboard' %}">Dashboard</a></li>
+          <li class="breadcrumb-item active">Derivar Informe</li>
+        </ol>
+      </nav>
+      <h2 class="mb-1">
+        <i class="bi bi-send text-purple me-2"></i>
+        Derivar Informe a Presidente
+      </h2>
+      <p class="text-muted">Asigne este informe al presidente de la escuela correspondiente</p>
+    </div>
+  </div>
+
+  <div class="row">
+    <!-- INFORMACIÓN DEL INFORME -->
+    <div class="col-lg-5 mb-4">
+      <div class="card shadow-sm">
+        <div class="card-header bg-light">
+          <h5 class="mb-0">
+            <i class="bi bi-file-earmark-text me-2"></i>
+            Información del Informe
+          </h5>
+        </div>
+        <div class="card-body">
+          <div class="mb-3">
+            <label class="text-muted small">ID del Informe</label>
+            <p class="mb-0"><span class="badge bg-secondary fs-6">#{{ informe.id }}</span></p>
+          </div>
+
+          <div class="mb-3">
+            <label class="text-muted small">Estudiante</label>
+            <p class="mb-0">
+              <i class="bi bi-person-circle text-purple me-2"></i>
+              <strong>{{ informe.usuario.get_full_name|default:informe.usuario.username }}</strong>
+              <br>
+              <small class="text-muted ms-4">{{ informe.usuario.username }}</small>
+            </p>
+          </div>
+
+          <div class="mb-3">
+            <label class="text-muted small">Email</label>
+            <p class="mb-0">
+              <i class="bi bi-envelope me-2"></i>
+              {{ informe.usuario.email|default:"No disponible" }}
+            </p>
+          </div>
+
+          <div class="mb-3">
+            <label class="text-muted small">Fecha de Envío</label>
+            <p class="mb-0">
+              <i class="bi bi-calendar3 me-2"></i>
+              {{ informe.fecha_envio|date:"d/m/Y H:i" }}
+            </p>
+          </div>
+
+          <div class="mb-3">
+            <label class="text-muted small">Archivo</label>
+            <p class="mb-0">
+              <a href="{{ informe.archivo.url }}" target="_blank" class="btn btn-sm btn-outline-primary">
+                <i class="bi bi-file-earmark-pdf me-1"></i>
+                Ver Informe PDF
+              </a>
+            </p>
+          </div>
+
+          <div class="mb-0">
+            <label class="text-muted small">Estado Actual</label>
+            <p class="mb-0">
+              <span class="badge bg-warning text-dark">
+                <i class="bi bi-clock me-1"></i>
+                {{ informe.get_estado_display }}
+              </span>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FORMULARIO DE DERIVACIÓN -->
+    <div class="col-lg-7">
+      <div class="card shadow-sm">
+        <div class="card-header bg-purple text-white">
+          <h5 class="mb-0">
+            <i class="bi bi-building me-2"></i>
+            Derivar a Escuela
+          </h5>
+        </div>
+        <div class="card-body">
+          <form method="post" action="{% url 'secretaria_derivar' informe.id %}">
+            {% csrf_token %}
+            
+            <div class="mb-4">
+              <label for="escuela" class="form-label fw-semibold">
+                Seleccionar Escuela Profesional <span class="text-danger">*</span>
+              </label>
+              <select 
+                class="form-select form-select-lg" 
+                id="escuela" 
+                name="escuela_id" 
+                required
+                onchange="updatePresidente()"
+              >
+                <option value="">-- Seleccione una escuela --</option>
+                {% for escuela in escuelas %}
+                  <option 
+                    value="{{ escuela.id }}" 
+                    data-presidente="{{ escuela.presidente.get_full_name|default:escuela.presidente.username }}"
+                    data-presidente-codigo="{{ escuela.presidente.username }}"
+                  >
+                    {{ escuela.nombre }}
+                  </option>
+                {% endfor %}
+              </select>
+              <small class="form-text text-muted">
+                Solo se muestran escuelas con presidente asignado
+              </small>
+            </div>
+
+            <div class="mb-4" id="presidente-info" style="display: none;">
+              <div class="alert alert-info">
+                <h6 class="alert-heading">
+                  <i class="bi bi-person-badge me-2"></i>
+                  Presidente Asignado
+                </h6>
+                <p class="mb-1"><strong id="presidente-nombre">-</strong></p>
+                <p class="mb-0 small">Código: <span id="presidente-codigo">-</span></p>
+              </div>
+            </div>
+
+            <div class="mb-4">
+              <label for="comentario" class="form-label fw-semibold">
+                Comentario u Observaciones (Opcional)
+              </label>
+              <textarea 
+                class="form-control" 
+                id="comentario" 
+                name="comentario" 
+                rows="4"
+                placeholder="Agregue cualquier comentario u observación para el presidente..."
+              ></textarea>
+              <small class="form-text text-muted">
+                Este comentario será visible para el presidente de la escuela
+              </small>
+            </div>
+
+            <div class="d-grid gap-2">
+              <button type="submit" class="btn btn-purple btn-lg text-white">
+                <i class="bi bi-send-fill me-2"></i>
+                Derivar Informe al Presidente
+              </button>
+              <a href="{% url 'secretaria_dashboard' %}" class="btn btn-outline-secondary">
+                <i class="bi bi-x-circle me-2"></i>
+                Cancelar
+              </a>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .btn-purple {
+    background-color: #7c3aed;
+    border-color: #7c3aed;
+  }
+  .btn-purple:hover {
+    background-color: #6d28d9;
+    border-color: #6d28d9;
+  }
+</style>
+
+<script>
+function updatePresidente() {
+  const select = document.getElementById('escuela');
+  const selectedOption = select.options[select.selectedIndex];
+  const presidenteInfo = document.getElementById('presidente-info');
+  
+  if (selectedOption.value) {
+    const presidenteNombre = selectedOption.dataset.presidente;
+    const presidenteCodigo = selectedOption.dataset.presidenteCodigo;
+    
+    document.getElementById('presidente-nombre').textContent = presidenteNombre;
+    document.getElementById('presidente-codigo').textContent = presidenteCodigo;
+    
+    presidenteInfo.style.display = 'block';
+  } else {
+    presidenteInfo.style.display = 'none';
+  }
+}
+</script>
+{% endblock %}

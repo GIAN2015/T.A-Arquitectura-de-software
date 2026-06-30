@@ -1,0 +1,167 @@
+═══════════════════════════════════════════════════════════════════
+  SISTEMA DE VALIDACIÓN DE INFORMES PPP - UNTELS
+  INICIO RÁPIDO
+═══════════════════════════════════════════════════════════════════
+
+╔═══════════════════════════════════════════════════════════════════╗
+║                    1. INICIAR EL SERVIDOR                         ║
+╚═══════════════════════════════════════════════════════════════════╝
+
+cd backend
+source venv/bin/activate
+python manage.py runserver
+
+> Abre tu navegador en: http://127.0.0.1:8000
+
+╔═══════════════════════════════════════════════════════════════════╗
+║                    2. CREDENCIALES DE ACCESO                      ║
+╚═══════════════════════════════════════════════════════════════════╝
+
+┌───────────────────────────────────────────────────────────────────┐
+│ 🎓 PORTAL ESTUDIANTES                                             │
+├───────────────────────────────────────────────────────────────────┤
+│ URL:        http://127.0.0.1:8000/                                │
+│ Usuario:    2021101234                                            │
+│ Contraseña: estudiante123                                         │
+│                                                                   │
+│ Funciones:                                                        │
+│ • Subir informes .docx o .pdf                                     │
+│ • Ver observaciones de la IA                                      │
+│ • Consultar historial                                             │
+└───────────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────────┐
+│ 👨‍🏫 PORTAL DOCENTES                                               │
+├───────────────────────────────────────────────────────────────────┤
+│ URL:        http://127.0.0.1:8000/docente/login/                  │
+│ Usuario:    DOCENTE001                                            │
+│ Contraseña: docente123                                            │
+│                                                                   │
+│ Funciones:                                                        │
+│ • Ver todos los informes de alumnos                               │
+│ • Revisar observaciones de la IA                                  │
+│ • Aprobar/Rechazar informes                                       │
+│ • Gestionar reglamento y observaciones                            │
+└───────────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────────┐
+│ ⚙️ PANEL ADMIN DJANGO                                             │
+├───────────────────────────────────────────────────────────────────┤
+│ URL:        http://127.0.0.1:8000/admin/                          │
+│ Usuario:    admin                                                 │
+│ Contraseña: admin123                                              │
+└───────────────────────────────────────────────────────────────────┘
+
+╔═══════════════════════════════════════════════════════════════════╗
+║                    3. CONFIGURAR IA (OPCIONAL)                    ║
+╚═══════════════════════════════════════════════════════════════════╝
+
+Para que la IA funcione al subir informes:
+
+1. Obtén API Key gratis en: https://console.groq.com/
+2. Edita el archivo: backend/.env
+3. Añade la línea:
+
+   GROQ_API_KEY=gsk_tu_clave_aqui
+
+4. Reinicia el servidor
+
+NOTA: Sin API Key, el sistema seguirá funcionando pero NO validará
+      automáticamente con IA. Los docentes deberán crear observaciones
+      manualmente.
+
+╔═══════════════════════════════════════════════════════════════════╗
+║                    4. FLUJO DE USO TÍPICO                         ║
+╚═══════════════════════════════════════════════════════════════════╝
+
+ALUMNO:
+  1. Login en portal estudiantes
+  2. Click "Subir Informe"
+  3. Seleccionar archivo .docx o .pdf
+  4. ✨ IA valida automáticamente
+  5. Ver observaciones generadas
+  6. Esperar revisión del docente
+
+DOCENTE:
+  1. Login en portal docentes
+  2. Ver lista de informes pendientes
+  3. Click en "Revisar" en un informe
+  4. Confirmar/Descartar observaciones de la IA
+  5. Añadir comentarios
+  6. Aprobar o Rechazar
+
+SI RECHAZADO:
+  - Alumno ve el rechazo
+  - Corrige el documento
+  - Reenvía nueva versión
+  - El ciclo se repite
+
+╔═══════════════════════════════════════════════════════════════════╗
+║                    5. DATOS YA CONFIGURADOS                       ║
+╚═══════════════════════════════════════════════════════════════════╝
+
+✓ Reglamento de informes PPP
+✓ 10 observaciones frecuentes en el banco
+✓ Usuarios de prueba (estudiante y docente)
+✓ Base de datos SQLite lista
+✓ Todas las migraciones aplicadas
+
+╔═══════════════════════════════════════════════════════════════════╗
+║                    6. ARCHIVOS DE AYUDA                           ║
+╚═══════════════════════════════════════════════════════════════════╝
+
+GUIA_USO.md         → Documentación completa del sistema
+RESUMEN_SISTEMA.md  → Resumen técnico y arquitectura
+.env                → Configuración (API keys, etc)
+
+╔═══════════════════════════════════════════════════════════════════╗
+║                    7. SOLUCIÓN DE PROBLEMAS                       ║
+╚═══════════════════════════════════════════════════════════════════╝
+
+Error: "Address already in use"
+→ Hay otro servidor corriendo en puerto 8000
+→ Solución: python manage.py runserver 8001
+
+Error: "GROQ_API_KEY not found"
+→ No está configurada la API Key
+→ Solución: Edita .env y añade GROQ_API_KEY=...
+
+Error al subir archivo
+→ Verifica que sea .docx o .pdf
+→ Verifica que el archivo no esté corrupto
+→ Revisa logs del servidor
+
+Login no funciona
+→ Verifica que uses el portal correcto:
+  - Estudiantes: /
+  - Docentes: /docente/login/
+→ Verifica credenciales (distingue mayúsculas/minúsculas)
+
+╔═══════════════════════════════════════════════════════════════════╗
+║                    8. COMANDOS ÚTILES                             ║
+╚═══════════════════════════════════════════════════════════════════╝
+
+# Verificar sistema
+python manage.py check
+
+# Ver migraciones aplicadas
+python manage.py showmigrations
+
+# Crear nuevo docente
+python manage.py shell -c "
+from apps.usuarios.models import Usuario
+d = Usuario.objects.create(codigo='DOCENTE002', nombre='Nombre', tipo_usuario='docente')
+d.set_password('password')
+print('Docente creado')
+"
+
+# Ver informes en BD
+python manage.py shell -c "
+from apps.informes.models import Informe
+for i in Informe.objects.all():
+    print(f'{i.id}: {i.nombre_archivo} - {i.estado}')
+"
+
+═══════════════════════════════════════════════════════════════════
+  ¡Sistema listo! Solo ejecuta: python manage.py runserver
+═══════════════════════════════════════════════════════════════════

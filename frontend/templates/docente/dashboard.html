@@ -1,0 +1,135 @@
+{% extends 'docente/base_docente.html' %}
+{% block title %}Panel Docente{% endblock %}
+{% block nav_dashboard %}active{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+  <div class="row mb-4">
+    <div class="col-12">
+      <h2><i class="bi bi-speedometer2 text-success me-2"></i>Panel del Docente</h2>
+      <p class="text-muted">{{ request.user.escuela.nombre }}</p>
+    </div>
+  </div>
+
+  <div class="row mb-4">
+    <div class="col-lg-4 col-md-6 mb-3">
+      <div class="card stat-card border-warning">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <p class="text-muted mb-1 small">Informes Asignados</p>
+              <h3 class="mb-0 text-warning fw-bold">{{ estadisticas.asignados }}</h3>
+            </div>
+            <div class="bg-warning bg-opacity-10 rounded-circle p-3">
+              <i class="bi bi-inbox-fill text-warning fs-4"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-4 col-md-6 mb-3">
+      <div class="card stat-card border-success">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <p class="text-muted mb-1 small">Informes Revisados</p>
+              <h3 class="mb-0 text-success fw-bold">{{ estadisticas.revisados }}</h3>
+            </div>
+            <div class="bg-success bg-opacity-10 rounded-circle p-3">
+              <i class="bi bi-check-circle-fill text-success fs-4"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-4 col-md-6 mb-3">
+      <div class="card stat-card border-info">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <p class="text-muted mb-1 small">Banco Activo</p>
+              <h3 class="mb-0 text-info fw-bold">{% if banco_activo %}<i class="bi bi-check-circle-fill"></i>{% else %}<i class="bi bi-x-circle-fill"></i>{% endif %}</h3>
+            </div>
+            <div class="bg-info bg-opacity-10 rounded-circle p-3">
+              <i class="bi bi-book-fill text-info fs-4"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {% if not banco_activo %}
+  <div class="row mb-4">
+    <div class="col-12">
+      <div class="alert alert-warning">
+        <h5 class="alert-heading"><i class="bi bi-exclamation-triangle-fill me-2"></i>No tienes un banco de observaciones activo</h5>
+        <p class="mb-2">Para poder revisar informes, debes crear y activar un banco de observaciones personalizado.</p>
+        <a href="{% url 'docente_banco' %}" class="btn btn-warning">
+          <i class="bi bi-plus-circle me-2"></i>Crear Banco de Observaciones
+        </a>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+
+  <div class="row mb-4">
+    <div class="col-12">
+      <div class="card shadow-sm">
+        <div class="card-header bg-success text-white">
+          <h5 class="mb-0"><i class="bi bi-inbox-fill me-2"></i>Informes Pendientes de Revisar</h5>
+        </div>
+        <div class="card-body">
+          {% if informes_asignados %}
+            <div class="table-responsive">
+              <table class="table table-hover">
+                <thead class="table-light">
+                  <tr>
+                    <th>ID</th>
+                    <th>Estudiante</th>
+                    <th>Fecha Asignación</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for informe in informes_asignados %}
+                  <tr>
+                    <td><span class="badge bg-secondary">#{{ informe.id }}</span></td>
+                    <td><strong>{{ informe.usuario.get_full_name|default:informe.usuario.username }}</strong></td>
+                    <td><small>{{ informe.fecha_asignacion_docente|date:"d/m/Y H:i" }}</small></td>
+                    <td>
+                      <span class="badge bg-{% if informe.estado == 'validando_ia' %}info{% elif informe.estado == 'revision_docente' %}warning{% else %}secondary{% endif %}">
+                        {{ informe.get_estado_display }}
+                      </span>
+                    </td>
+                    <td>
+                      {% if banco_activo %}
+                        <a href="{% url 'docente_revisar' informe.id %}" class="btn btn-sm btn-success">
+                          <i class="bi bi-eye-fill"></i> Revisar
+                        </a>
+                      {% else %}
+                        <button class="btn btn-sm btn-secondary" disabled>
+                          <i class="bi bi-lock-fill"></i> Sin Banco
+                        </button>
+                      {% endif %}
+                    </td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          {% else %}
+            <div class="text-center py-5">
+              <i class="bi bi-inbox text-muted" style="font-size: 4rem;"></i>
+              <p class="text-muted mt-3">No tienes informes asignados</p>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

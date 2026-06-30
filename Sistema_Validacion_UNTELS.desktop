@@ -1,0 +1,9 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Sistema UNTELS
+Comment=Iniciar sistema de validacion de informes
+Exec=/home/chapitec/Documents/chapitec/andre/T.A-Arquitectura-de-software/INICIAR_SISTEMA.sh
+Path=/home/chapitec/Documents/chapitec/andre/T.A-Arquitectura-de-software
+Terminal=true
+Categories=Development;Education;

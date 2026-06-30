@@ -1,0 +1,163 @@
+version: '3.8'
+
+# Docker Compose para producción
+# Sistema de Validación de Informes v2.0 - UNTELS
+
+services:
+  # ==========================================
+  # Base de Datos PostgreSQL
+  # ==========================================
+  db:
+    image: postgres:15-alpine
+    container_name: untels_db_prod
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${DB_NAME:-untels_db}
+      POSTGRES_USER: ${DB_USER:-untels_user}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_INITDB_ARGS: "--encoding=UTF-8 --lc-collate=es_PE.UTF-8 --lc-ctype=es_PE.UTF-8"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./database/backups:/backups
+    networks:
+      - untels_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-untels_user}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ==========================================
+  # Aplicación Django (Backend)
+  # ==========================================
+  web:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: untels_web_prod
+    restart: unless-stopped
+    command: gunicorn --bind 0.0.0.0:8000 --workers 4 --timeout 120 --access-logfile - --error-logfile - config.wsgi:application
+    environment:
+      # Django
+      DJANGO_SETTINGS_MODULE: config.settings.production
+      DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY}
+      DJANGO_DEBUG: "False"
+      DJANGO_ALLOWED_HOSTS: ${DJANGO_ALLOWED_HOSTS:-localhost,127.0.0.1}
+      
+      # Base de datos
+      DB_ENGINE: django.db.backends.postgresql
+      DB_NAME: ${DB_NAME:-untels_db}
+      DB_USER: ${DB_USER:-untels_user}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_HOST: db
+      DB_PORT: 5432
+      
+      # Groq API
+      GROQ_API_KEY: ${GROQ_API_KEY}
+      
+      # Email (opcional)
+      EMAIL_HOST: ${EMAIL_HOST:-smtp.gmail.com}
+      EMAIL_PORT: ${EMAIL_PORT:-587}
+      EMAIL_HOST_USER: ${EMAIL_HOST_USER}
+      EMAIL_HOST_PASSWORD: ${EMAIL_HOST_PASSWORD}
+      EMAIL_USE_TLS: ${EMAIL_USE_TLS:-True}
+      
+      # Configuración de producción
+      POPULATE_TEST_DATA: "false"
+      
+    volumes:
+      - ./backend/media:/app/media
+      - static_volume:/app/staticfiles
+    networks:
+      - untels_network
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # ==========================================
+  # Nginx (Servidor Web)
+  # ==========================================
+  nginx:
+    image: nginx:alpine
+    container_name: untels_nginx_prod
+    restart: unless-stopped
+    ports:
+      - "${HTTP_PORT:-80}:80"
+      - "${HTTPS_PORT:-443}:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/ssl:/etc/nginx/ssl:ro
+      - static_volume:/app/staticfiles:ro
+      - ./backend/media:/app/media:ro
+    networks:
+      - untels_network
+    depends_on:
+      - web
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost/health/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # ==========================================
+  # Redis (Caché - opcional)
+  # ==========================================
+  redis:
+    image: redis:7-alpine
+    container_name: untels_redis_prod
+    restart: unless-stopped
+    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD}
+    volumes:
+      - redis_data:/data
+    networks:
+      - untels_network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ==========================================
+  # Celery Worker (Tareas asíncronas - opcional)
+  # ==========================================
+  # celery:
+  #   build:
+  #     context: ./backend
+  #     dockerfile: Dockerfile
+  #   container_name: untels_celery_prod
+  #   restart: unless-stopped
+  #   command: celery -A config worker -l info
+  #   environment:
+  #     DJANGO_SETTINGS_MODULE: config.settings.production
+  #     CELERY_BROKER_URL: redis://:${REDIS_PASSWORD}@redis:6379/0
+  #   volumes:
+  #     - ./backend/media:/app/media
+  #   networks:
+  #     - untels_network
+  #   depends_on:
+  #     - db
+  #     - redis
+
+# ==========================================
+# Volumes persistentes
+# ==========================================
+volumes:
+  postgres_data:
+    driver: local
+  static_volume:
+    driver: local
+  redis_data:
+    driver: local
+
+# ==========================================
+# Redes
+# ==========================================
+networks:
+  untels_network:
+    driver: bridge

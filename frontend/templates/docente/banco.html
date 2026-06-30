@@ -1,0 +1,179 @@
+{% extends 'docente/base_docente.html' %}
+{% block title %}Mi Banco de Observaciones{% endblock %}
+{% block nav_banco %}active{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="row mb-4">
+    <div class="col-12">
+      <h2><i class="bi bi-book text-success me-2"></i>Mi Banco de Observaciones</h2>
+      <p class="text-muted">Gestiona tus bancos personalizados de observaciones</p>
+    </div>
+  </div>
+
+  <!-- CREAR NUEVO BANCO -->
+  <div class="row mb-4">
+    <div class="col-12">
+      <div class="card shadow-sm">
+        <div class="card-header bg-success text-white">
+          <h5 class="mb-0"><i class="bi bi-plus-circle me-2"></i>Crear Nuevo Banco</h5>
+        </div>
+        <div class="card-body">
+          <form method="post" enctype="multipart/form-data" action="{% url 'docente_banco_crear' %}">
+            {% csrf_token %}
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label for="nombre" class="form-label fw-semibold">Nombre del Banco <span class="text-danger">*</span></label>
+                <input 
+                  type="text" 
+                  class="form-control" 
+                  id="nombre" 
+                  name="nombre" 
+                  placeholder="Ej: Observaciones 2026-1"
+                  required
+                >
+                <small class="form-text text-muted">Un nombre descriptivo para identificar este banco</small>
+              </div>
+
+              <div class="col-md-6 mb-3">
+                <label for="archivo" class="form-label fw-semibold">Archivo (PDF o DOCX) <span class="text-danger">*</span></label>
+                <input 
+                  type="file" 
+                  class="form-control" 
+                  id="archivo" 
+                  name="archivo" 
+                  accept=".pdf,.docx"
+                  required
+                >
+                <small class="form-text text-muted">El contenido será extraído automáticamente</small>
+              </div>
+            </div>
+
+            <div class="alert alert-info mb-3">
+              <h6 class="alert-heading"><i class="bi bi-info-circle-fill me-2"></i>Importante:</h6>
+              <ul class="mb-0 small">
+                <li>El archivo debe contener las observaciones que usarás para validar informes</li>
+                <li>Al crear un nuevo banco, se activará automáticamente</li>
+                <li>Solo puedes tener un banco activo a la vez</li>
+                <li>El sistema extraerá el texto del archivo automáticamente</li>
+              </ul>
+            </div>
+
+            <button type="submit" class="btn btn-success">
+              <i class="bi bi-plus-circle-fill me-2"></i>Crear y Activar Banco
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MIS BANCOS -->
+  <div class="row">
+    <div class="col-12">
+      <div class="card shadow-sm">
+        <div class="card-header bg-light">
+          <h5 class="mb-0"><i class="bi bi-collection me-2"></i>Mis Bancos Guardados</h5>
+        </div>
+        <div class="card-body">
+          {% if bancos %}
+            <div class="table-responsive">
+              <table class="table table-hover">
+                <thead class="table-light">
+                  <tr>
+                    <th>Nombre</th>
+                    <th>Estado</th>
+                    <th>Fecha Creación</th>
+                    <th>Archivo</th>
+                    <th class="text-center">Acciones</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for banco in bancos %}
+                  <tr class="{% if banco.activo %}table-success{% endif %}">
+                    <td>
+                      <strong>{{ banco.nombre }}</strong>
+                      {% if banco.activo %}
+                        <span class="badge bg-success ms-2">ACTIVO</span>
+                      {% endif %}
+                    </td>
+                    <td>
+                      {% if banco.activo %}
+                        <i class="bi bi-check-circle-fill text-success"></i> Activo
+                      {% else %}
+                        <i class="bi bi-circle text-muted"></i> Inactivo
+                      {% endif %}
+                    </td>
+                    <td><small>{{ banco.fecha_creacion|date:"d/m/Y H:i" }}</small></td>
+                    <td>
+                      <a href="{{ banco.archivo.url }}" target="_blank" class="btn btn-sm btn-outline-primary">
+                        <i class="bi bi-file-earmark-{% if banco.archivo.name|slice:"-4:" == '.pdf' %}pdf{% else %}text{% endif %}"></i>
+                        Ver
+                      </a>
+                    </td>
+                    <td class="text-center">
+                      {% if not banco.activo %}
+                        <form method="post" action="{% url 'docente_banco_activar' banco.id %}" class="d-inline">
+                          {% csrf_token %}
+                          <button type="submit" class="btn btn-sm btn-success" title="Activar">
+                            <i class="bi bi-check-circle"></i> Activar
+                          </button>
+                        </form>
+                      {% endif %}
+
+                      <button 
+                        type="button" 
+                        class="btn btn-sm btn-outline-info" 
+                        data-bs-toggle="modal" 
+                        data-bs-target="#verContenidoModal{{ banco.id }}"
+                        title="Ver contenido"
+                      >
+                        <i class="bi bi-eye"></i>
+                      </button>
+
+                      <form method="post" action="{% url 'docente_banco_eliminar' banco.id %}" class="d-inline" onsubmit="return confirm('¿Estás seguro de eliminar este banco?');">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-sm btn-outline-danger" title="Eliminar" {% if banco.activo and bancos|length == 1 %}disabled{% endif %}>
+                          <i class="bi bi-trash"></i>
+                        </button>
+                      </form>
+                    </td>
+                  </tr>
+
+                  <!-- Modal para ver contenido -->
+                  <div class="modal fade" id="verContenidoModal{{ banco.id }}" tabindex="-1">
+                    <div class="modal-dialog modal-lg">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <h5 class="modal-title">Contenido: {{ banco.nombre }}</h5>
+                          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                          <div class="alert alert-info">
+                            <small><i class="bi bi-info-circle me-1"></i>Contenido extraído del archivo</small>
+                          </div>
+                          <pre class="bg-light p-3 rounded" style="max-height: 400px; overflow-y: auto; white-space: pre-wrap;">{{ banco.contenido_extraido }}</pre>
+                        </div>
+                        <div class="modal-footer">
+                          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          {% else %}
+            <div class="text-center py-5">
+              <i class="bi bi-book text-muted" style="font-size: 4rem;"></i>
+              <p class="text-muted mt-3">No tienes bancos de observaciones</p>
+              <p class="text-muted">Crea tu primer banco usando el formulario arriba</p>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
