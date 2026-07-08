@@ -199,6 +199,17 @@ def poblar_observaciones():
 
 def crear_usuarios_demo():
     """Crear usuarios de demostración"""
+    # Migrar códigos antiguos a los nuevos (evita duplicados en despliegues ya poblados)
+    renombres = {
+        'DOCENTE001': 'docente_isi_1',
+        'SECRETARIA001': 'secretaria1',
+        'PRESIDENTE001': 'presidente_isi',
+    }
+    for codigo_viejo, codigo_nuevo in renombres.items():
+        if Usuario.objects.filter(codigo=codigo_viejo).exists() and not Usuario.objects.filter(codigo=codigo_nuevo).exists():
+            Usuario.objects.filter(codigo=codigo_viejo).update(codigo=codigo_nuevo)
+            print(f"✓ Usuario {codigo_viejo} renombrado a {codigo_nuevo}")
+
     # Escuela (requerida para vincular docente y presidente)
     escuela, _ = Escuela.objects.get_or_create(
         codigo='ISI',
@@ -207,16 +218,17 @@ def crear_usuarios_demo():
 
     # Docente (requiere escuela asignada para aparecer en la lista del presidente)
     docente, creado = Usuario.objects.get_or_create(
-        codigo='DOCENTE001',
+        codigo='docente_isi_1',
         defaults={
-            'nombre': 'Prof. María García',
+            'nombre': 'Ing. Carlos Ramírez',
             'tipo_usuario': 'docente',
             'escuela': escuela,
+            'email': 'cramirez@untels.edu.pe',
         }
     )
     if creado:
         docente.set_password('docente123')
-        print("✓ Usuario docente creado: DOCENTE001 / docente123")
+        print("✓ Usuario docente creado: docente_isi_1 / docente123")
     elif docente.escuela_id is None:
         docente.escuela = escuela
         docente.save()
@@ -237,29 +249,31 @@ def crear_usuarios_demo():
         print("✓ Usuario estudiante ya existe")
 
     # Secretaria
-    if not Usuario.objects.filter(codigo='SECRETARIA001').exists():
+    if not Usuario.objects.filter(codigo='secretaria1').exists():
         secretaria = Usuario.objects.create(
-            codigo='SECRETARIA001',
-            nombre='Ana Torres Ramírez',
-            tipo_usuario='secretaria'
+            codigo='secretaria1',
+            nombre='Lic. Ana Torres Mendoza',
+            tipo_usuario='secretaria',
+            email='secretaria@untels.edu.pe',
         )
         secretaria.set_password('secretaria123')
-        print("✓ Usuario secretaria creado: SECRETARIA001 / secretaria123")
+        print("✓ Usuario secretaria creado: secretaria1 / secretaria123")
     else:
         print("✓ Usuario secretaria ya existe")
 
     # Presidente (requiere escuela asignada para que su panel funcione)
     presidente, creado = Usuario.objects.get_or_create(
-        codigo='PRESIDENTE001',
+        codigo='presidente_isi',
         defaults={
-            'nombre': 'Dr. Carlos Mendoza Silva',
+            'nombre': 'Dr. Juan Pérez García',
             'tipo_usuario': 'presidente',
             'escuela': escuela,
+            'email': 'presidente.isi@untels.edu.pe',
         }
     )
     if creado:
         presidente.set_password('presidente123')
-        print("✓ Usuario presidente creado: PRESIDENTE001 / presidente123")
+        print("✓ Usuario presidente creado: presidente_isi / presidente123")
     elif presidente.escuela_id is None:
         presidente.escuela = escuela
         presidente.save()
@@ -287,7 +301,7 @@ if __name__ == '__main__':
     print("\nCredenciales de acceso:")
     print("\nDOCENTE:")
     print("  URL: http://127.0.0.1:8000/docente/login/")
-    print("  Código: DOCENTE001")
+    print("  Código: docente_isi_1")
     print("  Contraseña: docente123")
     print("\nESTUDIANTE:")
     print("  URL: http://127.0.0.1:8000/")
@@ -295,10 +309,10 @@ if __name__ == '__main__':
     print("  Contraseña: estudiante123")
     print("\nSECRETARIA:")
     print("  URL: http://127.0.0.1:8000/secretaria/login/")
-    print("  Código: SECRETARIA001")
+    print("  Código: secretaria1")
     print("  Contraseña: secretaria123")
     print("\nPRESIDENTE:")
     print("  URL: http://127.0.0.1:8000/presidente/login/")
-    print("  Código: PRESIDENTE001")
+    print("  Código: presidente_isi")
     print("  Contraseña: presidente123")
     print("\n" + "="*60 + "\n")
