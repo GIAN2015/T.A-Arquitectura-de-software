@@ -114,8 +114,8 @@
               </tr>
             </thead>
             <tbody>
-              {% for informe in informes_asignados %}
-                {% if informe.estado == 'rechazado_presidente' %}
+                {% for informe in informes_asignados %}
+                  {% if informe.estado == 'revision_docente' and informe.comentario_presidente %}
                 <tr class="border-top border-white border-opacity-25">
                   <td><strong>#{{ informe.id }}</strong></td>
                   <td>{{ informe.usuario.nombre }}</td>
@@ -169,9 +169,9 @@
                     <td><strong>{{ informe.usuario.nombre }}</strong></td>
                     <td><small>{{ informe.fecha_asignacion_docente|date:"d/m/Y H:i" }}</small></td>
                     <td>
-                      {% if informe.estado == 'rechazado_presidente' %}
+                      {% if informe.estado == 'revision_docente' and informe.comentario_presidente %}
                         <span class="badge bg-danger">
-                          <i class="bi bi-arrow-return-left me-1"></i>{{ informe.get_estado_display }}
+                          <i class="bi bi-arrow-return-left me-1"></i>Devuelto por Presidente
                         </span>
                       {% elif informe.estado == 'validando_ia' %}
                         <span class="badge bg-info">
@@ -189,7 +189,7 @@
                     </td>
                     <td>
                       {% if banco_activo %}
-                        {% if informe.estado == 'rechazado_presidente' %}
+                        {% if informe.estado == 'revision_docente' and informe.comentario_presidente %}
                           <a href="{% url 'docente_revisar_informe' informe.id %}" class="btn btn-sm btn-danger">
                             <i class="bi bi-arrow-clockwise me-1"></i>Revisar de Nuevo
                           </a>

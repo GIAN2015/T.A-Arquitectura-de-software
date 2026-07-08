@@ -64,7 +64,7 @@ Este directorio contiene toda la documentación técnica del **Sistema de Valida
 - 📱 Componentes principales
 - 🖼️ Dashboards por rol
 - 🔔 Modales y notificaciones
-- 📝 Formularios interactivos
+- 📝 Formularios interactivos y decisiones por rol
 - ⚡ JavaScript y progreso de IA
 - 🎭 Django Templates
 

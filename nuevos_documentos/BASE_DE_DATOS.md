@@ -72,6 +72,17 @@
 10. aprobado_final
 11. rechazado_estudiante
 
+**Interpretación operativa de estados finales**:
+- `aprobado_presidente`: El presidente aprobó el informe y secretaría aún debe notificar
+- `rechazado_presidente`: El presidente rechazó el informe final y secretaría aún debe notificar al estudiante
+- `rechazado_estudiante`: El estudiante ya fue notificado y debe corregir
+- `revision_docente` con `comentario_presidente`: El presidente devolvió el dictamen al docente para rehacer la revisión
+
+**Versionado de reenvíos**:
+- Cada reenvío crea un nuevo registro `Informe`
+- `informe_anterior_id` apunta a la versión rechazada previa
+- Una versión rechazada que ya tiene `versiones_posteriores` queda cerrada y no debe volver a reenviarse
+
 ### 3. observaciones_observaciongenerada
 
 | Campo | Tipo | Descripción |

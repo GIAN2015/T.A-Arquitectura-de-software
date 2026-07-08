@@ -312,7 +312,7 @@ Docente (valida con IA) → Backend (llama API) → Database (guarda obs)
      ↓
 Docente (envía dictamen) → Backend (procesa) → Database
      ↓
-Presidente (aprueba/rechaza) → Backend → Database
+Presidente (aprueba, rechaza o devuelve dictamen) → Backend → Database
      ↓
 Secretaria (notifica) → Backend → Database
      ↓
@@ -380,7 +380,8 @@ class DocenteService:
 
 class PresidenteService:
     asignar_docente()
-    aprobar_dictamen()
+    aprobar_dictamen_docente()
+    rechazar_dictamen_docente()
 ```
 
 ### D - Dependency Inversion

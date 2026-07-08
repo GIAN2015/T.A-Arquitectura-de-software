@@ -72,7 +72,7 @@
     <div class="col-lg-8">
       
       <!-- ALERTA: INFORME RECHAZADO POR PRESIDENTE -->
-      {% if informe.estado == 'rechazado_presidente' %}
+      {% if informe.estado == 'revision_docente' and informe.comentario_presidente %}
       <div class="alert alert-danger alert-dismissible fade show" role="alert">
         <h5 class="alert-heading">
           <i class="bi bi-exclamation-triangle-fill me-2"></i>El Presidente Rechazó este Informe

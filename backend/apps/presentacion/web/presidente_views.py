@@ -117,20 +117,33 @@ def presidente_revisar_dictamen(request, informe_id):
     
     # Procesar formulario
     if request.method == 'POST':
-        accion = request.POST.get('accion')  # 'aprobar' o 'rechazar'
+        accion = request.POST.get('accion')
         comentario = request.POST.get('comentario', '')
         
-        if accion == 'aprobar':
+        if accion == 'aprobar_final':
             success, informe_actualizado, error = PresidenteService.aprobar_dictamen_docente(
-                informe_id, presidente, comentario
+                informe_id, presidente, comentario, aprobar_informe=True
             )
             if success:
                 messages.success(request, 'Dictamen aprobado. Secretaría ha sido notificada.')
                 return redirect('presidente_dashboard')
             else:
                 messages.error(request, f'Error: {error}')
+
+        elif accion == 'rechazar_final':
+            if not comentario or len(comentario.strip()) < 10:
+                messages.error(request, 'Debe proporcionar un motivo detallado para rechazar el informe (mínimo 10 caracteres).')
+            else:
+                success, informe_actualizado, error = PresidenteService.aprobar_dictamen_docente(
+                    informe_id, presidente, comentario, aprobar_informe=False
+                )
+                if success:
+                    messages.warning(request, 'Informe rechazado. Secretaría ha sido notificada para comunicarlo al estudiante.')
+                    return redirect('presidente_dashboard')
+                else:
+                    messages.error(request, f'Error: {error}')
         
-        elif accion == 'rechazar':
+        elif accion == 'devolver_docente':
             if not comentario or len(comentario.strip()) < 10:
                 messages.error(request, 'Debe proporcionar un motivo detallado para rechazar (mínimo 10 caracteres).')
             else:

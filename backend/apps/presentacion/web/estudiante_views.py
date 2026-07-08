@@ -46,6 +46,7 @@ def upload_view(request):
             informe_previo = Informe.objects.filter(
                 usuario=usuario,
                 estado=Informe.ESTADO_RECHAZADO_ESTUDIANTE,
+                versiones_posteriores__isnull=True,
             ).order_by('-fecha_registro').first()
 
             version = 1

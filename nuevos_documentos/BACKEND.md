@@ -301,7 +301,6 @@ class DocenteService:
                 Informe.ESTADO_PENDIENTE_DOCENTE,
                 Informe.ESTADO_VALIDANDO_IA,
                 Informe.ESTADO_REVISION_DOCENTE,
-                Informe.ESTADO_RECHAZADO_PRESIDENTE
             ]
         ).select_related('usuario', 'escuela')
     
@@ -362,16 +361,27 @@ class PresidenteService:
         # ... validaciones y asignación ...
     
     @staticmethod
-    def revisar_dictamen(informe_id, presidente, accion, comentario):
+    def aprobar_dictamen_docente(informe_id, presidente, comentario, aprobar_informe=True):
         """
-        Aprueba o rechaza el dictamen del docente
-        
-        Args:
-            accion: 'aprobar' o 'rechazar'
-            comentario: Comentario del presidente
+        Confirma el dictamen del docente y define la decisión final
         """
         # ... lógica de aprobación/rechazo ...
+
+    @staticmethod
+    def rechazar_dictamen_docente(informe_id, presidente, comentario):
+        """Devuelve el dictamen al docente para una nueva revisión"""
+        # ... lógica de devolución ...
 ```
+
+**Decisiones del presidente**:
+- ✅ Aprobar informe final → `aprobado_presidente`
+- ✅ Rechazar informe final → `rechazado_presidente`
+- ✅ Devolver dictamen al docente → `revision_docente`
+
+**Versionado del estudiante**:
+- El reenvío crea una nueva versión del `Informe`
+- Solo la última versión en `rechazado_estudiante` puede reenviarse
+- Si una versión ya tiene `versiones_posteriores`, queda cerrada
 
 ---
 
