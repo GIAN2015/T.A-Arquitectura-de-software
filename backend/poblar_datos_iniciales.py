@@ -281,6 +281,13 @@ def crear_usuarios_demo():
     else:
         print("✓ Usuario presidente ya existe")
 
+    # La Escuela también tiene su propio FK a presidente (usado por la pantalla
+    # de la secretaria para mostrar "Presidente Asignado"); sin esto queda vacío.
+    if escuela.presidente_id != presidente.id:
+        escuela.presidente = presidente
+        escuela.save()
+        print("✓ Escuela ISI vinculada a su presidente")
+
 if __name__ == '__main__':
     print("\n" + "="*60)
     print("POBLANDO DATOS INICIALES DEL SISTEMA")
