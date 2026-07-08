@@ -199,18 +199,31 @@ def poblar_observaciones():
 
 def crear_usuarios_demo():
     """Crear usuarios de demostración"""
-    # Docente
-    if not Usuario.objects.filter(codigo='DOCENTE001').exists():
-        docente = Usuario.objects.create(
-            codigo='DOCENTE001',
-            nombre='Prof. María García',
-            tipo_usuario='docente'
-        )
+    # Escuela (requerida para vincular docente y presidente)
+    escuela, _ = Escuela.objects.get_or_create(
+        codigo='ISI',
+        defaults={'nombre': 'Ingeniería de Sistemas e Informática'}
+    )
+
+    # Docente (requiere escuela asignada para aparecer en la lista del presidente)
+    docente, creado = Usuario.objects.get_or_create(
+        codigo='DOCENTE001',
+        defaults={
+            'nombre': 'Prof. María García',
+            'tipo_usuario': 'docente',
+            'escuela': escuela,
+        }
+    )
+    if creado:
         docente.set_password('docente123')
         print("✓ Usuario docente creado: DOCENTE001 / docente123")
+    elif docente.escuela_id is None:
+        docente.escuela = escuela
+        docente.save()
+        print("✓ Usuario docente ya existía, se le asignó la escuela ISI")
     else:
         print("✓ Usuario docente ya existe")
-    
+
     # Estudiante
     if not Usuario.objects.filter(codigo='2021101234').exists():
         estudiante = Usuario.objects.create(
@@ -236,11 +249,6 @@ def crear_usuarios_demo():
         print("✓ Usuario secretaria ya existe")
 
     # Presidente (requiere escuela asignada para que su panel funcione)
-    escuela, _ = Escuela.objects.get_or_create(
-        codigo='ISI',
-        defaults={'nombre': 'Ingeniería de Sistemas e Informática'}
-    )
-
     presidente, creado = Usuario.objects.get_or_create(
         codigo='PRESIDENTE001',
         defaults={
