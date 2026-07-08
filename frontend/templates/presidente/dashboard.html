@@ -65,8 +65,8 @@
         <div class="card-body">
           <div class="d-flex justify-content-between align-items-center">
             <div>
-              <p class="text-muted mb-1 small">Aprobados</p>
-              <h3 class="mb-0 text-success fw-bold">{{ stats.aprobados }}</h3>
+              <p class="text-muted mb-1 small">Enviados a Secretaría</p>
+              <h3 class="mb-0 text-success fw-bold">{{ stats.enviados_a_secretaria }}</h3>
             </div>
             <div class="bg-success bg-opacity-10 rounded-circle p-3">
               <i class="bi bi-check-circle-fill text-success fs-4"></i>
@@ -238,14 +238,14 @@
     </div>
   </div>
 
-  <!-- SECCIÓN: INFORMES APROBADOS (ya procesados) -->
+  <!-- SECCIÓN: DECISIONES FINALES ENVIADAS A SECRETARÍA -->
   {% if aprobados %}
   <div class="row mb-4">
     <div class="col-12">
       <div class="card shadow-sm">
         <div class="card-header bg-success bg-opacity-10">
           <h5 class="mb-0 text-success">
-            <i class="bi bi-check-circle-fill me-2"></i>Informes Aprobados y Enviados a Secretaría
+            <i class="bi bi-send-check-fill me-2"></i>Decisiones Finales Enviadas a Secretaría
           </h5>
         </div>
         <div class="card-body">
@@ -256,7 +256,7 @@
                   <th>ID</th>
                   <th>Estudiante</th>
                   <th>Docente Revisor</th>
-                  <th>Fecha Aprobación</th>
+                  <th>Fecha Decisión</th>
                   <th>Estado</th>
                   <th>Acciones</th>
                 </tr>
@@ -272,6 +272,18 @@
                     {% if informe.estado == 'aprobado_final' %}
                       <span class="badge bg-success">
                         <i class="bi bi-check-circle-fill me-1"></i>APROBADO FINAL
+                      </span>
+                    {% elif informe.estado == 'aprobado_presidente' %}
+                      <span class="badge bg-success">
+                        <i class="bi bi-send-check me-1"></i>APROBADO - PENDIENTE DE NOTIFICAR
+                      </span>
+                    {% elif informe.estado == 'rechazado_estudiante' %}
+                      <span class="badge bg-danger">
+                        <i class="bi bi-x-circle-fill me-1"></i>RECHAZADO - NOTIFICADO AL ESTUDIANTE
+                      </span>
+                    {% elif informe.estado == 'rechazado_presidente' %}
+                      <span class="badge bg-danger">
+                        <i class="bi bi-send-x-fill me-1"></i>RECHAZADO - PENDIENTE DE NOTIFICAR
                       </span>
                     {% else %}
                       <span class="badge bg-success">

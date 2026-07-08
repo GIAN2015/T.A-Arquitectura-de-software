@@ -112,25 +112,30 @@
         <div class="card-body">
           <ul class="nav nav-tabs mb-3" role="tablist">
             <li class="nav-item">
-              <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#aprobar">
+              <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#aprobar-final">
                 <i class="bi bi-check-circle-fill text-untels-blue me-1"></i>Aprobar
               </button>
             </li>
             <li class="nav-item">
-              <button class="nav-link" data-bs-toggle="tab" data-bs-target="#rechazar">
-                <i class="bi bi-x-circle-fill text-untels-blue me-1"></i>Rechazar
+              <button class="nav-link" data-bs-toggle="tab" data-bs-target="#rechazar-final">
+                <i class="bi bi-x-octagon-fill text-untels-blue me-1"></i>Rechazar
+              </button>
+            </li>
+            <li class="nav-item">
+              <button class="nav-link" data-bs-toggle="tab" data-bs-target="#devolver-docente">
+                <i class="bi bi-x-circle-fill text-untels-blue me-1"></i>Devolver
               </button>
             </li>
           </ul>
 
           <div class="tab-content">
-            <div class="tab-pane fade show active" id="aprobar">
+            <div class="tab-pane fade show active" id="aprobar-final">
               <form method="post">
                 {% csrf_token %}
-                <input type="hidden" name="accion" value="aprobar">
+                <input type="hidden" name="accion" value="aprobar_final">
                 <div class="alert alert-success">
-                  <h6><i class="bi bi-check-circle-fill me-2"></i>Aprobar Dictamen</h6>
-                  <p class="mb-0">Al aprobar, el informe será enviado a secretaría para notificar al estudiante de la aprobación final.</p>
+                  <h6><i class="bi bi-check-circle-fill me-2"></i>Aprobar Informe y Enviar a Secretaría</h6>
+                  <p class="mb-0">El presidente confirma el dictamen del docente y decide que el informe queda aprobado. Secretaría notificará la aprobación al estudiante.</p>
                 </div>
                 <div class="mb-3">
                   <label for="comentario_aprobar" class="form-label">Comentario Adicional (Opcional)</label>
@@ -143,10 +148,29 @@
               </form>
             </div>
 
-            <div class="tab-pane fade" id="rechazar">
+            <div class="tab-pane fade" id="rechazar-final">
               <form method="post">
                 {% csrf_token %}
-                <input type="hidden" name="accion" value="rechazar">
+                <input type="hidden" name="accion" value="rechazar_final">
+                <div class="alert alert-warning">
+                  <h6><i class="bi bi-x-octagon-fill me-2"></i>Rechazar Informe y Enviar a Secretaría</h6>
+                  <p class="mb-0">El presidente acepta la revisión del docente, pero decide rechazar el informe final. Secretaría notificará al estudiante para que corrija y reenvíe.</p>
+                </div>
+                <div class="mb-3">
+                  <label for="comentario_rechazar_final" class="form-label">Motivo del Rechazo <span class="text-danger">*</span></label>
+                  <textarea class="form-control" id="comentario_rechazar_final" name="comentario" rows="4" required placeholder="Explique por qué el informe queda rechazado, aunque el dictamen del docente se da por válido..."></textarea>
+                  <small class="form-text text-muted">Este comentario será visible para secretaría y el estudiante</small>
+                </div>
+                <button type="submit" class="btn btn-warning btn-lg text-dark">
+                  <i class="bi bi-send-x-fill me-2"></i>Rechazar Informe y Enviar a Secretaría
+                </button>
+              </form>
+            </div>
+
+            <div class="tab-pane fade" id="devolver-docente">
+              <form method="post">
+                {% csrf_token %}
+                <input type="hidden" name="accion" value="devolver_docente">
                 <div class="alert alert-danger">
                   <h6><i class="bi bi-x-circle-fill me-2"></i>Rechazar y Devolver al Docente</h6>
                   <p class="mb-0">El dictamen será devuelto al docente para que revise nuevamente el informe. <strong>Debe explicar el motivo del rechazo.</strong></p>

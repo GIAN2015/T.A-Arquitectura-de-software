@@ -48,7 +48,7 @@
       <div class="d-flex align-items-center">
         <div class="me-3" style="font-size: 3rem;"><i class="bi bi-x-circle-fill"></i></div>
         <div class="flex-grow-1">
-          <h4 class="alert-heading mb-2">Informe Rechazado - Requiere Correcciones</h4>
+          <h4 class="alert-heading mb-2">Informe con Observaciones - Requiere Correcciones</h4>
           <p class="mb-0">Tu informe requiere correcciones. Por favor revisa las observaciones y comentarios abajo.</p>
           {% if informe.comentario_presidente %}
           <div class="mt-3 p-3 bg-white rounded">
@@ -275,7 +275,11 @@
                 {% elif informe.estado == 'rechazado_estudiante' %}bg-danger
                 {% elif informe.estado == 'aprobado_presidente' or informe.estado == 'pendiente_aprobacion_presidente' %}bg-primary
                 {% else %}bg-warning text-dark{% endif %}">
-                {{ informe.get_estado_display }}
+                {% if informe.estado == 'rechazado_estudiante' %}
+                  Con Observaciones
+                {% else %}
+                  {{ informe.get_estado_display }}
+                {% endif %}
               </span>
             </div>
           </div>

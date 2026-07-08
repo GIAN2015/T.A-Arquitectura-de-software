@@ -58,8 +58,14 @@ Cada rol tiene su propio dashboard con:
 
 - Subir informe (estudiante)
 - Confirmar observaciones (docente)
-- Aprobar/rechazar (presidente)
+- Aprobar informe, rechazar informe o devolver dictamen (presidente)
 - Derivar informes (secretaria)
+
+### 4. Vistas Clave Actualizadas
+
+- `presidente/revisar.html`: 3 decisiones separadas del presidente
+- `secretaria/dashboard.html`: muestra resultado final aprobado/rechazado en completados
+- `historial.html`: botón de reenvío destacado y visible solo para la última versión rechazada
 
 ## JavaScript
 

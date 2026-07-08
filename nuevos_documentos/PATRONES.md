@@ -215,7 +215,7 @@ return False, None, "Mensaje de error"
 | Servicio | Archivo | Métodos Principales |
 |----------|---------|-------------------|
 | `DocenteService` | `docente.py` | validar_informe_con_ia(), enviar_dictamen_a_presidente(), obtener_estadisticas() |
-| `PresidenteService` | `presidente.py` | asignar_docente(), revisar_dictamen(), obtener_informes_pendientes() |
+| `PresidenteService` | `presidente.py` | asignar_docente(), aprobar_dictamen_docente(), rechazar_dictamen_docente() |
 | `SecretariaService` | `secretaria.py` | derivar_a_presidente(), notificar_estudiante_aprobado(), notificar_estudiante_rechazado() |
 | `NotificacionService` | `notificaciones/services.py` | crear_notificacion(), notificar_*() |
 
@@ -320,7 +320,7 @@ class AprobadoPresidenteState(BaseInformeState):
 
 
 class RechazadoPresidenteState(BaseInformeState):
-    """Presidente rechazó, docente debe revisar de nuevo"""
+    """Presidente rechazó el informe final; secretaría debe notificar"""
     value = 'rechazado_presidente'
     allowed_transitions = {'validando_ia', 'revision_docente'}
 
@@ -394,12 +394,14 @@ revision_docente
   ↓
 pendiente_aprobacion_presidente
   ↓         ↘
-  ↓          rechazado_presidente → validando_ia (re-validar)
+  ↓          rechazado_presidente → rechazado_estudiante (notificación final)
   ↓
-aprobado_presidente
+  aprobado_presidente
   ↓
-aprobado_final [FIN]
+  aprobado_final [FIN]
 ```
+
+**Nota**: además del flujo de estados final, el `PresidenteService` puede devolver un dictamen al docente regresando el informe a `revision_docente` con comentario del presidente.
 
 ### ✅ Beneficios Aplicados
 

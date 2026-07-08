@@ -41,7 +41,7 @@
        │                       Envía dictamen → estado: pendiente_aprobacion_presidente
        ▼
 ┌──────────────┐
-│  Presidente  │ Aprueba dictamen → estado: aprobado_presidente
+│  Presidente  │ Decide resultado final o devuelve dictamen
 └──────┬───────┘
        │
        ▼
@@ -66,10 +66,12 @@
 | 5 | `validando_ia` | IA procesando | Sistema |
 | 6 | `revision_docente` | Docente revisando IA | Docente |
 | 7 | `pendiente_aprobacion_presidente` | Dictamen enviado | Presidente |
-| 8 | `aprobado_presidente` | Presidente aprobó | Secretaria |
-| 9 | `rechazado_presidente` | Presidente rechazó | Docente |
+| 8 | `aprobado_presidente` | Presidente aprobó informe final | Secretaria |
+| 9 | `rechazado_presidente` | Presidente rechazó informe final | Secretaria |
 | 10 | `aprobado_final` | ✅ APROBADO | - |
 | 11 | `rechazado_estudiante` | ❌ Estudiante debe corregir | Estudiante |
+
+**Regla adicional**: si el presidente rechaza el dictamen del docente, el flujo vuelve a `revision_docente` con comentario del presidente para que el docente rehaga la revisión.
 
 ---
 
@@ -318,7 +320,7 @@ class DocenteService:
 # apps/negocio/servicios/presidente.py
 class PresidenteService:
     @staticmethod
-    def revisar_dictamen(informe_id, presidente, accion, comentario):
+    def aprobar_dictamen_docente(informe_id, presidente, comentario, aprobar_informe=True):
         informe = Informe.objects.get(
             id=informe_id,
             presidente_asignado=presidente
@@ -327,16 +329,22 @@ class PresidenteService:
         # Guardar comentario del presidente
         informe.comentario_presidente = comentario
         
-        if accion == 'aprobar':
-            # APROBAR: Va a secretaria para notificar
+        if accion == 'aprobar_final':
+            # APRUEBA el informe final y lo envía a secretaría
             informe.transition_to('aprobado_presidente')
-            NotificacionService.notificar_dictamen_aprobado(
+            NotificacionService.notificar_aprobacion_presidente_a_secretaria(
+                informe, informe.secretaria_asignada
+            )
+        elif accion == 'rechazar_final':
+            # RECHAZA el informe final y lo envía a secretaría
+            informe.transition_to('rechazado_presidente')
+            NotificacionService.notificar_rechazo_presidente_a_secretaria(
                 informe, informe.secretaria_asignada
             )
         else:
-            # RECHAZAR: Vuelve al docente
-            informe.transition_to('rechazado_presidente')
-            NotificacionService.notificar_dictamen_rechazado(
+            # DEVUELVE el dictamen al docente para rehacer revisión
+            informe.estado = 'revision_docente'
+            NotificacionService.notificar_rechazo_presidente_a_docente(
                 informe, informe.docente_revisor
             )
         
@@ -344,9 +352,10 @@ class PresidenteService:
         informe.save()
 ```
 
-**Transiciones**:
-- `pendiente_aprobacion_presidente` → `aprobado_presidente` (aprueba)
-- `pendiente_aprobacion_presidente` → `rechazado_presidente` (rechaza)
+**Resultados posibles**:
+- `pendiente_aprobacion_presidente` → `aprobado_presidente` (aprueba informe final)
+- `pendiente_aprobacion_presidente` → `rechazado_presidente` (rechaza informe final)
+- `pendiente_aprobacion_presidente` → `revision_docente` (devuelve dictamen al docente)
 
 ---
 
@@ -546,43 +555,50 @@ class SecretariaService:
 - Dictamen enviado por docente
 
 **Postcondiciones**: 
-- Estado: `aprobado_presidente` o `rechazado_presidente`
-- Notificación enviada
+- Estado: `aprobado_presidente`, `rechazado_presidente` o `revision_docente`
+- Notificación enviada a secretaría o docente según la decisión
 
-**Flujo Principal (Aprobar)**:
+**Flujo Principal (Aprobar Informe Final)**:
 1. Presidente accede a "Revisar Dictamen"
 2. Sistema muestra dictamen formateado
 3. Presidente lee dictamen
 4. Presidente escribe comentario (opcional)
-5. Presidente hace clic en "Aprobar"
+5. Presidente hace clic en "Aprobar y Enviar a Secretaría"
 6. Sistema confirma acción
 7. Sistema cambia estado a `aprobado_presidente`
 8. Sistema notifica a secretaria
 9. Sistema muestra confirmación
 
-**Flujo Alternativo (Rechazar)**:
-5a. Presidente hace clic en "Rechazar"
+**Flujo Alternativo A (Rechazar Informe Final)**:
+5a. Presidente hace clic en "Rechazar Informe y Enviar a Secretaría"
 6a. Sistema solicita comentario obligatorio
 7a. Sistema cambia estado a `rechazado_presidente`
-8a. Sistema notifica a docente
+8a. Sistema notifica a secretaría
 9a. Sistema muestra confirmación
+
+**Flujo Alternativo B (Devolver Dictamen al Docente)**:
+5b. Presidente hace clic en "Devolver al Docente"
+6b. Sistema solicita comentario obligatorio
+7b. Sistema cambia estado a `revision_docente`
+8b. Sistema notifica al docente
+9b. Sistema muestra confirmación
 
 ---
 
 ## 🔀 Flujos Alternativos
 
-### Flujo 1: Presidente Rechaza Dictamen
+### Flujo 1: Presidente Devuelve Dictamen al Docente
 
 ```
 ... (desde Paso 6)
-Presidente RECHAZA dictamen
+Presidente devuelve dictamen
   ↓
-Estado: rechazado_presidente
+Estado: revision_docente
   ↓
 Notifica a Docente
   ↓
 Docente puede:
-  - Re-validar con IA
+  - Re-validar con IA o continuar desde revisión docente
   - Modificar dictamen
   - Enviar nuevo dictamen
   ↓
@@ -605,6 +621,7 @@ Estado: enviado
 Se crea NUEVO informe con:
   - version = 2
   - informe_anterior = informe_v1
+  - informe_v1 queda cerrado para futuros reenvíos
   ↓
 Flujo completo se reinicia desde Paso 1
 ```

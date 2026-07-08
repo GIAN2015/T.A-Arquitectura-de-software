@@ -523,6 +523,7 @@ class DocenteService:
             
             # Actualizar informe
             informe.comentario_docente = dictamen_completo
+            informe.comentario_presidente = None
             informe.fecha_revision_docente = timezone.now()
             informe.estado = Informe.ESTADO_PENDIENTE_APROBACION_PRESIDENTE
             informe.save()
@@ -553,7 +554,7 @@ class DocenteService:
         
         pendientes_revisar = Informe.objects.filter(
             docente_revisor=docente,
-            estado__in=[Informe.ESTADO_PENDIENTE_DOCENTE, Informe.ESTADO_RECHAZADO_PRESIDENTE]
+            estado__in=[Informe.ESTADO_PENDIENTE_DOCENTE, Informe.ESTADO_REVISION_DOCENTE]
         ).count()
         
         en_revision = Informe.objects.filter(
@@ -572,7 +573,8 @@ class DocenteService:
         
         rechazados_por_presidente = Informe.objects.filter(
             docente_revisor=docente,
-            estado=Informe.ESTADO_RECHAZADO_PRESIDENTE
+            estado=Informe.ESTADO_REVISION_DOCENTE,
+            comentario_presidente__isnull=False
         ).count()
         
         total_bancos = BancoObservacionesDocente.objects.filter(docente=docente).count()

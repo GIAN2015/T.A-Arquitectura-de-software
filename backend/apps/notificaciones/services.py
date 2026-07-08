@@ -152,6 +152,27 @@ class NotificacionService:
                     f'el informe "{informe.nombre_archivo}" del estudiante {informe.usuario.nombre}. '
                     f'Debe notificar al estudiante del resultado final.'
         )
+
+    @staticmethod
+    def notificar_rechazo_presidente_a_secretaria(informe):
+        """
+        Notificar a secretaria cuando presidente rechaza el informe final
+
+        Args:
+            informe: Informe rechazado por presidente
+
+        Returns:
+            Notificacion creada
+        """
+        return NotificacionService.crear_notificacion(
+            usuario=informe.secretaria_asignada,
+            informe=informe,
+            tipo='rechazado_presidente',
+            titulo='Informe Rechazado por Presidente',
+            mensaje=f'El presidente {informe.presidente_asignado.nombre} ha rechazado '
+                    f'el informe "{informe.nombre_archivo}" del estudiante {informe.usuario.nombre}. '
+                    f'Debe notificar al estudiante para que realice las correcciones.'
+        )
     
     @staticmethod
     def notificar_rechazo_presidente_a_docente(informe):

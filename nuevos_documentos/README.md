@@ -131,9 +131,9 @@ Cada rol tiene responsabilidades específicas:
 - **Secretaria**: Deriva a presidente
 - **Presidente**: Asigna docente revisor
 - **Docente**: Valida con IA + banco personalizado
-- **Presidente**: Aprueba/rechaza dictamen
-- **Secretaria**: Notifica resultado final
-- **Estudiante**: Recibe feedback o aprobación
+- **Presidente**: Puede aprobar el informe final, rechazarlo y enviarlo a secretaría, o devolver el dictamen al docente
+- **Secretaria**: Notifica al estudiante si el resultado final fue aprobado o con observaciones
+- **Estudiante**: Recibe feedback o aprobación y solo puede reenviar la última versión rechazada
 
 ### 2. **Banco de Observaciones Personalizado**
 

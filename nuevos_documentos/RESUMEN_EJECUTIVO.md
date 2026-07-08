@@ -168,11 +168,13 @@ def panel_docente_view(request):
 | 4 | pendiente_docente | Docente | Validar con IA |
 | 5 | validando_ia | Sistema | IA procesando |
 | 6 | revision_docente | Docente | Confirmar observaciones |
-| 7 | pendiente_aprobacion_presidente | Presidente | Aprobar/rechazar |
+| 7 | pendiente_aprobacion_presidente | Presidente | Aprobar informe, rechazar informe o devolver dictamen |
 | 8 | aprobado_presidente | Secretaria | Notificar aprobación |
-| 9 | rechazado_presidente | Docente | Re-validar |
+| 9 | rechazado_presidente | Secretaria | Notificar observaciones finales |
 | 10 | ✅ **aprobado_final** | - | **FIN (aprobado)** |
 | 11 | ❌ **rechazado_estudiante** | Estudiante | **Corregir y reenviar** |
+
+**Nota de negocio**: cuando el presidente devuelve el dictamen al docente, el flujo vuelve a `revision_docente` con comentario del presidente; no se usa `rechazado_presidente` en ese caso.
 
 ### Flujo Simplificado
 
@@ -315,6 +317,7 @@ informes = DocenteService.obtener_informes_asignados(docente)
 - ✅ Recibir notificaciones
 - ✅ Ver dictamen completo si es rechazado
 - ✅ Reenviar informe corregido
+- ✅ Reenviar solo la última versión rechazada
 
 ### Para Docentes
 - ✅ Ver informes asignados
@@ -327,7 +330,9 @@ informes = DocenteService.obtener_informes_asignados(docente)
 ### Para Presidentes
 - ✅ Ver informes de su escuela
 - ✅ Asignar docentes revisores
-- ✅ Aprobar/rechazar dictámenes
+- ✅ Aprobar el informe final
+- ✅ Rechazar el informe final y enviarlo a secretaría
+- ✅ Devolver el dictamen al docente
 - ✅ Agregar comentarios
 - ✅ Ver estadísticas de la escuela
 
@@ -335,6 +340,7 @@ informes = DocenteService.obtener_informes_asignados(docente)
 - ✅ Ver todos los informes nuevos
 - ✅ Derivar a escuelas
 - ✅ Notificar aprobación/rechazo final
+- ✅ Ver en dashboard si el completado terminó aprobado o rechazado
 - ✅ Ver historial completo
 
 ### Para Administradores

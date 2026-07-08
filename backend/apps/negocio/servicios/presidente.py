@@ -87,19 +87,21 @@ class PresidenteService:
     @staticmethod
     def obtener_informes_aprobados(presidente):
         """
-        Obtener informes que el presidente aprobó (enviados a secretaría)
+        Obtener informes con decisión final del presidente enviados a secretaría
         
         Args:
             presidente: Usuario presidente
         
         Returns:
-            QuerySet de informes aprobados
+            QuerySet de informes aprobados o rechazados por presidente
         """
         return Informe.objects.filter(
             presidente_asignado=presidente,
             estado__in=[
                 Informe.ESTADO_APROBADO_PRESIDENTE,
-                Informe.ESTADO_APROBADO_FINAL
+                Informe.ESTADO_APROBADO_FINAL,
+                Informe.ESTADO_RECHAZADO_PRESIDENTE,
+                Informe.ESTADO_RECHAZADO_ESTUDIANTE,
             ]
         ).select_related('usuario', 'docente_revisor', 'secretaria_asignada').order_by('-fecha_aprobacion_presidente')
     
@@ -172,14 +174,15 @@ class PresidenteService:
             return False, None, f"Error inesperado: {str(e)}"
     
     @staticmethod
-    def aprobar_dictamen_docente(informe_id, presidente, comentario_presidente=""):
+    def aprobar_dictamen_docente(informe_id, presidente, comentario_presidente="", aprobar_informe=True):
         """
-        Aprobar el dictamen del docente
+        Confirmar el dictamen del docente y registrar la decisión final del presidente
         
         Args:
             informe_id: ID del informe
             presidente: Usuario presidente (para validación)
             comentario_presidente: Comentario opcional del presidente
+            aprobar_informe: True si el informe se aprueba, False si se rechaza
         
         Returns:
             tuple: (success: bool, informe: Informe, error: str)
@@ -191,15 +194,23 @@ class PresidenteService:
                 estado=Informe.ESTADO_PENDIENTE_APROBACION_PRESIDENTE
             )
             
-            # Actualizar informe
+            # El presidente confirma que el dictamen del docente ya está listo.
+            # Desde aquí puede aprobar o rechazar el informe final antes de enviarlo a secretaría.
             informe.comentario_presidente = comentario_presidente
             informe.fecha_aprobacion_presidente = timezone.now()
-            informe.estado = Informe.ESTADO_APROBADO_PRESIDENTE
+            informe.estado = (
+                Informe.ESTADO_APROBADO_PRESIDENTE
+                if aprobar_informe
+                else Informe.ESTADO_RECHAZADO_PRESIDENTE
+            )
             informe.save()
             
             # Notificar a secretaria
             if informe.secretaria_asignada:
-                NotificacionService.notificar_aprobacion_presidente_a_secretaria(informe)
+                if aprobar_informe:
+                    NotificacionService.notificar_aprobacion_presidente_a_secretaria(informe)
+                else:
+                    NotificacionService.notificar_rechazo_presidente_a_secretaria(informe)
             
             return True, informe, None
             
@@ -211,7 +222,7 @@ class PresidenteService:
     @staticmethod
     def rechazar_dictamen_docente(informe_id, presidente, comentario_presidente):
         """
-        Rechazar el dictamen del docente (vuelve a revisión docente)
+        Rechazar el dictamen del docente y devolverlo al docente para una nueva revisión
         
         Args:
             informe_id: ID del informe
@@ -232,9 +243,9 @@ class PresidenteService:
                 estado=Informe.ESTADO_PENDIENTE_APROBACION_PRESIDENTE
             )
             
-            # Actualizar informe
+            # El dictamen no se acepta, por lo que el flujo regresa al docente.
             informe.comentario_presidente = comentario_presidente
-            informe.estado = Informe.ESTADO_RECHAZADO_PRESIDENTE
+            informe.estado = Informe.ESTADO_REVISION_DOCENTE
             informe.save()
             
             # Notificar al docente
@@ -284,6 +295,16 @@ class PresidenteService:
             presidente_asignado=presidente,
             estado__in=[Informe.ESTADO_APROBADO_PRESIDENTE, Informe.ESTADO_APROBADO_FINAL]
         ).count()
+
+        enviados_a_secretaria = Informe.objects.filter(
+            presidente_asignado=presidente,
+            estado__in=[
+                Informe.ESTADO_APROBADO_PRESIDENTE,
+                Informe.ESTADO_APROBADO_FINAL,
+                Informe.ESTADO_RECHAZADO_PRESIDENTE,
+                Informe.ESTADO_RECHAZADO_ESTUDIANTE,
+            ]
+        ).count()
         
         rechazados_por_mi = Informe.objects.filter(
             presidente_asignado=presidente,
@@ -296,6 +317,7 @@ class PresidenteService:
             'en_revision': en_revision,
             'pendientes_aprobar': pendientes_aprobar,
             'aprobados': aprobados,
+            'enviados_a_secretaria': enviados_a_secretaria,
             'rechazados_por_mi': rechazados_por_mi,
         }
     
