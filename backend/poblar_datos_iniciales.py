@@ -12,6 +12,7 @@ django.setup()
 from apps.reglamento.models import Reglamento
 from apps.observaciones.models import BancoObservaciones
 from apps.usuarios.models import Usuario
+from apps.escuelas.models import Escuela
 
 def poblar_reglamento():
     """Crear reglamento inicial"""
@@ -222,6 +223,32 @@ def crear_usuarios_demo():
     else:
         print("✓ Usuario estudiante ya existe")
 
+    # Secretaria
+    if not Usuario.objects.filter(codigo='SECRETARIA001').exists():
+        secretaria = Usuario.objects.create(
+            codigo='SECRETARIA001',
+            nombre='Ana Torres Ramírez',
+            tipo_usuario='secretaria'
+        )
+        secretaria.set_password('secretaria123')
+        print("✓ Usuario secretaria creado: SECRETARIA001 / secretaria123")
+    else:
+        print("✓ Usuario secretaria ya existe")
+
+    # Presidente (requiere escuela asignada para que su panel funcione)
+    if not Usuario.objects.filter(codigo='PRESIDENTE001').exists():
+        escuela = Escuela.objects.first()
+        presidente = Usuario.objects.create(
+            codigo='PRESIDENTE001',
+            nombre='Dr. Carlos Mendoza Silva',
+            tipo_usuario='presidente',
+            escuela=escuela
+        )
+        presidente.set_password('presidente123')
+        print("✓ Usuario presidente creado: PRESIDENTE001 / presidente123")
+    else:
+        print("✓ Usuario presidente ya existe")
+
 if __name__ == '__main__':
     print("\n" + "="*60)
     print("POBLANDO DATOS INICIALES DEL SISTEMA")
@@ -248,4 +275,12 @@ if __name__ == '__main__':
     print("  URL: http://127.0.0.1:8000/")
     print("  Código: 2021101234")
     print("  Contraseña: estudiante123")
+    print("\nSECRETARIA:")
+    print("  URL: http://127.0.0.1:8000/secretaria/login/")
+    print("  Código: SECRETARIA001")
+    print("  Contraseña: secretaria123")
+    print("\nPRESIDENTE:")
+    print("  URL: http://127.0.0.1:8000/presidente/login/")
+    print("  Código: PRESIDENTE001")
+    print("  Contraseña: presidente123")
     print("\n" + "="*60 + "\n")

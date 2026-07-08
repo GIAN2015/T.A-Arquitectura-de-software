@@ -8,7 +8,7 @@ Django==4.2.11
 djangorestframework==3.14.0
 
 # Base de Datos
-psycopg2-binary==2.9.9
+psycopg2-binary==2.9.10
 dj-database-url==2.1.0
 
 # Configuración y Seguridad
@@ -22,7 +22,7 @@ whitenoise==6.6.0
 # Procesamiento de Archivos
 python-docx==1.1.0
 pypdf==3.17.4
-Pillow==10.2.0
+Pillow==11.0.0
 
 # IA y Validación
 groq==0.4.2

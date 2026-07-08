@@ -3,6 +3,7 @@ import dj_database_url
 
 DEBUG = False
 ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='').split(',')
+CSRF_TRUSTED_ORIGINS = [f'https://{host}' for host in ALLOWED_HOSTS if host]
 
 DATABASES = {
     'default': dj_database_url.config(
@@ -11,6 +12,10 @@ DATABASES = {
         ssl_require=True
     )
 }
+
+# Render (y la mayoría de PaaS) terminan TLS en su proxy y reenvían por HTTP;
+# sin esto, SECURE_SSL_REDIRECT provoca un bucle infinito de redirects.
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 # Security settings
 SECURE_SSL_REDIRECT = True
