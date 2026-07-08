@@ -6,54 +6,72 @@
 <div class="container-fluid">
   <div class="row mb-4">
     <div class="col-12">
-      <h2><i class="bi bi-speedometer2 text-success me-2"></i>Panel del Docente</h2>
-      <p class="text-muted">{{ request.user.escuela.nombre }}</p>
+      <h2><i class="bi bi-speedometer2 text-untels-blue me-2"></i>Panel del Docente</h2>
+      <p class="text-muted">Bienvenido, {{ nombre }}</p>
     </div>
   </div>
 
   <div class="row mb-4">
-    <div class="col-lg-4 col-md-6 mb-3">
+    <div class="col-lg-3 col-md-6 mb-3">
       <div class="card stat-card border-warning">
         <div class="card-body">
           <div class="d-flex justify-content-between align-items-center">
             <div>
               <p class="text-muted mb-1 small">Informes Asignados</p>
-              <h3 class="mb-0 text-warning fw-bold">{{ estadisticas.asignados }}</h3>
+              <h3 class="mb-0 text-warning fw-bold">{{ stats.asignados }}</h3>
             </div>
             <div class="bg-warning bg-opacity-10 rounded-circle p-3">
-              <i class="bi bi-inbox-fill text-warning fs-4"></i>
+              <i class="bi bi-inbox-fill text-untels-blue fs-4"></i>
             </div>
           </div>
         </div>
       </div>
     </div>
 
-    <div class="col-lg-4 col-md-6 mb-3">
-      <div class="card stat-card border-success">
+    <div class="col-lg-3 col-md-6 mb-3">
+      <div class="card stat-card border-primary">
         <div class="card-body">
           <div class="d-flex justify-content-between align-items-center">
             <div>
               <p class="text-muted mb-1 small">Informes Revisados</p>
-              <h3 class="mb-0 text-success fw-bold">{{ estadisticas.revisados }}</h3>
+              <h3 class="mb-0 text-primary fw-bold">{{ stats.revisados }}</h3>
             </div>
-            <div class="bg-success bg-opacity-10 rounded-circle p-3">
-              <i class="bi bi-check-circle-fill text-success fs-4"></i>
+            <div class="bg-primary bg-opacity-10 rounded-circle p-3">
+              <i class="bi bi-check-circle-fill text-untels-blue fs-4"></i>
             </div>
           </div>
         </div>
       </div>
     </div>
 
-    <div class="col-lg-4 col-md-6 mb-3">
-      <div class="card stat-card border-info">
+    {% if stats.rechazados_por_presidente > 0 %}
+    <div class="col-lg-3 col-md-6 mb-3">
+      <div class="card stat-card border-danger">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <p class="text-muted mb-1 small">Rechazados por Presidente</p>
+              <h3 class="mb-0 text-danger fw-bold">{{ stats.rechazados_por_presidente }}</h3>
+            </div>
+            <div class="bg-danger bg-opacity-10 rounded-circle p-3">
+              <i class="bi bi-arrow-return-left text-danger fs-4"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endif %}
+
+    <div class="col-lg-3 col-md-6 mb-3">
+      <div class="card stat-card border-primary">
         <div class="card-body">
           <div class="d-flex justify-content-between align-items-center">
             <div>
               <p class="text-muted mb-1 small">Banco Activo</p>
-              <h3 class="mb-0 text-info fw-bold">{% if banco_activo %}<i class="bi bi-check-circle-fill"></i>{% else %}<i class="bi bi-x-circle-fill"></i>{% endif %}</h3>
+              <h3 class="mb-0 text-primary fw-bold">{% if banco_activo %}<i class="bi bi-check-circle-fill"></i>{% else %}<i class="bi bi-x-circle-fill"></i>{% endif %}</h3>
             </div>
-            <div class="bg-info bg-opacity-10 rounded-circle p-3">
-              <i class="bi bi-book-fill text-info fs-4"></i>
+            <div class="bg-primary bg-opacity-10 rounded-circle p-3">
+              <i class="bi bi-book-fill text-untels-blue fs-4"></i>
             </div>
           </div>
         </div>
@@ -75,10 +93,60 @@
   </div>
   {% endif %}
 
+  <!-- SECCIÓN ESPECIAL: INFORMES RECHAZADOS POR PRESIDENTE -->
+  {% if stats.rechazados_por_presidente > 0 %}
+  <div class="row mb-4">
+    <div class="col-12">
+      <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <h5 class="alert-heading">
+          <i class="bi bi-exclamation-triangle-fill me-2"></i>Informes Rechazados por el Presidente
+        </h5>
+        <p class="mb-3">El presidente rechazó los siguientes informes. Debes revisarlos nuevamente antes de volver a enviarlos.</p>
+        
+        <div class="table-responsive">
+          <table class="table table-sm table-borderless text-white mb-0">
+            <thead>
+              <tr>
+                <th>Informe</th>
+                <th>Estudiante</th>
+                <th>Motivo Rechazo</th>
+                <th>Acción</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for informe in informes_asignados %}
+                {% if informe.estado == 'rechazado_presidente' %}
+                <tr class="border-top border-white border-opacity-25">
+                  <td><strong>#{{ informe.id }}</strong></td>
+                  <td>{{ informe.usuario.nombre }}</td>
+                  <td>
+                    {% if informe.comentario_presidente %}
+                      <small>{{ informe.comentario_presidente|truncatewords:15 }}</small>
+                    {% else %}
+                      <small class="fst-italic">Sin comentarios</small>
+                    {% endif %}
+                  </td>
+                  <td>
+                    <a href="{% url 'docente_revisar_informe' informe.id %}" class="btn btn-sm btn-light">
+                      <i class="bi bi-arrow-clockwise me-1"></i>Revisar de Nuevo
+                    </a>
+                  </td>
+                </tr>
+                {% endif %}
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert"></button>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+
   <div class="row mb-4">
     <div class="col-12">
       <div class="card shadow-sm">
-        <div class="card-header bg-success text-white">
+        <div class="card-header-untels">
           <h5 class="mb-0"><i class="bi bi-inbox-fill me-2"></i>Informes Pendientes de Revisar</h5>
         </div>
         <div class="card-body">
@@ -98,18 +166,38 @@
                   {% for informe in informes_asignados %}
                   <tr>
                     <td><span class="badge bg-secondary">#{{ informe.id }}</span></td>
-                    <td><strong>{{ informe.usuario.get_full_name|default:informe.usuario.username }}</strong></td>
+                    <td><strong>{{ informe.usuario.nombre }}</strong></td>
                     <td><small>{{ informe.fecha_asignacion_docente|date:"d/m/Y H:i" }}</small></td>
                     <td>
-                      <span class="badge bg-{% if informe.estado == 'validando_ia' %}info{% elif informe.estado == 'revision_docente' %}warning{% else %}secondary{% endif %}">
-                        {{ informe.get_estado_display }}
-                      </span>
+                      {% if informe.estado == 'rechazado_presidente' %}
+                        <span class="badge bg-danger">
+                          <i class="bi bi-arrow-return-left me-1"></i>{{ informe.get_estado_display }}
+                        </span>
+                      {% elif informe.estado == 'validando_ia' %}
+                        <span class="badge bg-info">
+                          <i class="bi bi-robot me-1"></i>{{ informe.get_estado_display }}
+                        </span>
+                      {% elif informe.estado == 'revision_docente' %}
+                        <span class="badge bg-warning">
+                          <i class="bi bi-pencil-square me-1"></i>{{ informe.get_estado_display }}
+                        </span>
+                      {% else %}
+                        <span class="badge bg-secondary">
+                          {{ informe.get_estado_display }}
+                        </span>
+                      {% endif %}
                     </td>
                     <td>
                       {% if banco_activo %}
-                        <a href="{% url 'docente_revisar' informe.id %}" class="btn btn-sm btn-success">
-                          <i class="bi bi-eye-fill"></i> Revisar
-                        </a>
+                        {% if informe.estado == 'rechazado_presidente' %}
+                          <a href="{% url 'docente_revisar_informe' informe.id %}" class="btn btn-sm btn-danger">
+                            <i class="bi bi-arrow-clockwise me-1"></i>Revisar de Nuevo
+                          </a>
+                        {% else %}
+                          <a href="{% url 'docente_revisar_informe' informe.id %}" class="btn btn-sm btn-primary">
+                            <i class="bi bi-eye-fill"></i> Revisar
+                          </a>
+                        {% endif %}
                       {% else %}
                         <button class="btn btn-sm btn-secondary" disabled>
                           <i class="bi bi-lock-fill"></i> Sin Banco
@@ -131,5 +219,71 @@
       </div>
     </div>
   </div>
+
+  <!-- SECCIÓN: INFORMES REVISADOS (enviados al presidente) -->
+  {% if informes_revisados %}
+  <div class="row mb-4">
+    <div class="col-12">
+      <div class="card shadow-sm">
+        <div class="card-header bg-success bg-opacity-10">
+          <h5 class="mb-0 text-success"><i class="bi bi-check-circle-fill me-2"></i>Informes Revisados y Enviados al Presidente</h5>
+        </div>
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="table table-hover">
+              <thead class="table-light">
+                <tr>
+                  <th>ID</th>
+                  <th>Estudiante</th>
+                  <th>Fecha Revisión</th>
+                  <th>Estado</th>
+                  <th>Tu Dictamen</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for informe in informes_revisados %}
+                <tr>
+                  <td><span class="badge bg-secondary">#{{ informe.id }}</span></td>
+                  <td><strong>{{ informe.usuario.nombre }}</strong></td>
+                  <td><small>{{ informe.fecha_revision_docente|date:"d/m/Y H:i" }}</small></td>
+                  <td>
+                    {% if informe.estado == 'aprobado_final' %}
+                      <span class="badge bg-success">
+                        <i class="bi bi-check-circle-fill me-1"></i>{{ informe.get_estado_display }}
+                      </span>
+                    {% elif informe.estado == 'aprobado_presidente' %}
+                      <span class="badge bg-success">
+                        <i class="bi bi-check-circle me-1"></i>{{ informe.get_estado_display }}
+                      </span>
+                    {% else %}
+                      <span class="badge bg-warning">
+                        <i class="bi bi-clock-fill me-1"></i>{{ informe.get_estado_display }}
+                      </span>
+                    {% endif %}
+                  </td>
+                  <td>
+                    {% if informe.comentario_docente %}
+                      <small class="text-muted">{{ informe.comentario_docente|truncatewords:10 }}</small>
+                    {% else %}
+                      <small class="text-muted fst-italic">Sin comentario</small>
+                    {% endif %}
+                  </td>
+                  <td>
+                    <a href="{% url 'docente_ver_informe' informe.id %}" class="btn btn-sm btn-outline-primary">
+                      <i class="bi bi-eye"></i> Ver
+                    </a>
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+
 </div>
 {% endblock %}

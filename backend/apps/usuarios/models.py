@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.hashers import make_password, check_password
+from django.utils import timezone
 
 
 class Usuario(models.Model):
@@ -51,7 +52,7 @@ class Usuario(models.Model):
         help_text="Si el usuario está activo en el sistema"
     )
     
-    fecha_registro = models.DateTimeField(auto_now_add=True)
+    fecha_registro = models.DateTimeField(default=timezone.now)
 
     class Meta:
         db_table = 'usuario'

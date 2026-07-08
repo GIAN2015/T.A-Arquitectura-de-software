@@ -19,12 +19,13 @@ class SecretariaService:
     def obtener_informes_pendientes():
         """
         Obtener informes pendientes de derivar a presidente
+        Incluye informes recién enviados (ENVIADO) y pendientes de derivar
         
         Returns:
-            QuerySet de informes en estado PENDIENTE_SECRETARIA
+            QuerySet de informes pendientes
         """
         return Informe.objects.filter(
-            estado=Informe.ESTADO_PENDIENTE_SECRETARIA
+            estado__in=[Informe.ESTADO_ENVIADO, Informe.ESTADO_PENDIENTE_SECRETARIA]
         ).select_related('usuario', 'escuela').order_by('-fecha_registro')
     
     @staticmethod
@@ -147,6 +148,40 @@ class SecretariaService:
         ).select_related('usuario', 'presidente_asignado', 'docente_revisor').order_by('-fecha_aprobacion_presidente')
     
     @staticmethod
+    def obtener_informes_notificados(secretaria):
+        """
+        Obtener informes ya notificados al estudiante (proceso completo)
+        
+        Args:
+            secretaria: Usuario secretaria
+        
+        Returns:
+            QuerySet de informes completados
+        """
+        return Informe.objects.filter(
+            secretaria_asignada=secretaria,
+            estado__in=[Informe.ESTADO_APROBADO_FINAL, Informe.ESTADO_RECHAZADO_ESTUDIANTE]
+        ).select_related('usuario', 'presidente_asignado', 'docente_revisor', 'escuela').order_by('-fecha_completado')
+    
+    @staticmethod
+    def obtener_informes_rechazados_pendientes_notificar(secretaria):
+        """
+        Obtener informes aprobados por docente pero rechazados por presidente
+        que necesitan ser notificados al estudiante para corrección
+        
+        Args:
+            secretaria: Usuario secretaria
+        
+        Returns:
+            QuerySet de informes rechazados pendientes de notificar
+        """
+        return Informe.objects.filter(
+            secretaria_asignada=secretaria,
+            estado=Informe.ESTADO_RECHAZADO_PRESIDENTE,
+            docente_revisor__isnull=False  # Ya fue revisado por docente
+        ).select_related('usuario', 'presidente_asignado', 'docente_revisor', 'escuela').order_by('-fecha_revision_docente')
+    
+    @staticmethod
     def notificar_estudiante_aprobado(informe_id, secretaria):
         """
         Notificar a estudiante que su informe fue aprobado (paso final)
@@ -172,6 +207,41 @@ class SecretariaService:
             
             # Notificar al estudiante
             NotificacionService.notificar_aprobacion_final_a_estudiante(informe)
+            
+            return True, informe, None
+            
+        except Informe.DoesNotExist:
+            return False, None, "Informe no encontrado o no está en estado correcto"
+        except Exception as e:
+            return False, None, f"Error inesperado: {str(e)}"
+    
+    @staticmethod
+    def notificar_estudiante_rechazado(informe_id, secretaria):
+        """
+        Notificar a estudiante que su informe fue rechazado por el presidente
+        El estudiante debe corregir y reenviar
+        
+        Args:
+            informe_id: ID del informe
+            secretaria: Usuario secretaria (para validación)
+        
+        Returns:
+            tuple: (success: bool, informe: Informe, error: str)
+        """
+        try:
+            informe = Informe.objects.get(
+                id=informe_id,
+                secretaria_asignada=secretaria,
+                estado=Informe.ESTADO_RECHAZADO_PRESIDENTE
+            )
+            
+            # Actualizar estado a rechazado_estudiante
+            informe.estado = Informe.ESTADO_RECHAZADO_ESTUDIANTE
+            informe.fecha_completado = timezone.now()
+            informe.save()
+            
+            # Notificar al estudiante del rechazo
+            NotificacionService.notificar_rechazo_final_a_estudiante(informe)
             
             return True, informe, None
             
@@ -213,9 +283,14 @@ class SecretariaService:
             estado=Informe.ESTADO_APROBADO_PRESIDENTE
         ).count()
         
+        rechazados_pendientes_notificar = Informe.objects.filter(
+            secretaria_asignada=secretaria,
+            estado=Informe.ESTADO_RECHAZADO_PRESIDENTE
+        ).count()
+        
         completados = Informe.objects.filter(
             secretaria_asignada=secretaria,
-            estado=Informe.ESTADO_APROBADO_FINAL
+            estado__in=[Informe.ESTADO_APROBADO_FINAL, Informe.ESTADO_RECHAZADO_ESTUDIANTE]
         ).count()
         
         return {
@@ -223,5 +298,6 @@ class SecretariaService:
             'pendientes_derivar': pendientes_derivar,
             'en_proceso': en_proceso,
             'pendientes_notificar': pendientes_notificar,
+            'rechazados_pendientes_notificar': rechazados_pendientes_notificar,
             'completados': completados,
         }

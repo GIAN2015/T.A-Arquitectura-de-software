@@ -19,19 +19,19 @@
 
 {% elif type == 'danger' or type == 'error' %}
   <span class="badge bg-danger d-inline-flex align-items-center gap-1 px-3 py-2 {% if size == 'sm' %}fs-7{% elif size == 'lg' %}fs-6{% endif %}">
-    {% if icon %}{{ icon }}{% else %}✕{% endif %}
+    {% if icon %}{{ icon }}{% else %}!{% endif %}
     <span>{{ text }}</span>
   </span>
 
 {% elif type == 'warning' %}
   <span class="badge bg-warning text-dark d-inline-flex align-items-center gap-1 px-3 py-2 {% if size == 'sm' %}fs-7{% elif size == 'lg' %}fs-6{% endif %}">
-    {% if icon %}{{ icon }}{% else %}⚠{% endif %}
+    {% if icon %}{{ icon }}{% else %}!{% endif %}
     <span>{{ text }}</span>
   </span>
 
 {% elif type == 'info' %}
   <span class="badge bg-info text-dark d-inline-flex align-items-center gap-1 px-3 py-2 {% if size == 'sm' %}fs-7{% elif size == 'lg' %}fs-6{% endif %}">
-    {% if icon %}{{ icon }}{% else %}ℹ{% endif %}
+    {% if icon %}{{ icon }}{% else %}i{% endif %}
     <span>{{ text }}</span>
   </span>
 

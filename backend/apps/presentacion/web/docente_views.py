@@ -10,24 +10,15 @@ from apps.usuarios.models import Usuario
 from apps.informes.models import Informe
 from apps.observaciones.models import ObservacionGenerada
 from apps.notificaciones.services import NotificacionService
+from apps.core.decorators import requiere_rol
 
 
-def _verificar_docente(request):
-    """Verificar que el usuario sea docente"""
-    if 'usuario_id' not in request.session:
-        return False
-    return request.session.get('usuario_tipo') == 'docente'
-
-
+@requiere_rol('docente')
 def panel_docente_view(request):
     """
     Dashboard principal de docente
     ACTUALIZADO v2.0: Usa DocenteService
     """
-    if not _verificar_docente(request):
-        messages.error(request, 'Acceso denegado. Solo docentes.')
-        return redirect('login_docente')
-    
     docente = Usuario.objects.get(id=request.session['usuario_id'])
     
     # Obtener datos usando servicios
@@ -57,14 +48,12 @@ def panel_docente_view(request):
     return render(request, 'docente/dashboard.html', context)
 
 
+@requiere_rol('docente')
 def docente_banco_observaciones(request):
     """
     Gestionar bancos de observaciones del docente
     NUEVO v2.0
     """
-    if not _verificar_docente(request):
-        messages.error(request, 'Acceso denegado.')
-        return redirect('login_docente')
     
     docente = Usuario.objects.get(id=request.session['usuario_id'])
     
@@ -84,7 +73,7 @@ def docente_banco_observaciones(request):
                 )
                 if success:
                     messages.success(request, f'Banco "{nombre}" creado y activado exitosamente.')
-                    return redirect('docente_banco_observaciones')
+                    return redirect('docente_banco')
                 else:
                     messages.error(request, f'Error: {error}')
         
@@ -92,8 +81,17 @@ def docente_banco_observaciones(request):
             banco_id = request.POST.get('banco_id')
             success, banco, error = DocenteService.activar_banco(banco_id, docente)
             if success:
-                messages.success(request, f'Banco "{banco.nombre}" activado.')
-                return redirect('docente_banco_observaciones')
+                messages.success(request, f'✅ Banco "{banco.nombre}" activado.')
+                return redirect('docente_banco')
+            else:
+                messages.error(request, f'Error: {error}')
+        
+        elif accion == 'desactivar':
+            banco_id = request.POST.get('banco_id')
+            success, banco, error = DocenteService.desactivar_banco(banco_id, docente)
+            if success:
+                messages.info(request, f'Banco "{banco.nombre}" desactivado.')
+                return redirect('docente_banco')
             else:
                 messages.error(request, f'Error: {error}')
         
@@ -102,7 +100,7 @@ def docente_banco_observaciones(request):
             success, error = DocenteService.eliminar_banco(banco_id, docente)
             if success:
                 messages.success(request, 'Banco eliminado exitosamente.')
-                return redirect('docente_banco_observaciones')
+                return redirect('docente_banco')
             else:
                 messages.error(request, f'Error: {error}')
     
@@ -119,45 +117,104 @@ def docente_banco_observaciones(request):
         'total_bancos': bancos.count(),
     }
     
-    return render(request, 'docente/banco_observaciones.html', context)
+    return render(request, 'docente/banco.html', context)
 
 
+@requiere_rol('docente')
 def docente_revisar_informe(request, informe_id):
     """
     Revisar informe con IA y tabla editable de observaciones
     ACTUALIZADO v2.0: Usa banco personalizado del docente
+    FLUJO:
+    1. Mostrar info del informe + botón "Iniciar Validación con IA"
+    2. Al hacer POST con accion='validar_ia' → Procesar con IA
+    3. Mostrar observaciones generadas para editar
+    4. Enviar dictamen final
     """
-    if not _verificar_docente(request):
-        messages.error(request, 'Acceso denegado.')
-        return redirect('login_docente')
     
     docente = Usuario.objects.get(id=request.session['usuario_id'])
     informe = get_object_or_404(Informe, id=informe_id, docente_revisor=docente)
     
-    # Si está en estado PENDIENTE_DOCENTE o RECHAZADO_PRESIDENTE, validar con IA
-    if informe.estado in [Informe.ESTADO_PENDIENTE_DOCENTE, Informe.ESTADO_RECHAZADO_PRESIDENTE]:
-        # Verificar que tenga banco activo
-        banco_activo = DocenteService.obtener_banco_activo(docente)
-        if not banco_activo:
-            messages.warning(request, 'Debe crear un banco de observaciones antes de revisar informes.')
-            return redirect('docente_banco_observaciones')
-        
-        # Si no se ha validado con IA, hacerlo
-        if not informe.observaciones.exists():
-            success, observaciones, error = DocenteService.validar_informe_con_ia(
-                informe_id, docente
-            )
-            if not success:
-                messages.error(request, f'Error al validar con IA: {error}')
-                return redirect('panel_docente')
-            
-            messages.info(request, f'Validación con IA completada. {len(observaciones)} observaciones generadas.')
+    # Obtener todos los bancos activos del docente (v2.1: múltiples permitidos)
+    bancos_disponibles = DocenteService.obtener_todos_bancos(docente).filter(activo=True)
+    if not bancos_disponibles.exists():
+        messages.warning(request, 'Debe crear y activar un banco de observaciones antes de revisar informes.')
+        return redirect('docente_banco')
     
-    # Procesar formulario de edición de observaciones
+    # Procesar formulario
     if request.method == 'POST':
         accion = request.POST.get('accion')
         
-        if accion == 'actualizar_observaciones':
+        # ACCIÓN 1: VALIDAR CON IA (v2.1 - Con selección de banco)
+        if accion == 'validar_ia':
+            banco_id = request.POST.get('banco_id')
+            
+            if not banco_id:
+                messages.error(request, 'Debe seleccionar un banco de observaciones.')
+                return redirect('docente_revisar_informe', informe_id=informe_id)
+            
+            # Verificar que el banco pertenece al docente
+            try:
+                from apps.observaciones.models import BancoObservacionesDocente
+                banco = BancoObservacionesDocente.objects.get(id=banco_id, docente=docente, activo=True)
+            except BancoObservacionesDocente.DoesNotExist:
+                messages.error(request, 'Banco de observaciones no válido.')
+                return redirect('docente_revisar_informe', informe_id=informe_id)
+            
+            # Verificar que no tenga observaciones ya generadas
+            if informe.observaciones.exists():
+                messages.warning(request, 'Este informe ya fue validado con IA.')
+            else:
+                # Validar con el banco seleccionado
+                success, observaciones_generadas, error = DocenteService.validar_informe_con_ia(
+                    informe_id, docente, banco_especifico=banco
+                )
+                
+                # Solo mostrar resultado final
+                if success:
+                    messages.success(request, f'✅ Validación completada con banco "{banco.nombre}". Se generaron {len(observaciones_generadas)} observaciones.')
+                    messages.info(request, 'Revisa las observaciones y edítalas si es necesario antes de enviar el dictamen.')
+                else:
+                    messages.error(request, f'❌ Error al validar: {error}')
+                
+                # Recargar la página para mostrar observaciones
+                return redirect('docente_revisar_informe', informe_id=informe_id)
+        
+        # ACCIÓN NUEVA: RE-VALIDAR (v2.1 - Con selección de banco)
+        elif accion == 'revalidar':
+            banco_id = request.POST.get('banco_id')
+            
+            if not banco_id:
+                messages.error(request, 'Debe seleccionar un banco de observaciones.')
+                return redirect('docente_revisar_informe', informe_id=informe_id)
+            
+            # Verificar que el banco pertenece al docente
+            try:
+                from apps.observaciones.models import BancoObservacionesDocente
+                banco = BancoObservacionesDocente.objects.get(id=banco_id, docente=docente, activo=True)
+            except BancoObservacionesDocente.DoesNotExist:
+                messages.error(request, 'Banco de observaciones no válido.')
+                return redirect('docente_revisar_informe', informe_id=informe_id)
+            
+            # Eliminar observaciones anteriores
+            obs_count = informe.observaciones.count()
+            informe.observaciones.all().delete()
+            
+            # Validar de nuevo con el banco seleccionado
+            success, observaciones_generadas, error = DocenteService.validar_informe_con_ia(
+                informe_id, docente, banco_especifico=banco
+            )
+            
+            # Solo mostrar resultado final
+            if success:
+                messages.success(request, f'✅ Re-validación completada con banco "{banco.nombre}". Se generaron {len(observaciones_generadas)} nuevas observaciones (se eliminaron {obs_count} anteriores).')
+            else:
+                messages.error(request, f'❌ Error al re-validar: {error}')
+            
+            return redirect('docente_revisar_informe', informe_id=informe_id)
+        
+        # ACCIÓN 2: ACTUALIZAR OBSERVACIONES
+        elif accion == 'actualizar_observaciones':
             # Actualizar cada observación
             observaciones = informe.observaciones.all()
             for obs in observaciones:
@@ -179,17 +236,50 @@ def docente_revisar_informe(request, informe_id):
         
         elif accion == 'enviar_dictamen':
             comentario_general = request.POST.get('comentario_general')
-            recomendar = request.POST.get('recomendar') == 'aprobar'
+            recomendar = request.POST.get('recomendar')
             
+            # Validaciones
             if not comentario_general or len(comentario_general.strip()) < 20:
                 messages.error(request, 'Debe proporcionar un dictamen detallado (mínimo 20 caracteres).')
+            elif not recomendar:
+                messages.error(request, 'Debe seleccionar una recomendación (Aprobar o Rechazar).')
             else:
+                # PRIMERO: Actualizar observaciones con los datos del formulario
+                observaciones = informe.observaciones.all()
+                count_confirmadas = 0
+                
+                for obs in observaciones:
+                    obs_accion = request.POST.get(f'obs_accion_{obs.id}')
+                    obs_comentario = request.POST.get(f'obs_comentario_{obs.id}', '')
+                    obs_severidad = request.POST.get(f'obs_severidad_{obs.id}')
+                    
+                    if obs_accion == 'confirmar':
+                        obs.estado = ObservacionGenerada.ESTADO_CONFIRMADA
+                        count_confirmadas += 1
+                    elif obs_accion == 'descartar':
+                        obs.estado = ObservacionGenerada.ESTADO_DESCARTADA
+                    
+                    obs.comentario_docente = obs_comentario
+                    if obs_severidad:
+                        obs.severidad = obs_severidad
+                    obs.save()
+                
+                # Validar: Si recomienda rechazar, debe haber al menos 1 observación confirmada
+                if recomendar == 'rechazar' and count_confirmadas == 0:
+                    messages.warning(request, 
+                        '⚠️ Si recomiendas RECHAZAR, debes confirmar al menos 1 observación. '
+                        'De lo contrario, considera recomendar APROBAR.'
+                    )
+                    return redirect('docente_revisar_informe', informe_id=informe_id)
+                
+                # LUEGO: Enviar dictamen
                 success, informe_actualizado, error = DocenteService.enviar_dictamen_a_presidente(
-                    informe_id, docente, comentario_general, recomendar
+                    informe_id, docente, comentario_general, recomendar == 'aprobar'
                 )
                 
                 if success:
-                    messages.success(request, 'Dictamen enviado al presidente exitosamente.')
+                    obs_texto = f"con {count_confirmadas} observación(es) confirmada(s)" if count_confirmadas > 0 else "sin observaciones"
+                    messages.success(request, f'✅ Dictamen enviado al presidente exitosamente {obs_texto}.')
                     return redirect('panel_docente')
                 else:
                     messages.error(request, f'Error: {error}')
@@ -211,18 +301,17 @@ def docente_revisar_informe(request, informe_id):
         'obs_descartadas': obs_descartadas,
         'total_observaciones': observaciones.count(),
         'banco_usado': informe.banco_observaciones_usado,
+        'bancos_disponibles': bancos_disponibles,  # v2.1: Lista de bancos para elegir
     }
     
-    return render(request, 'docente/revisar_informe.html', context)
+    return render(request, 'docente/revisar.html', context)
 
 
+@requiere_rol('docente')
 def docente_ver_informe(request, informe_id):
     """
     Ver detalle de un informe (solo lectura)
     """
-    if not _verificar_docente(request):
-        messages.error(request, 'Acceso denegado.')
-        return redirect('login_docente')
     
     docente = Usuario.objects.get(id=request.session['usuario_id'])
     informe = get_object_or_404(Informe, id=informe_id, docente_revisor=docente)
@@ -238,16 +327,14 @@ def docente_ver_informe(request, informe_id):
         'total_observaciones': observaciones.count(),
     }
     
-    return render(request, 'docente/ver_informe.html', context)
+    return render(request, 'docente/ver.html', context)
 
 
+@requiere_rol('docente')
 def docente_historial(request):
     """
     Ver historial de informes revisados
     """
-    if not _verificar_docente(request):
-        messages.error(request, 'Acceso denegado.')
-        return redirect('login_docente')
     
     docente = Usuario.objects.get(id=request.session['usuario_id'])
     
@@ -266,13 +353,11 @@ def docente_historial(request):
     return render(request, 'docente/historial.html', context)
 
 
+@requiere_rol('docente')
 def docente_notificaciones(request):
     """
     Ver todas las notificaciones
     """
-    if not _verificar_docente(request):
-        messages.error(request, 'Acceso denegado.')
-        return redirect('login_docente')
     
     docente = Usuario.objects.get(id=request.session['usuario_id'])
     

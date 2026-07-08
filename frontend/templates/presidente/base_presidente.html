@@ -2,7 +2,7 @@
 
 {% block navbar_home %}{% url 'presidente_dashboard' %}{% endblock %}
 
-{% block role_badge_class %}bg-danger{% endblock %}
+{% block role_badge_class %}bg-untels-blue{% endblock %}
 {% block role_name %}Presidente{% endblock %}
 
 {% block notificaciones_url %}{% url 'presidente_notificaciones' %}{% endblock %}
@@ -23,7 +23,7 @@
   <a class="nav-link {% block nav_notificaciones %}{% endblock %}" href="{% url 'presidente_notificaciones' %}">
     <i class="bi bi-bell me-1"></i>Notificaciones
     {% if notificaciones_count > 0 %}
-      <span class="badge bg-danger ms-1">{{ notificaciones_count }}</span>
+      <span class="badge bg-warning ms-1">{{ notificaciones_count }}</span>
     {% endif %}
   </a>
 </li>

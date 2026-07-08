@@ -7,21 +7,11 @@ from apps.observaciones.models import ObservacionGenerada
 from apps.observaciones.services import obtener_observaciones, validar_informe
 from apps.reglamento.services import obtener_reglamento
 from apps.usuarios.models import Usuario
+from apps.core.decorators import requiere_rol
 
 
-def _verificar_estudiante(request):
-    if 'usuario_id' not in request.session:
-        return False
-    if request.session.get('usuario_tipo') == 'docente':
-        return False
-    return True
-
-
+@requiere_rol('estudiante')
 def upload_view(request):
-    if not _verificar_estudiante(request):
-        messages.error(request, 'Debes iniciar sesión como estudiante.')
-        return redirect('login')
-
     context = {
         'codigo': request.session.get('usuario_codigo'),
         'nombre': request.session.get('usuario_nombre'),
@@ -55,7 +45,7 @@ def upload_view(request):
 
             informe_previo = Informe.objects.filter(
                 usuario=usuario,
-                estado=Informe.ESTADO_RECHAZADO,
+                estado=Informe.ESTADO_RECHAZADO_ESTUDIANTE,
             ).order_by('-fecha_registro').first()
 
             version = 1
@@ -63,52 +53,33 @@ def upload_view(request):
                 version = informe_previo.version + 1
                 messages.info(request, f'Detectado reenvío - Versión {version} del informe.')
 
+            # FLUJO V2.0: Crear informe y dejarlo en estado ENVIADO
+            # La secretaria lo derivará al presidente, quien asignará docente
             informe = Informe.objects.create(
                 usuario=usuario,
                 nombre_archivo=archivo.name,
+                archivo=archivo,  # Guardar el archivo físicamente
                 contenido=contenido,
-                estado=Informe.ESTADO_ENVIADO,
+                estado=Informe.ESTADO_ENVIADO,  # Se queda aquí para flujo v2.0
                 version=version,
                 informe_anterior=informe_previo,
+                escuela=usuario.escuela,  # Asignar escuela del estudiante
             )
-            informe.transition_to(Informe.ESTADO_VALIDANDO)
             informe.save()
 
-            try:
-                reglamento = obtener_reglamento()
-                observaciones_banco = obtener_observaciones()
-                resultado = validar_informe(contenido, reglamento, observaciones_banco)
-            except Exception:
-                resultado = []
-                messages.warning(request, 'La IA no pudo procesar el informe. Será revisado manualmente por el docente.')
-
-            for obs in resultado:
-                severidad = obs.get('severidad', 'importante')
-                if severidad not in ['critica', 'importante', 'menor', 'sugerencia']:
-                    severidad = 'importante'
-
-                ObservacionGenerada.objects.create(
-                    informe=informe,
-                    seccion=obs.get('seccion', 'General'),
-                    observacion=obs.get('observacion', ''),
-                    ubicacion_error=obs.get('ubicacion', 'No especificada'),
-                    estado=ObservacionGenerada.ESTADO_PENDIENTE,
-                    severidad=severidad,
-                )
-
-            if resultado:
-                informe.transition_to(Informe.ESTADO_OBSERVADO)
-                messages.success(request, f'Informe procesado. La IA detectó {len(resultado)} observación(es). Esperando revisión del docente.')
-            else:
-                informe.transition_to(Informe.ESTADO_OBSERVADO)
-                messages.success(request, 'Informe procesado. No se detectaron observaciones por la IA. Esperando revisión del docente.')
-
-            informe.save()
-            return redirect('resultado', informe_id=informe.id)
+            messages.success(request, 
+                f'✅ Informe "{archivo.name}" enviado correctamente.<br>'
+                '<strong>Próximos pasos:</strong><br>'
+                '1. La Secretaría Académica derivará tu informe al Presidente de Escuela<br>'
+                '2. El Presidente asignará un Docente revisor<br>'
+                '3. El Docente validará tu informe con IA<br>'
+                '4. Recibirás el resultado final'
+            )
+            return redirect('historial')
         except Exception as e:
             if informe:
-                if informe.estado == Informe.ESTADO_VALIDANDO:
-                    informe.transition_to(Informe.ESTADO_OBSERVADO)
+                if informe.estado == Informe.ESTADO_VALIDANDO_IA:
+                    informe.transition_to(Informe.ESTADO_REVISION_DOCENTE)
                 informe.save()
             messages.error(request, f'Error al procesar el informe: {str(e)}. El informe fue guardado para revisión manual.')
             return render(request, 'upload_report.html', context)
@@ -116,6 +87,7 @@ def upload_view(request):
     return render(request, 'upload_report.html', context)
 
 
+@requiere_rol('estudiante')
 def resultado_view(request, informe_id):
     if 'usuario_id' not in request.session:
         return redirect('login')
@@ -151,11 +123,8 @@ def resultado_view(request, informe_id):
     return render(request, 'validation_result.html', context)
 
 
+@requiere_rol('estudiante')
 def historial_view(request):
-    if not _verificar_estudiante(request):
-        messages.error(request, 'Debes iniciar sesión como estudiante.')
-        return redirect('login')
-
     usuario = Usuario.objects.get(id=request.session['usuario_id'])
     informes = Informe.objects.filter(usuario=usuario).order_by('-fecha_registro')
     context = {

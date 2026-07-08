@@ -9,7 +9,7 @@ class Informe(models.Model):
     Pasa por múltiples estados y roles
     Versión 2.0 - Flujo completo multi-rol
     """
-    # ESTADOS COMPLETOS DEL NUEVO FLUJO v2.0
+    # ESTADOS COMPLETOS DEL FLUJO v2.0
     ESTADO_ENVIADO = 'enviado'
     ESTADO_PENDIENTE_SECRETARIA = 'pendiente_secretaria'
     ESTADO_PENDIENTE_PRESIDENTE = 'pendiente_presidente'
@@ -21,14 +21,6 @@ class Informe(models.Model):
     ESTADO_RECHAZADO_PRESIDENTE = 'rechazado_presidente'
     ESTADO_APROBADO_FINAL = 'aprobado_final'
     ESTADO_RECHAZADO_ESTUDIANTE = 'rechazado_estudiante'
-    
-    # MANTENER estados antiguos para compatibilidad (deprecados)
-    ESTADO_VALIDANDO = 'validando'                  # DEPRECADO - usar ESTADO_VALIDANDO_IA
-    ESTADO_OBSERVADO = 'observado'                  # DEPRECADO - usar ESTADO_REVISION_DOCENTE
-    ESTADO_EN_REVISION_DOCENTE = 'revision_docente' # OK - se mantiene
-    ESTADO_RECHAZADO = 'rechazado'                  # DEPRECADO - usar ESTADO_RECHAZADO_ESTUDIANTE
-    ESTADO_APROBADO = 'aprobado'                    # DEPRECADO - usar ESTADO_APROBADO_FINAL
-    ESTADO_COMPLETADO = 'completado'                # DEPRECADO - usar ESTADO_APROBADO_FINAL
 
     ESTADO_CHOICES = [
         (ESTADO_ENVIADO, 'Enviado por Estudiante'),
@@ -42,12 +34,6 @@ class Informe(models.Model):
         (ESTADO_RECHAZADO_PRESIDENTE, 'Rechazado por Presidente'),
         (ESTADO_APROBADO_FINAL, 'APROBADO FINAL'),
         (ESTADO_RECHAZADO_ESTUDIANTE, 'Rechazado - Estudiante debe Corregir'),
-        # Deprecados pero mantenidos para compatibilidad
-        (ESTADO_VALIDANDO, 'Validando con IA (deprecado)'),
-        (ESTADO_OBSERVADO, 'Con Observaciones (deprecado)'),
-        (ESTADO_RECHAZADO, 'Rechazado (deprecado)'),
-        (ESTADO_APROBADO, 'Aprobado (deprecado)'),
-        (ESTADO_COMPLETADO, 'Completado (deprecado)'),
     ]
 
     # Campos básicos

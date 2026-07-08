@@ -6,7 +6,7 @@
 <div class="container">
   <div class="row mb-4">
     <div class="col-12">
-      <h2><i class="bi bi-book text-success me-2"></i>Mi Banco de Observaciones</h2>
+      <h2><i class="bi bi-book text-untels-blue me-2"></i>Mi Banco de Observaciones</h2>
       <p class="text-muted">Gestiona tus bancos personalizados de observaciones</p>
     </div>
   </div>
@@ -15,12 +15,13 @@
   <div class="row mb-4">
     <div class="col-12">
       <div class="card shadow-sm">
-        <div class="card-header bg-success text-white">
+        <div class="card-header-untels">
           <h5 class="mb-0"><i class="bi bi-plus-circle me-2"></i>Crear Nuevo Banco</h5>
         </div>
         <div class="card-body">
-          <form method="post" enctype="multipart/form-data" action="{% url 'docente_banco_crear' %}">
+          <form method="post" enctype="multipart/form-data" action="{% url 'docente_banco' %}">
             {% csrf_token %}
+            <input type="hidden" name="accion" value="crear">
             <div class="row">
               <div class="col-md-6 mb-3">
                 <label for="nombre" class="form-label fw-semibold">Nombre del Banco <span class="text-danger">*</span></label>
@@ -36,13 +37,13 @@
               </div>
 
               <div class="col-md-6 mb-3">
-                <label for="archivo" class="form-label fw-semibold">Archivo (PDF o DOCX) <span class="text-danger">*</span></label>
+                <label for="archivo" class="form-label fw-semibold">Archivo (PDF, DOCX o TXT) <span class="text-danger">*</span></label>
                 <input 
                   type="file" 
                   class="form-control" 
                   id="archivo" 
                   name="archivo" 
-                  accept=".pdf,.docx"
+                  accept=".pdf,.docx,.txt"
                   required
                 >
                 <small class="form-text text-muted">El contenido será extraído automáticamente</small>
@@ -50,16 +51,17 @@
             </div>
 
             <div class="alert alert-info mb-3">
-              <h6 class="alert-heading"><i class="bi bi-info-circle-fill me-2"></i>Importante:</h6>
+              <h6 class="alert-heading"><i class="bi bi-info-circle-fill me-2"></i>¿Cómo funciona? (v2.1)</h6>
               <ul class="mb-0 small">
                 <li>El archivo debe contener las observaciones que usarás para validar informes</li>
                 <li>Al crear un nuevo banco, se activará automáticamente</li>
-                <li>Solo puedes tener un banco activo a la vez</li>
+                <li><strong class="text-primary">✨ NUEVO:</strong> Puedes tener múltiples bancos activos simultáneamente</li>
+                <li>Al validar, seleccionarás cuál banco usar (o la IA usará todos los activos)</li>
                 <li>El sistema extraerá el texto del archivo automáticamente</li>
               </ul>
             </div>
 
-            <button type="submit" class="btn btn-success">
+            <button type="submit" class="btn btn-primary">
               <i class="bi bi-plus-circle-fill me-2"></i>Crear y Activar Banco
             </button>
           </form>
@@ -90,16 +92,16 @@
                 </thead>
                 <tbody>
                   {% for banco in bancos %}
-                  <tr class="{% if banco.activo %}table-success{% endif %}">
+                   <tr class="{% if banco.activo %}table-primary{% endif %}">
                     <td>
                       <strong>{{ banco.nombre }}</strong>
                       {% if banco.activo %}
-                        <span class="badge bg-success ms-2">ACTIVO</span>
+                        <span class="badge bg-primary ms-2">ACTIVO</span>
                       {% endif %}
                     </td>
                     <td>
                       {% if banco.activo %}
-                        <i class="bi bi-check-circle-fill text-success"></i> Activo
+                        <i class="bi bi-check-circle-fill text-untels-blue"></i> Activo
                       {% else %}
                         <i class="bi bi-circle text-muted"></i> Inactivo
                       {% endif %}
@@ -112,18 +114,21 @@
                       </a>
                     </td>
                     <td class="text-center">
-                      {% if not banco.activo %}
-                        <form method="post" action="{% url 'docente_banco_activar' banco.id %}" class="d-inline">
-                          {% csrf_token %}
-                          <button type="submit" class="btn btn-sm btn-success" title="Activar">
-                            <i class="bi bi-check-circle"></i> Activar
-                          </button>
-                        </form>
-                      {% endif %}
+                      <!-- Toggle Activar/Desactivar -->
+                      <form method="post" action="{% url 'docente_banco' %}" class="d-inline">
+                        {% csrf_token %}
+                        <input type="hidden" name="accion" value="{% if banco.activo %}desactivar{% else %}activar{% endif %}">
+                        <input type="hidden" name="banco_id" value="{{ banco.id }}">
+                        <button type="submit" class="btn btn-sm {% if banco.activo %}btn-success{% else %}btn-outline-secondary{% endif %}" 
+                                title="{% if banco.activo %}Desactivar{% else %}Activar{% endif %}">
+                          <i class="bi bi-{% if banco.activo %}toggle-on{% else %}toggle-off{% endif %}"></i>
+                          {% if banco.activo %}Activo{% else %}Activar{% endif %}
+                        </button>
+                      </form>
 
                       <button 
                         type="button" 
-                        class="btn btn-sm btn-outline-info" 
+                        class="btn btn-sm btn-outline-primary" 
                         data-bs-toggle="modal" 
                         data-bs-target="#verContenidoModal{{ banco.id }}"
                         title="Ver contenido"
@@ -131,9 +136,11 @@
                         <i class="bi bi-eye"></i>
                       </button>
 
-                      <form method="post" action="{% url 'docente_banco_eliminar' banco.id %}" class="d-inline" onsubmit="return confirm('¿Estás seguro de eliminar este banco?');">
+                      <form method="post" action="{% url 'docente_banco' %}" class="d-inline" onsubmit="return confirm('¿Estás seguro de eliminar este banco?');">
                         {% csrf_token %}
-                        <button type="submit" class="btn btn-sm btn-outline-danger" title="Eliminar" {% if banco.activo and bancos|length == 1 %}disabled{% endif %}>
+                        <input type="hidden" name="accion" value="eliminar">
+                        <input type="hidden" name="banco_id" value="{{ banco.id }}">
+                        <button type="submit" class="btn btn-sm btn-outline-warning" title="Eliminar" {% if banco.activo and bancos|length == 1 %}disabled{% endif %}>
                           <i class="bi bi-trash"></i>
                         </button>
                       </form>
@@ -149,10 +156,10 @@
                           <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                         </div>
                         <div class="modal-body">
-                          <div class="alert alert-info">
-                            <small><i class="bi bi-info-circle me-1"></i>Contenido extraído del archivo</small>
+                          <div class="alert alert-info mb-3">
+                            <small><i class="bi bi-info-circle me-1"></i>Contenido extraído del archivo ({{ banco.contenido_extraido|length }} caracteres)</small>
                           </div>
-                          <pre class="bg-light p-3 rounded" style="max-height: 400px; overflow-y: auto; white-space: pre-wrap;">{{ banco.contenido_extraido }}</pre>
+                          <div class="bg-light p-3 rounded" style="max-height: 400px; overflow-y: auto; font-family: monospace; font-size: 0.85rem; line-height: 1.4; word-wrap: break-word; white-space: pre-wrap;">{{ banco.contenido_extraido }}</div>
                         </div>
                         <div class="modal-footer">
                           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>

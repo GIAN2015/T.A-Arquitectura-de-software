@@ -14,7 +14,7 @@
         </ol>
       </nav>
       <h2 class="mb-1">
-        <i class="bi bi-send text-purple me-2"></i>
+        <i class="bi bi-send text-untels-blue me-2"></i>
         Derivar Informe a Presidente
       </h2>
       <p class="text-muted">Asigne este informe al presidente de la escuela correspondiente</p>
@@ -40,10 +40,10 @@
           <div class="mb-3">
             <label class="text-muted small">Estudiante</label>
             <p class="mb-0">
-              <i class="bi bi-person-circle text-purple me-2"></i>
-              <strong>{{ informe.usuario.get_full_name|default:informe.usuario.username }}</strong>
+              <i class="bi bi-person-circle text-untels-blue me-2"></i>
+              <strong>{{ informe.usuario.nombre }}</strong>
               <br>
-              <small class="text-muted ms-4">{{ informe.usuario.username }}</small>
+              <small class="text-muted ms-4">{{ informe.usuario.codigo }}</small>
             </p>
           </div>
 
@@ -89,7 +89,7 @@
     <!-- FORMULARIO DE DERIVACIÓN -->
     <div class="col-lg-7">
       <div class="card shadow-sm">
-        <div class="card-header bg-purple text-white">
+        <div class="card-header-untels">
           <h5 class="mb-0">
             <i class="bi bi-building me-2"></i>
             Derivar a Escuela
@@ -114,8 +114,8 @@
                 {% for escuela in escuelas %}
                   <option 
                     value="{{ escuela.id }}" 
-                    data-presidente="{{ escuela.presidente.get_full_name|default:escuela.presidente.username }}"
-                    data-presidente-codigo="{{ escuela.presidente.username }}"
+                    data-presidente="{{ escuela.presidente.nombre }}"
+                    data-presidente-codigo="{{ escuela.presidente.codigo }}"
                   >
                     {{ escuela.nombre }}
                   </option>
@@ -154,7 +154,7 @@
             </div>
 
             <div class="d-grid gap-2">
-              <button type="submit" class="btn btn-purple btn-lg text-white">
+              <button type="submit" class="btn btn-untels btn-lg">
                 <i class="bi bi-send-fill me-2"></i>
                 Derivar Informe al Presidente
               </button>
@@ -169,17 +169,6 @@
     </div>
   </div>
 </div>
-
-<style>
-  .btn-purple {
-    background-color: #7c3aed;
-    border-color: #7c3aed;
-  }
-  .btn-purple:hover {
-    background-color: #6d28d9;
-    border-color: #6d28d9;
-  }
-</style>
 
 <script>
 function updatePresidente() {

@@ -219,6 +219,32 @@ class NotificacionService:
         )
     
     @staticmethod
+    def notificar_rechazo_final_a_estudiante(informe):
+        """
+        Notificar a estudiante cuando su informe es rechazado por el presidente
+        (después de que el docente lo había aprobado)
+        
+        Args:
+            informe: Informe rechazado por presidente
+        
+        Returns:
+            Notificacion creada
+        """
+        motivo = informe.comentario_presidente or "No se especificó motivo"
+        
+        return NotificacionService.crear_notificacion(
+            usuario=informe.usuario,
+            informe=informe,
+            tipo='rechazado_estudiante',
+            titulo='Informe Rechazado por Presidente - Requiere Correcciones',
+            mensaje=f'Su informe "{informe.nombre_archivo}" fue revisado por el docente '
+                    f'{informe.docente_revisor.nombre}, pero el Presidente de Escuela '
+                    f'{informe.presidente_asignado.nombre} solicitó correcciones adicionales. '
+                    f'Motivo del rechazo: {motivo}. '
+                    f'Por favor corrija su informe y envíelo nuevamente.'
+        )
+    
+    @staticmethod
     def obtener_no_leidas(usuario):
         """
         Obtener notificaciones no leídas de un usuario

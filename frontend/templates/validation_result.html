@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load dictamen_filters %}
 
 {% block title %}Resultado de Validación{% endblock %}
 
@@ -28,74 +29,77 @@
 <!-- Estado del Informe -->
 <div class="row mb-4">
   <div class="col-12">
-    {% if informe.estado == 'aprobado' %}
+    {% if informe.estado == 'aprobado_final' %}
     <div class="alert alert-success border-0 shadow-sm">
       <div class="d-flex align-items-center">
-        <div class="me-3" style="font-size: 3rem;">✅</div>
+        <div class="me-3" style="font-size: 3rem;"><i class="bi bi-check-circle-fill"></i></div>
         <div class="flex-grow-1">
-          <h4 class="alert-heading mb-2">¡Informe Aprobado!</h4>
-          <p class="mb-0">Tu informe ha sido revisado y aprobado por el docente {{ informe.docente_revisor.nombre }}.</p>
-          {% if informe.fecha_revision_docente %}
-          <small class="text-muted">Fecha de aprobación: {{ informe.fecha_revision_docente|date:"d/m/Y H:i" }}</small>
+          <h4 class="alert-heading mb-2">¡Informe APROBADO!</h4>
+          <p class="mb-0">Tu informe ha sido aprobado. El proceso de validación ha finalizado exitosamente.</p>
+          {% if informe.fecha_completado %}
+          <small class="text-muted">Fecha de aprobación final: {{ informe.fecha_completado|date:"d/m/Y H:i" }}</small>
           {% endif %}
         </div>
       </div>
     </div>
     
-    {% elif informe.estado == 'rechazado' %}
+    {% elif informe.estado == 'rechazado_estudiante' %}
     <div class="alert alert-danger border-0 shadow-sm">
       <div class="d-flex align-items-center">
-        <div class="me-3" style="font-size: 3rem;">❌</div>
+        <div class="me-3" style="font-size: 3rem;"><i class="bi bi-x-circle-fill"></i></div>
         <div class="flex-grow-1">
           <h4 class="alert-heading mb-2">Informe Rechazado - Requiere Correcciones</h4>
-          <p class="mb-0">El docente {{ informe.docente_revisor.nombre }} ha revisado tu informe y requiere que corrijas las observaciones marcadas.</p>
-          {% if informe.fecha_revision_docente %}
-          <small class="text-muted">Fecha de revisión: {{ informe.fecha_revision_docente|date:"d/m/Y H:i" }}</small>
+          <p class="mb-0">Tu informe requiere correcciones. Por favor revisa las observaciones y comentarios abajo.</p>
+          {% if informe.comentario_presidente %}
+          <div class="mt-3 p-3 bg-white rounded">
+            <strong><i class="bi bi-person-badge me-1"></i>Comentario del Presidente:</strong>
+            <p class="mb-0 mt-2">{{ informe.comentario_presidente }}</p>
+          </div>
           {% endif %}
         </div>
       </div>
     </div>
     
-    {% elif informe.estado == 'revision_docente' %}
-    <div class="alert alert-primary border-0 shadow-sm">
+    {% elif informe.estado == 'enviado' %}
+    <div class="alert alert-secondary border-0 shadow-sm">
       <div class="d-flex align-items-center">
-        <div class="me-3" style="font-size: 3rem;">👨‍🏫</div>
+        <div class="me-3" style="font-size: 3rem;"><i class="bi bi-envelope-fill"></i></div>
         <div class="flex-grow-1">
-          <h4 class="alert-heading mb-2">Informe en Revisión Docente</h4>
-          <p class="mb-0">El docente está evaluando tu informe y preparando observaciones formales.</p>
+          <h4 class="alert-heading mb-2">Informe Enviado</h4>
+          <p class="mb-0">Tu informe está en proceso de revisión.</p>
         </div>
       </div>
     </div>
 
-    {% elif informe.estado == 'observado' %}
-    <div class="alert alert-warning border-0 shadow-sm">
-      <div class="d-flex align-items-center">
-        <div class="me-3" style="font-size: 3rem;">⚠️</div>
-        <div class="flex-grow-1">
-          <h4 class="alert-heading mb-2">Informe con Observaciones - Pendiente de Revisión Docente</h4>
-          <p class="mb-0">Tu informe fue enviado al docente. Las observaciones finales aparecerán cuando el docente confirme cuáles aplican.</p>
-        </div>
-      </div>
-    </div>
-    
-    {% elif informe.estado == 'validando' %}
+    {% elif informe.estado == 'validando_ia' %}
     <div class="alert alert-info border-0 shadow-sm">
       <div class="d-flex align-items-center">
-        <div class="me-3" style="font-size: 3rem;">🔄</div>
+        <div class="me-3" style="font-size: 3rem;"><i class="bi bi-robot"></i></div>
         <div class="flex-grow-1">
           <h4 class="alert-heading mb-2">Validando con IA...</h4>
-          <p class="mb-0">Tu informe está siendo procesado por el sistema de validación automática.</p>
+          <p class="mb-0">Tu informe está siendo analizado automáticamente.</p>
         </div>
       </div>
     </div>
     
-    {% elif informe.estado == 'completado' %}
-    <div class="alert alert-success border-0 shadow-sm">
+    {% elif informe.estado == 'revision_docente' or informe.estado == 'pendiente_aprobacion_presidente' or informe.estado == 'aprobado_presidente' %}
+    <div class="alert alert-primary border-0 shadow-sm">
       <div class="d-flex align-items-center">
-        <div class="me-3" style="font-size: 3rem;">✅</div>
+        <div class="me-3" style="font-size: 3rem;"><i class="bi bi-hourglass-split"></i></div>
         <div class="flex-grow-1">
-          <h4 class="alert-heading mb-2">¡Proceso Completado!</h4>
-          <p class="mb-0">Tu informe ha completado el proceso de validación exitosamente.</p>
+          <h4 class="alert-heading mb-2">Informe en Revisión</h4>
+          <p class="mb-0">Tu informe está siendo revisado. Te notificaremos cuando haya novedades.</p>
+        </div>
+      </div>
+    </div>
+    
+    {% else %}
+    <div class="alert alert-info border-0 shadow-sm">
+      <div class="d-flex align-items-center">
+        <div class="me-3" style="font-size: 3rem;"><i class="bi bi-info-circle-fill"></i></div>
+        <div class="flex-grow-1">
+          <h4 class="alert-heading mb-2">Informe en Proceso</h4>
+          <p class="mb-0">Estado: {{ informe.get_estado_display }}</p>
         </div>
       </div>
     </div>
@@ -103,17 +107,36 @@
   </div>
 </div>
 
-<!-- Comentario del Docente -->
-{% if informe.comentario_docente %}
+<!-- Dictamen del Docente (solo si fue rechazado) -->
+{% if informe.comentario_docente and informe.estado == 'rechazado_estudiante' %}
 <div class="row mb-4">
   <div class="col-12">
-    <div class="card border-0 shadow-sm">
-      <div class="card-header bg-untels text-white">
-        <h5 class="mb-0">💬 Comentario del Docente</h5>
+    <div class="card border-0 shadow-sm border-primary">
+      <div class="card-header bg-primary text-white">
+        <h5 class="mb-0"><i class="bi bi-file-text me-1"></i>Dictamen del Docente Revisor</h5>
         <small>{{ informe.docente_revisor.nombre }} - {{ informe.fecha_revision_docente|date:"d/m/Y H:i" }}</small>
       </div>
       <div class="card-body bg-light">
-        <p class="mb-0" style="white-space: pre-wrap;">{{ informe.comentario_docente }}</p>
+        {{ informe.comentario_docente|formatear_dictamen }}
+      </div>
+    </div>
+  </div>
+</div>
+{% endif %}
+
+<!-- Comentarios del Presidente (si lo rechazó) -->
+{% if informe.comentario_presidente and informe.estado == 'rechazado_estudiante' %}
+<div class="row mb-4">
+  <div class="col-12">
+    <div class="card border-0 shadow-sm border-warning">
+      <div class="card-header bg-warning">
+        <h5 class="mb-0"><i class="bi bi-person-badge me-1"></i>Comentarios del Presidente de Escuela</h5>
+        <small>{{ informe.presidente_asignado.nombre }}</small>
+      </div>
+      <div class="card-body">
+        <div class="alert alert-warning mb-0">
+          <p class="mb-0" style="white-space: pre-wrap;">{{ informe.comentario_presidente }}</p>
+        </div>
       </div>
     </div>
   </div>
@@ -121,13 +144,13 @@
 {% endif %}
 
 <!-- Observaciones -->
-{% if observaciones %}
+{% if observaciones and observaciones.count > 0 %}
 <div class="row mb-4">
   <div class="col-12">
-    <div class="card border-0 shadow-sm">
-      <div class="card-header bg-light border-0">
+    <div class="card border-0 shadow-sm border-danger">
+      <div class="card-header bg-danger text-white">
         <h5 class="mb-0 fw-bold">
-          📝 Observaciones Detectadas ({{ observaciones.count }})
+          <i class="bi bi-exclamation-triangle-fill me-2"></i>Observaciones que Debes Corregir ({{ observaciones.count }})
         </h5>
       </div>
       <div class="card-body p-0">
@@ -137,13 +160,13 @@
         <div class="p-3 border-bottom">
           <h6 class="mb-3">
             {% if grupo.grouper == 'critica' %}
-              <span class="badge bg-danger">🔴 Críticas</span> - Deben corregirse obligatoriamente
+              <span class="badge bg-danger"><i class="bi bi-x-circle-fill me-1"></i>Críticas</span> - Deben corregirse obligatoriamente
             {% elif grupo.grouper == 'importante' %}
-              <span class="badge bg-warning text-dark">🟡 Importantes</span> - Deben corregirse
+              <span class="badge bg-warning text-dark"><i class="bi bi-exclamation-triangle-fill me-1"></i>Importantes</span> - Deben corregirse
             {% elif grupo.grouper == 'menor' %}
-              <span class="badge bg-info">🔵 Menores</span> - Recomendadas
+              <span class="badge bg-info"><i class="bi bi-info-circle-fill me-1"></i>Menores</span> - Recomendadas
             {% elif grupo.grouper == 'sugerencia' %}
-              <span class="badge bg-secondary">💡 Sugerencias</span> - Opcionales
+              <span class="badge bg-secondary"><i class="bi bi-lightbulb-fill me-1"></i>Sugerencias</span> - Opcionales
             {% endif %}
           </h6>
           
@@ -156,13 +179,13 @@
                   <span class="badge bg-secondary">{{ obs.seccion }}</span>
                   
                   {% if obs.estado == 'confirmada' %}
-                    <span class="badge bg-danger ms-2">✓ Confirmada por Docente</span>
+                    <span class="badge bg-primary ms-2"><i class="bi bi-check-circle-fill me-1"></i>Confirmada por Docente</span>
                   {% elif obs.estado == 'descartada' %}
-                    <span class="badge bg-secondary ms-2">✗ Descartada por Docente</span>
+                    <span class="badge bg-secondary ms-2"><i class="bi bi-x-circle-fill me-1"></i>Descartada por Docente</span>
                   {% elif obs.estado == 'pendiente' %}
-                    <span class="badge bg-warning text-dark ms-2">⏳ Pendiente de Revisión</span>
+                    <span class="badge bg-warning text-dark ms-2"><i class="bi bi-hourglass me-1"></i>Pendiente de Revisión</span>
                   {% elif obs.estado == 'corregida' %}
-                    <span class="badge bg-success ms-2">✅ Corregida</span>
+                    <span class="badge bg-success ms-2"><i class="bi bi-check-circle-fill me-1"></i>Corregida</span>
                   {% endif %}
                 </div>
                 <small class="text-muted">{{ obs.ubicacion_error }}</small>
@@ -175,7 +198,7 @@
               
               {% if obs.comentario_docente %}
               <div class="alert alert-secondary border-0 mb-0">
-                <strong>💬 Comentario del Docente:</strong><br>
+                <strong><i class="bi bi-chat-fill me-1"></i>Comentario del Docente:</strong><br>
                 {{ obs.comentario_docente }}
               </div>
               {% endif %}
@@ -188,44 +211,20 @@
     </div>
   </div>
 </div>
-{% elif mostrar_feedback_docente %}
-<div class="row mb-4">
-  <div class="col-12">
-    <div class="card border-0 shadow-sm">
-      <div class="card-body text-center py-5">
-        <div style="font-size: 4rem; opacity: 0.3;">✅</div>
-        <h4 class="text-success mb-2">¡Sin Observaciones!</h4>
-        <p class="text-muted">Tu informe no tiene observaciones. ¡Excelente trabajo!</p>
-      </div>
-    </div>
-  </div>
-</div>
-{% else %}
-<div class="row mb-4">
-  <div class="col-12">
-    <div class="card border-0 shadow-sm">
-      <div class="card-body text-center py-5">
-        <div style="font-size: 4rem; opacity: 0.3;">⏳</div>
-        <h4 class="text-primary mb-2">Esperando Revisión del Docente</h4>
-        <p class="text-muted">Aún no hay observaciones finales disponibles para mostrar.</p>
-      </div>
-    </div>
-  </div>
-</div>
 {% endif %}
 
 <!-- Botón de Reenvío (solo si está rechazado) -->
-{% if informe.estado == 'rechazado' %}
+{% if informe.estado == 'rechazado_estudiante' %}
 <div class="row">
   <div class="col-12">
-    <div class="card border-0 shadow-sm bg-light">
+    <div class="card border-danger shadow-sm">
       <div class="card-body text-center">
-        <h5 class="mb-3">¿Ya corregiste las observaciones?</h5>
+        <h5 class="mb-3 text-danger"><i class="bi bi-exclamation-triangle-fill me-2"></i>Acción Requerida</h5>
         <p class="text-muted mb-4">
-          Sube una nueva versión de tu informe con las correcciones solicitadas
+          Debes corregir las observaciones marcadas y reenviar tu informe
         </p>
-        <a href="{% url 'upload' %}" class="btn btn-untels btn-lg">
-          📤 Reenviar Informe Corregido
+        <a href="{% url 'upload' %}" class="btn btn-danger btn-lg">
+          <i class="bi bi-upload me-2"></i>Reenviar Informe Corregido
         </a>
       </div>
     </div>
@@ -238,7 +237,7 @@
   <div class="col-12">
     <div class="card border-0 shadow-sm">
       <div class="card-body">
-        <h6 class="fw-bold mb-3">ℹ️ Información del Proceso</h6>
+        <h6 class="fw-bold mb-3"><i class="bi bi-info-circle-fill me-1"></i>Información del Proceso</h6>
         <div class="row g-3 small">
           <div class="col-md-3">
             <strong class="text-muted d-block">Estudiante:</strong>
@@ -272,8 +271,9 @@
             <div class="col-md-4">
               <strong class="text-muted d-block">Decisión:</strong>
               <span class="badge 
-                {% if informe.estado == 'aprobado' %}bg-success
-                {% elif informe.estado == 'rechazado' %}bg-danger
+                {% if informe.estado == 'aprobado_final' %}bg-success
+                {% elif informe.estado == 'rechazado_estudiante' %}bg-danger
+                {% elif informe.estado == 'aprobado_presidente' or informe.estado == 'pendiente_aprobacion_presidente' %}bg-primary
                 {% else %}bg-warning text-dark{% endif %}">
                 {{ informe.get_estado_display }}
               </span>

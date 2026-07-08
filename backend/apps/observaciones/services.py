@@ -38,7 +38,12 @@ def validar_informe(contenido_informe: str, reglamento: str, observaciones: str)
 
 
 def validar_con_groq(contenido_informe: str, reglamento: str, observaciones: str, api_key: str) -> list:
-    """Validación usando GROQ API (Llama 3.3 70B)"""
+    """
+    Validación usando API de IA (Groq o xAI Grok)
+    Detecta automáticamente el tipo de API por el formato de la key
+    """
+    import time
+    
     prompt = f"""Eres un evaluador academico de la UNTELS (Universidad Nacional Tecnologica de Lima Sur).
 Analiza el siguiente informe de practicas preprofesionales.
 Compara el contenido con el reglamento y el banco de observaciones proporcionados.
@@ -66,25 +71,91 @@ Formato exacto:
 
 Si el informe cumple con todo, devuelve una lista vacia: []"""
 
-    response = requests.post(
-        "https://api.groq.com/openai/v1/chat/completions",
-        headers={
-            "Content-Type": "application/json",
-            "Authorization": f"Bearer {api_key}",
-        },
-        json={
-            "model": "llama-3.3-70b-versatile",
-            "messages": [{"role": "user", "content": prompt}],
-            "temperature": 0.2,
-        },
-        timeout=60,
-    )
-    response.raise_for_status()
+    # Detectar tipo de API por el formato de la key
+    if api_key.startswith('xai-'):
+        # xAI Grok API
+        url = "https://api.x.ai/v1/chat/completions"
+        model = "grok-beta"
+        print(f"⏱️  [00s] 🤖 Usando xAI Grok API")
+        print(f"⏱️  [00s] 📊 Prompt size: {len(prompt)} caracteres")
+    else:
+        # Groq API (default)
+        url = "https://api.groq.com/openai/v1/chat/completions"
+        model = "llama-3.3-70b-versatile"
+        print(f"⏱️  [00s] 🤖 Usando Groq API (Llama 3.3)")
+        print(f"⏱️  [00s] 📊 Prompt size: {len(prompt)} caracteres")
 
-    texto = response.json()["choices"][0]["message"]["content"].strip()
-    texto = re.sub(r'```(?:json)?\s*', '', texto).strip('`').strip()
-
-    return json.loads(texto)
+    start_time = time.time()
+    print(f"⏱️  [00s] 🌐 Enviando request a {url}")
+    
+    try:
+        response = requests.post(
+            url,
+            headers={
+                "Content-Type": "application/json",
+                "Authorization": f"Bearer {api_key}",
+            },
+            json={
+                "model": model,
+                "messages": [{"role": "user", "content": prompt}],
+                "temperature": 0.2,
+            },
+            timeout=90,  # 90 segundos de timeout
+        )
+        
+        elapsed = time.time() - start_time
+        print(f"⏱️  [{int(elapsed)}s] ✅ Response recibido (HTTP {response.status_code})")
+        
+        response.raise_for_status()
+        
+        response_json = response.json()
+        print(f"⏱️  [{int(elapsed)}s] 📝 Parseando respuesta JSON")
+        
+        texto = response_json["choices"][0]["message"]["content"].strip()
+        print(f"⏱️  [{int(elapsed)}s] 📏 Respuesta: {len(texto)} caracteres")
+        
+        # Limpiar markdown
+        texto = re.sub(r'```(?:json)?\s*', '', texto).strip('`').strip()
+        
+        # Parsear JSON
+        observaciones_list = json.loads(texto)
+        print(f"⏱️  [{int(elapsed)}s] ✅ {len(observaciones_list)} observaciones generadas")
+        
+        return observaciones_list
+        
+    except requests.Timeout:
+        elapsed = time.time() - start_time
+        print(f"⏱️  [{int(elapsed)}s] ❌ TIMEOUT: La API tardó más de 90 segundos")
+        raise ValueError("La API de IA tardó demasiado tiempo (>90s). Intenta de nuevo.")
+    
+    except requests.HTTPError as e:
+        elapsed = time.time() - start_time
+        print(f"⏱️  [{int(elapsed)}s] ❌ HTTP ERROR {response.status_code}: {response.text[:200]}")
+        
+        # Mensajes más claros según el error
+        if response.status_code == 400:
+            error_text = response.text
+            if "Model not found" in error_text:
+                raise ValueError(f"El modelo de IA no está disponible. Verifica tu configuración.")
+            elif "credits" in error_text.lower() or "license" in error_text.lower():
+                raise ValueError(f"Sin créditos en xAI. Activa créditos en https://console.x.ai o usa Groq API.")
+        elif response.status_code == 401:
+            raise ValueError(f"API Key inválida. Verifica tu .env")
+        elif response.status_code == 429:
+            raise ValueError(f"Límite de requests excedido. Espera un momento.")
+        
+        raise ValueError(f"Error de API (HTTP {response.status_code}): {response.text[:200]}")
+    
+    except json.JSONDecodeError as e:
+        elapsed = time.time() - start_time
+        print(f"⏱️  [{int(elapsed)}s] ❌ JSON ERROR: No se pudo parsear la respuesta")
+        print(f"Respuesta recibida: {texto[:500]}")
+        raise ValueError(f"La IA no devolvió JSON válido: {str(e)}")
+    
+    except Exception as e:
+        elapsed = time.time() - start_time
+        print(f"⏱️  [{int(elapsed)}s] ❌ ERROR INESPERADO: {str(e)}")
+        raise
 
 
 def validar_informe_local(contenido: str) -> list:

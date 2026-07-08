@@ -20,47 +20,71 @@ class BaseInformeState:
 
 class EnviadoState(BaseInformeState):
     value = 'enviado'
-    allowed_transitions = {'validando'}
+    allowed_transitions = {'pendiente_secretaria'}
 
 
-class ValidandoState(BaseInformeState):
-    value = 'validando'
-    allowed_transitions = {'observado', 'completado'}
+class PendienteSecretariaState(BaseInformeState):
+    value = 'pendiente_secretaria'
+    allowed_transitions = {'pendiente_presidente'}
 
 
-class ObservadoState(BaseInformeState):
-    value = 'observado'
-    allowed_transitions = {'revision_docente', 'aprobado', 'rechazado'}
+class PendientePresidenteState(BaseInformeState):
+    value = 'pendiente_presidente'
+    allowed_transitions = {'pendiente_docente'}
+
+
+class PendienteDocenteState(BaseInformeState):
+    value = 'pendiente_docente'
+    allowed_transitions = {'validando_ia'}
+
+
+class ValidandoIAState(BaseInformeState):
+    value = 'validando_ia'
+    allowed_transitions = {'revision_docente'}
 
 
 class RevisionDocenteState(BaseInformeState):
     value = 'revision_docente'
-    allowed_transitions = {'aprobado', 'rechazado', 'observado'}
+    allowed_transitions = {'pendiente_aprobacion_presidente', 'rechazado_estudiante'}
 
 
-class RechazadoState(BaseInformeState):
-    value = 'rechazado'
-    allowed_transitions = {'enviado'}
+class PendienteAprobacionPresidenteState(BaseInformeState):
+    value = 'pendiente_aprobacion_presidente'
+    allowed_transitions = {'aprobado_presidente', 'rechazado_presidente'}
 
 
-class AprobadoState(BaseInformeState):
-    value = 'aprobado'
-    allowed_transitions = {'completado'}
+class AprobadoPresidenteState(BaseInformeState):
+    value = 'aprobado_presidente'
+    allowed_transitions = {'aprobado_final'}
 
 
-class CompletadoState(BaseInformeState):
-    value = 'completado'
-    allowed_transitions = set()
+class RechazadoPresidenteState(BaseInformeState):
+    value = 'rechazado_presidente'
+    allowed_transitions = {'validando_ia', 'revision_docente'}
+
+
+class AprobadoFinalState(BaseInformeState):
+    value = 'aprobado_final'
+    allowed_transitions = set()  # Estado final
+
+
+class RechazadoEstudianteState(BaseInformeState):
+    value = 'rechazado_estudiante'
+    allowed_transitions = {'enviado'}  # El estudiante puede reenviar
 
 
 STATE_MAP = {
     'enviado': EnviadoState(),
-    'validando': ValidandoState(),
-    'observado': ObservadoState(),
+    'pendiente_secretaria': PendienteSecretariaState(),
+    'pendiente_presidente': PendientePresidenteState(),
+    'pendiente_docente': PendienteDocenteState(),
+    'validando_ia': ValidandoIAState(),
     'revision_docente': RevisionDocenteState(),
-    'rechazado': RechazadoState(),
-    'aprobado': AprobadoState(),
-    'completado': CompletadoState(),
+    'pendiente_aprobacion_presidente': PendienteAprobacionPresidenteState(),
+    'aprobado_presidente': AprobadoPresidenteState(),
+    'rechazado_presidente': RechazadoPresidenteState(),
+    'aprobado_final': AprobadoFinalState(),
+    'rechazado_estudiante': RechazadoEstudianteState(),
 }
 
 

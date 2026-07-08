@@ -60,12 +60,11 @@ class BancoObservacionesDocente(models.Model):
         return f"{self.docente.nombre} - {self.nombre} {'(Activo)' if self.activo else ''}"
     
     def save(self, *args, **kwargs):
-        """Al activar este banco, desactivar los demás del mismo docente"""
-        if self.activo:
-            BancoObservacionesDocente.objects.filter(
-                docente=self.docente,
-                activo=True
-            ).exclude(id=self.id).update(activo=False)
+        """
+        Guardar banco de observaciones
+        Versión 2.1: Permite múltiples bancos activos
+        El docente elige cuál usar al momento de validar
+        """
         super().save(*args, **kwargs)
 
 class ObservacionGenerada(models.Model):

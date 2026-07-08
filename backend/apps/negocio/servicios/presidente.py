@@ -85,6 +85,25 @@ class PresidenteService:
         ).select_related('usuario', 'docente_revisor').order_by('-fecha_aprobacion_presidente')
     
     @staticmethod
+    def obtener_informes_aprobados(presidente):
+        """
+        Obtener informes que el presidente aprobó (enviados a secretaría)
+        
+        Args:
+            presidente: Usuario presidente
+        
+        Returns:
+            QuerySet de informes aprobados
+        """
+        return Informe.objects.filter(
+            presidente_asignado=presidente,
+            estado__in=[
+                Informe.ESTADO_APROBADO_PRESIDENTE,
+                Informe.ESTADO_APROBADO_FINAL
+            ]
+        ).select_related('usuario', 'docente_revisor', 'secretaria_asignada').order_by('-fecha_aprobacion_presidente')
+    
+    @staticmethod
     def obtener_docentes_disponibles(presidente):
         """
         Obtener docentes de la escuela del presidente

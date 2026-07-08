@@ -11,7 +11,7 @@
           <li class="breadcrumb-item active">Designar Docente</li>
         </ol>
       </nav>
-      <h2><i class="bi bi-person-plus text-danger me-2"></i>Designar Docente Revisor</h2>
+      <h2><i class="bi bi-person-plus text-untels-blue me-2"></i>Designar Docente Revisor</h2>
     </div>
   </div>
 
@@ -28,7 +28,7 @@
           </div>
           <div class="mb-3">
             <label class="text-muted small">Estudiante</label>
-            <p><strong>{{ informe.usuario.get_full_name|default:informe.usuario.username }}</strong></p>
+            <p><strong>{{ informe.usuario.nombre }}</strong></p>
           </div>
           <div class="mb-3">
             <label class="text-muted small">Fecha de Envío</label>
@@ -46,25 +46,25 @@
 
     <div class="col-lg-7">
       <div class="card shadow-sm">
-        <div class="card-header bg-danger text-white">
+        <div class="card-header-untels">
           <h5 class="mb-0"><i class="bi bi-person-badge me-2"></i>Seleccionar Docente Revisor</h5>
         </div>
         <div class="card-body">
           <form method="post">
             {% csrf_token %}
             <div class="mb-4">
-              <label for="docente" class="form-label fw-semibold">Docente de {{ request.user.escuela.nombre }} <span class="text-danger">*</span></label>
+              <label for="docente" class="form-label fw-semibold">Docente de {{ escuela }} <span class="text-danger">*</span></label>
               <select class="form-select form-select-lg" id="docente" name="docente_id" required>
                 <option value="">-- Seleccione un docente --</option>
                 {% for docente in docentes %}
                   <option value="{{ docente.id }}">
-                    {{ docente.get_full_name|default:docente.username }} ({{ docente.username }})
+                    {{ docente.nombre }} ({{ docente.codigo }})
                   </option>
                 {% endfor %}
               </select>
             </div>
             <div class="d-grid gap-2">
-              <button type="submit" class="btn btn-danger btn-lg">
+              <button type="submit" class="btn bg-untels-blue text-white btn-lg">
                 <i class="bi bi-check-circle-fill me-2"></i>Designar Docente
               </button>
               <a href="{% url 'presidente_dashboard' %}" class="btn btn-outline-secondary">Cancelar</a>

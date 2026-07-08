@@ -6,7 +6,7 @@
 <div class="container">
   <div class="row mb-4">
     <div class="col-12">
-      <h2><i class="bi bi-bell text-danger me-2"></i>Mis Notificaciones</h2>
+      <h2><i class="bi bi-bell text-untels-blue me-2"></i>Mis Notificaciones</h2>
     </div>
   </div>
 
@@ -14,22 +14,22 @@
     <div class="col-12">
       {% if notificaciones %}
         {% for notificacion in notificaciones %}
-        <div class="card shadow-sm mb-3 {% if not notificacion.leida %}border-danger{% endif %}">
+        <div class="card shadow-sm mb-3 {% if not notificacion.leida %}border-warning{% endif %}">
           <div class="card-body">
             <div class="d-flex justify-content-between">
               <div class="flex-grow-1">
                 <h6 class="mb-1">
-                  <i class="bi bi-{% if 'INFORME_DERIVADO' in notificacion.tipo %}inbox-fill{% elif 'DICTAMEN_ENVIADO' in notificacion.tipo %}clipboard-check-fill{% else %}info-circle-fill{% endif %} me-2 text-danger"></i>
+                  <i class="bi bi-{% if 'INFORME_DERIVADO' in notificacion.tipo %}inbox-fill{% elif 'DICTAMEN_ENVIADO' in notificacion.tipo %}clipboard-check-fill{% else %}info-circle-fill{% endif %} me-2 text-untels-blue"></i>
                   {{ notificacion.titulo }}
                   {% if not notificacion.leida %}
-                    <span class="badge bg-danger ms-2">Nueva</span>
+                    <span class="badge bg-warning ms-2">Nueva</span>
                   {% endif %}
                 </h6>
                 <p class="text-muted mb-2">{{ notificacion.mensaje }}</p>
                 <small class="text-muted">{{ notificacion.fecha_creacion|date:"d/m/Y H:i" }}</small>
               </div>
               {% if notificacion.informe %}
-                <a href="{% url 'presidente_ver' notificacion.informe.id %}" class="btn btn-sm btn-outline-danger ms-3">
+                  <a href="{% url 'presidente_ver_informe' notificacion.informe.id %}" class="btn btn-sm btn-outline-warning ms-3">
                   <i class="bi bi-eye"></i> Ver
                 </a>
               {% endif %}

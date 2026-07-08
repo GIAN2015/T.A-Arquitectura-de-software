@@ -6,7 +6,7 @@
 <div class="container-fluid">
   <div class="row mb-4">
     <div class="col-12">
-      <h2><i class="bi bi-clock-history text-danger me-2"></i>Historial de la Escuela</h2>
+      <h2><i class="bi bi-clock-history text-untels-blue me-2"></i>Historial de la Escuela</h2>
       <p class="text-muted">{{ request.user.escuela.nombre }}</p>
     </div>
   </div>
@@ -32,16 +32,16 @@
                   {% for informe in informes %}
                   <tr>
                     <td><span class="badge bg-secondary">#{{ informe.id }}</span></td>
-                    <td>{{ informe.usuario.get_full_name|default:informe.usuario.username }}</td>
-                    <td>{{ informe.docente_asignado.get_full_name|default:informe.docente_asignado.username|default:"-" }}</td>
+                    <td>{{ informe.usuario.nombre }}</td>
+                    <td>{{ informe.docente_asignado.nombre|default:"-" }}</td>
                     <td>
-                      <span class="badge bg-{% if 'aprobado' in informe.estado %}success{% elif 'rechazado' in informe.estado %}danger{% else %}warning{% endif %}">
+                      <span class="badge bg-{% if 'aprobado' in informe.estado %}primary{% elif 'rechazado' in informe.estado %}warning{% else %}warning{% endif %}">
                         {{ informe.get_estado_display }}
                       </span>
                     </td>
                     <td><small>{{ informe.fecha_envio|date:"d/m/Y" }}</small></td>
                     <td>
-                      <a href="{% url 'presidente_ver' informe.id %}" class="btn btn-sm btn-outline-secondary">
+                      <a href="{% url 'presidente_ver_informe' informe.id %}" class="btn btn-sm btn-outline-secondary">
                         <i class="bi bi-eye"></i>
                       </a>
                     </td>

@@ -9,20 +9,15 @@ from apps.negocio.servicios.presidente import PresidenteService
 from apps.usuarios.models import Usuario
 from apps.informes.models import Informe
 from apps.notificaciones.services import NotificacionService
+from apps.core.decorators import requiere_rol
 
 
+@requiere_rol('presidente')
 def presidente_dashboard(request):
     """
     Dashboard principal de presidente de escuela
     Muestra informes de su escuela en diferentes estados
     """
-    if 'usuario_id' not in request.session:
-        return redirect('login_presidente')
-    
-    if request.session.get('usuario_tipo') != 'presidente':
-        messages.error(request, 'Acceso denegado. Solo presidentes pueden acceder.')
-        return redirect('login')
-    
     presidente = Usuario.objects.get(id=request.session['usuario_id'])
     
     # Validar que tenga escuela asignada
@@ -33,7 +28,8 @@ def presidente_dashboard(request):
     # Obtener datos
     pendientes_asignar = PresidenteService.obtener_informes_pendientes_asignar(presidente)[:10]
     en_revision = PresidenteService.obtener_informes_en_revision(presidente)[:10]
-    pendientes_aprobar = PresidenteService.obtener_informes_pendientes_aprobar(presidente)
+    pendientes_aprobar = PresidenteService.obtener_informes_pendientes_aprobar(presidente)[:10]
+    aprobados = PresidenteService.obtener_informes_aprobados(presidente)[:10]
     
     # Estadísticas
     stats = PresidenteService.obtener_estadisticas(presidente)
@@ -50,6 +46,7 @@ def presidente_dashboard(request):
         'pendientes_asignar': pendientes_asignar,
         'en_revision': en_revision,
         'pendientes_aprobar': pendientes_aprobar,
+        'aprobados': aprobados,
         'stats': stats,
         'notificaciones_count': notificaciones_count,
         'notificaciones': notificaciones,
@@ -58,19 +55,13 @@ def presidente_dashboard(request):
     return render(request, 'presidente/dashboard.html', context)
 
 
+@requiere_rol('presidente')
 def presidente_designar_docente(request, informe_id):
     """
     Vista para designar docente revisor a un informe
     GET: Muestra formulario con lista de docentes de la escuela
     POST: Asigna el docente
     """
-    if 'usuario_id' not in request.session:
-        return redirect('login_presidente')
-    
-    if request.session.get('usuario_tipo') != 'presidente':
-        messages.error(request, 'Acceso denegado.')
-        return redirect('login')
-    
     presidente = Usuario.objects.get(id=request.session['usuario_id'])
     informe = get_object_or_404(
         Informe, 
@@ -107,21 +98,15 @@ def presidente_designar_docente(request, informe_id):
         'docentes': docentes,
     }
     
-    return render(request, 'presidente/designar_docente.html', context)
+    return render(request, 'presidente/designar.html', context)
 
 
+@requiere_rol('presidente')
 def presidente_revisar_dictamen(request, informe_id):
     """
     Revisar dictamen del docente y aprobar/rechazar
     Muestra el informe, observaciones y dictamen del docente
     """
-    if 'usuario_id' not in request.session:
-        return redirect('login_presidente')
-    
-    if request.session.get('usuario_tipo') != 'presidente':
-        messages.error(request, 'Acceso denegado.')
-        return redirect('login')
-    
     presidente = Usuario.objects.get(id=request.session['usuario_id'])
     informe = get_object_or_404(
         Informe, 
@@ -176,20 +161,14 @@ def presidente_revisar_dictamen(request, informe_id):
         'total_confirmadas': obs_confirmadas.count(),
     }
     
-    return render(request, 'presidente/revisar_dictamen.html', context)
+    return render(request, 'presidente/revisar.html', context)
 
 
+@requiere_rol('presidente')
 def presidente_ver_informe(request, informe_id):
     """
     Ver detalle completo de un informe de la escuela
     """
-    if 'usuario_id' not in request.session:
-        return redirect('login_presidente')
-    
-    if request.session.get('usuario_tipo') != 'presidente':
-        messages.error(request, 'Acceso denegado.')
-        return redirect('login')
-    
     presidente = Usuario.objects.get(id=request.session['usuario_id'])
     informe = get_object_or_404(Informe, id=informe_id, presidente_asignado=presidente)
     
@@ -205,20 +184,14 @@ def presidente_ver_informe(request, informe_id):
         'total_observaciones': observaciones.count(),
     }
     
-    return render(request, 'presidente/ver_informe.html', context)
+    return render(request, 'presidente/ver.html', context)
 
 
+@requiere_rol('presidente')
 def presidente_historial(request):
     """
     Ver historial completo de informes de la escuela
     """
-    if 'usuario_id' not in request.session:
-        return redirect('login_presidente')
-    
-    if request.session.get('usuario_tipo') != 'presidente':
-        messages.error(request, 'Acceso denegado.')
-        return redirect('login')
-    
     presidente = Usuario.objects.get(id=request.session['usuario_id'])
     
     # Todos los informes de la escuela
@@ -237,17 +210,11 @@ def presidente_historial(request):
     return render(request, 'presidente/historial.html', context)
 
 
+@requiere_rol('presidente')
 def presidente_notificaciones(request):
     """
     Ver todas las notificaciones
     """
-    if 'usuario_id' not in request.session:
-        return redirect('login_presidente')
-    
-    if request.session.get('usuario_tipo') != 'presidente':
-        messages.error(request, 'Acceso denegado.')
-        return redirect('login')
-    
     presidente = Usuario.objects.get(id=request.session['usuario_id'])
     
     # Marcar notificación como leída

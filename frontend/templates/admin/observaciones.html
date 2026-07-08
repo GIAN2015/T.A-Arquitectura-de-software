@@ -26,19 +26,19 @@
       <div class="card-body p-3">
         <nav class="nav nav-pills nav-fill">
           <a class="nav-link" href="{% url 'admin_dashboard' %}">
-            📊 Dashboard
+            <i class="bi bi-bar-chart-fill"></i> Dashboard
           </a>
           <a class="nav-link" href="{% url 'admin_usuarios' %}">
-            👥 Usuarios
+            <i class="bi bi-people-fill"></i> Usuarios
           </a>
           <a class="nav-link" href="{% url 'admin_reglamento' %}">
-            📋 Reglamento
+            <i class="bi bi-journal-text"></i> Reglamento
           </a>
           <a class="nav-link active" href="{% url 'admin_observaciones' %}">
-            📝 Banco de Observaciones
+            <i class="bi bi-chat-dots-fill"></i> Banco de Observaciones
           </a>
           <a class="nav-link" href="{% url 'admin_reportes' %}">
-            📈 Reportes
+            <i class="bi bi-graph-up-arrow"></i> Reportes
           </a>
         </nav>
       </div>
@@ -50,12 +50,12 @@
 <div class="row mb-4">
   <div class="col-12">
     <div class="card border-0 shadow-sm">
-      <div class="card-header bg-untels text-white border-0">
-        <h5 class="mb-0 fw-bold">➕ Agregar Nueva Observación</h5>
+      <div class="card-header-untels">
+        <h5 class="mb-0 fw-bold"><i class="bi bi-plus-circle"></i> Agregar Nueva Observación</h5>
       </div>
       <div class="card-body">
         <div class="alert alert-info border-0">
-          <strong>ℹ️ Nota:</strong> Las observaciones agregadas al banco podrán ser utilizadas automáticamente 
+          <strong><i class="bi bi-info-circle"></i> Nota:</strong> Las observaciones agregadas al banco podrán ser utilizadas automáticamente 
           por el sistema de validación cuando detecte patrones similares en los informes.
         </div>
 
@@ -89,7 +89,7 @@
             </div>
             <div class="col-12">
               <button type="submit" class="btn btn-untels">
-                ➕ Agregar al Banco
+                <i class="bi bi-plus-circle"></i> Agregar al Banco
               </button>
             </div>
           </div>
@@ -104,7 +104,7 @@
   <div class="col-12">
     <div class="card border-0 shadow-sm">
       <div class="card-header bg-light border-0">
-        <h5 class="mb-0 fw-bold">📚 Observaciones en el Banco ({{ observaciones|length }})</h5>
+        <h5 class="mb-0 fw-bold"><i class="bi bi-book"></i> Observaciones en el Banco ({{ observaciones|length }})</h5>
       </div>
       <div class="card-body p-0">
         {% if observaciones %}
@@ -123,7 +123,7 @@
                   <!-- Encabezado de Sección -->
                   <tr class="table-active">
                     <td colspan="3" class="fw-bold text-untels-blue">
-                      📌 {{ grupo.grouper }} ({{ grupo.list|length }} observación{{ grupo.list|length|pluralize:"es" }})
+                      <i class="bi bi-pin-fill"></i> {{ grupo.grouper }} ({{ grupo.list|length }} observación{{ grupo.list|length|pluralize:"es" }})
                     </td>
                   </tr>
                   
@@ -141,8 +141,8 @@
                             onsubmit="return confirm('¿Está seguro de eliminar esta observación?');" 
                             style="display: inline;">
                         {% csrf_token %}
-                        <button type="submit" class="btn btn-sm btn-outline-danger">
-                          🗑️ Eliminar
+                        <button type="submit" class="btn btn-sm btn-outline-warning">
+                          <i class="bi bi-trash"></i> Eliminar
                         </button>
                       </form>
                     </td>
@@ -154,7 +154,7 @@
           </div>
         {% else %}
           <div class="text-center py-5">
-            <div class="mb-3" style="font-size: 3rem; opacity: 0.3;">📝</div>
+            <div class="mb-3 fs-1 text-muted opacity-25"><i class="bi bi-chat-dots-fill"></i></div>
             <p class="text-muted">No hay observaciones en el banco</p>
             <p class="text-muted small">Agregue observaciones utilizando el formulario superior</p>
           </div>
@@ -170,7 +170,7 @@
   <div class="col-12">
     <div class="card border-0 shadow-sm">
       <div class="card-header bg-light border-0">
-        <h5 class="mb-0 fw-bold">📊 Distribución por Sección</h5>
+        <h5 class="mb-0 fw-bold"><i class="bi bi-bar-chart-fill"></i> Distribución por Sección</h5>
       </div>
       <div class="card-body">
         <div class="row g-3">

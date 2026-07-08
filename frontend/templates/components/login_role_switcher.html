@@ -1,0 +1,29 @@
+<!-- Navegación entre logins de diferentes roles -->
+<div class="text-center mt-3">
+  <small class="text-muted d-block mb-2">Acceso por rol:</small>
+  <div class="d-flex justify-content-center gap-2 flex-wrap">
+    {% if current_role != 'estudiante' %}
+    <a href="{% url 'login' %}" class="btn btn-sm btn-outline-secondary">
+      <i class="bi bi-mortarboard-fill"></i> Estudiante
+    </a>
+    {% endif %}
+    
+    {% if current_role != 'docente' %}
+    <a href="{% url 'login_docente' %}" class="btn btn-sm btn-outline-secondary">
+      <i class="bi bi-person-fill-check"></i> Docente
+    </a>
+    {% endif %}
+    
+    {% if current_role != 'secretaria' %}
+    <a href="{% url 'login_secretaria' %}" class="btn btn-sm btn-outline-secondary">
+      <i class="bi bi-person-workspace"></i> Secretaria
+    </a>
+    {% endif %}
+    
+    {% if current_role != 'presidente' %}
+    <a href="{% url 'login_presidente' %}" class="btn btn-sm btn-outline-secondary">
+      <i class="bi bi-person-badge-fill"></i> Presidente
+    </a>
+    {% endif %}
+  </div>
+</div>

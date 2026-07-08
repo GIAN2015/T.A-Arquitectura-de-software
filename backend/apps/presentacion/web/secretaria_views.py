@@ -10,27 +10,23 @@ from apps.escuelas.services import EscuelaService
 from apps.usuarios.models import Usuario
 from apps.informes.models import Informe
 from apps.notificaciones.services import NotificacionService
+from apps.core.decorators import requiere_rol
 
 
+@requiere_rol('secretaria')
 def secretaria_dashboard(request):
     """
     Dashboard principal de secretaria
     Muestra informes pendientes, en proceso y estadísticas
     """
-    # Verificar sesión
-    if 'usuario_id' not in request.session:
-        return redirect('login_secretaria')
-    
-    if request.session.get('usuario_tipo') != 'secretaria':
-        messages.error(request, 'Acceso denegado. Solo secretarias pueden acceder.')
-        return redirect('login')
-    
     secretaria = Usuario.objects.get(id=request.session['usuario_id'])
     
     # Obtener datos
     informes_pendientes = SecretariaService.obtener_informes_pendientes()[:10]
     informes_en_proceso = SecretariaService.obtener_informes_en_proceso(secretaria)[:10]
-    informes_aprobados = SecretariaService.obtener_informes_aprobados_pendientes_notificar(secretaria)
+    informes_aprobados = SecretariaService.obtener_informes_aprobados_pendientes_notificar(secretaria)[:10]
+    informes_rechazados = SecretariaService.obtener_informes_rechazados_pendientes_notificar(secretaria)[:10]
+    informes_notificados = SecretariaService.obtener_informes_notificados(secretaria)[:10]
     
     # Estadísticas
     stats = SecretariaService.obtener_estadisticas(secretaria)
@@ -46,6 +42,8 @@ def secretaria_dashboard(request):
         'informes_pendientes': informes_pendientes,
         'informes_en_proceso': informes_en_proceso,
         'informes_aprobados': informes_aprobados,
+        'informes_rechazados': informes_rechazados,
+        'informes_notificados': informes_notificados,
         'stats': stats,
         'notificaciones_count': notificaciones_count,
         'notificaciones': notificaciones,
@@ -54,19 +52,13 @@ def secretaria_dashboard(request):
     return render(request, 'secretaria/dashboard.html', context)
 
 
+@requiere_rol('secretaria')
 def secretaria_derivar(request, informe_id):
     """
     Vista para derivar informe a presidente de escuela
     GET: Muestra formulario con lista de escuelas
     POST: Deriva el informe
     """
-    if 'usuario_id' not in request.session:
-        return redirect('login_secretaria')
-    
-    if request.session.get('usuario_tipo') != 'secretaria':
-        messages.error(request, 'Acceso denegado.')
-        return redirect('login')
-    
     secretaria = Usuario.objects.get(id=request.session['usuario_id'])
     informe = get_object_or_404(Informe, id=informe_id)
     
@@ -101,33 +93,35 @@ def secretaria_derivar(request, informe_id):
     return render(request, 'secretaria/derivar.html', context)
 
 
+@requiere_rol('secretaria')
 def secretaria_notificar_estudiante(request, informe_id):
     """
     Notificar resultado final al estudiante
-    Solo para informes aprobados por presidente
+    Puede ser aprobado o rechazado por presidente
     """
-    if 'usuario_id' not in request.session:
-        return redirect('login_secretaria')
-    
-    if request.session.get('usuario_tipo') != 'secretaria':
-        messages.error(request, 'Acceso denegado.')
-        return redirect('login')
-    
     secretaria = Usuario.objects.get(id=request.session['usuario_id'])
     informe = get_object_or_404(Informe, id=informe_id)
     
-    # Validar que está aprobado por presidente
-    if informe.estado != Informe.ESTADO_APROBADO_PRESIDENTE:
-        messages.error(request, 'Este informe aún no ha sido aprobado por el presidente.')
+    # Validar que está listo para notificar
+    if informe.estado not in [Informe.ESTADO_APROBADO_PRESIDENTE, Informe.ESTADO_RECHAZADO_PRESIDENTE]:
+        messages.error(request, 'Este informe aún no está listo para notificar al estudiante.')
         return redirect('secretaria_dashboard')
     
     if request.method == 'POST':
-        success, informe_actualizado, error = SecretariaService.notificar_estudiante_aprobado(
-            informe_id, secretaria
-        )
+        # Determinar si es aprobado o rechazado
+        if informe.estado == Informe.ESTADO_APROBADO_PRESIDENTE:
+            success, informe_actualizado, error = SecretariaService.notificar_estudiante_aprobado(
+                informe_id, secretaria
+            )
+            mensaje_exito = f'✅ Estudiante {informe.usuario.nombre} notificado - Informe APROBADO'
+        else:  # RECHAZADO_PRESIDENTE
+            success, informe_actualizado, error = SecretariaService.notificar_estudiante_rechazado(
+                informe_id, secretaria
+            )
+            mensaje_exito = f'📧 Estudiante {informe.usuario.nombre} notificado - Debe corregir su informe'
         
         if success:
-            messages.success(request, f'Estudiante {informe.usuario.nombre} notificado exitosamente.')
+            messages.success(request, mensaje_exito)
             return redirect('secretaria_dashboard')
         else:
             messages.error(request, f'Error: {error}')
@@ -142,17 +136,11 @@ def secretaria_notificar_estudiante(request, informe_id):
     return render(request, 'secretaria/notificar.html', context)
 
 
+@requiere_rol('secretaria')
 def secretaria_ver_informe(request, informe_id):
     """
     Ver detalle de un informe
     """
-    if 'usuario_id' not in request.session:
-        return redirect('login_secretaria')
-    
-    if request.session.get('usuario_tipo') != 'secretaria':
-        messages.error(request, 'Acceso denegado.')
-        return redirect('login')
-    
     informe = get_object_or_404(Informe, id=informe_id)
     observaciones = informe.observaciones.all().order_by('seccion')
     
@@ -165,20 +153,14 @@ def secretaria_ver_informe(request, informe_id):
         'total_observaciones': observaciones.count(),
     }
     
-    return render(request, 'secretaria/ver_informe.html', context)
+    return render(request, 'secretaria/ver.html', context)
 
 
+@requiere_rol('secretaria')
 def secretaria_notificaciones(request):
     """
     Ver todas las notificaciones
     """
-    if 'usuario_id' not in request.session:
-        return redirect('login_secretaria')
-    
-    if request.session.get('usuario_tipo') != 'secretaria':
-        messages.error(request, 'Acceso denegado.')
-        return redirect('login')
-    
     secretaria = Usuario.objects.get(id=request.session['usuario_id'])
     
     # Marcar una notificación como leída si se envía por POST

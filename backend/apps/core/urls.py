@@ -54,7 +54,7 @@ urlpatterns = [
     # ==================== DOCENTE (ACTUALIZADO v2.0) ====================
     
     path('panel-docente/', docente_views.panel_docente_view, name='panel_docente'),
-    path('docente/banco/', docente_views.docente_banco_observaciones, name='docente_banco_observaciones'),
+    path('docente/banco/', docente_views.docente_banco_observaciones, name='docente_banco'),  # Alias para compatibilidad
     path('docente/revisar/<int:informe_id>/', docente_views.docente_revisar_informe, name='docente_revisar_informe'),
     path('docente/ver/<int:informe_id>/', docente_views.docente_ver_informe, name='docente_ver_informe'),
     path('docente/historial/', docente_views.docente_historial, name='docente_historial'),

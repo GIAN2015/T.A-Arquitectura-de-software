@@ -10,7 +10,7 @@
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   }
   .login-header {
-    background: linear-gradient(135deg, #dc2626 0%, #f97316 100%);
+    background: linear-gradient(135deg, var(--untels-gold) 0%, var(--untels-gold-dark) 100%);
     color: white;
     padding: 2rem;
     text-align: center;
@@ -28,7 +28,7 @@
   <div class="col-12">
     <div class="card login-card">
       <div class="login-header">
-        <div class="role-icon">👔</div>
+        <div class="role-icon"><i class="bi bi-person-badge"></i></div>
         <h3 class="mb-0">Presidente de Escuela</h3>
         <p class="mb-0 mt-2 opacity-75">Sistema de Validación de Informes</p>
       </div>
@@ -38,15 +38,15 @@
           {% csrf_token %}
           
           <div class="mb-3">
-            <label for="username" class="form-label fw-semibold">Código de Presidente</label>
+            <label for="codigo" class="form-label fw-semibold">Código de Presidente</label>
             <div class="input-group">
               <span class="input-group-text"><i class="bi bi-person-fill"></i></span>
               <input 
                 type="text" 
                 class="form-control" 
-                id="username" 
-                name="username" 
-                placeholder="Ingrese su código"
+                id="codigo" 
+                name="codigo" 
+                placeholder="Ingrese su código (ej: presidente_isi)"
                 required
                 autofocus
               >
@@ -69,7 +69,7 @@
           </div>
           
           <div class="d-grid">
-            <button type="submit" class="btn btn-danger btn-lg">
+            <button type="submit" class="btn btn-warning btn-lg">
               <i class="bi bi-box-arrow-in-right me-2"></i>
               Iniciar Sesión
             </button>
@@ -78,12 +78,7 @@
       </div>
       
       <div class="card-footer text-center bg-light">
-        <small class="text-muted">
-          ¿Eres de otro rol? 
-          <a href="{% url 'login' %}" class="text-decoration-none">Estudiante</a> | 
-          <a href="{% url 'login_docente' %}" class="text-decoration-none">Docente</a> | 
-          <a href="{% url 'login_secretaria' %}" class="text-decoration-none">Secretaria</a>
-        </small>
+        {% include 'components/login_role_switcher.html' with current_role='presidente' %}
       </div>
     </div>
   </div>

@@ -11,7 +11,7 @@
           <li class="breadcrumb-item active">Ver Informe #{{ informe.id }}</li>
         </ol>
       </nav>
-      <h2><i class="bi bi-file-earmark-text text-danger me-2"></i>Detalle del Informe #{{ informe.id }}</h2>
+      <h2><i class="bi bi-file-earmark-text text-untels-blue me-2"></i>Detalle del Informe #{{ informe.id }}</h2>
     </div>
   </div>
 
@@ -22,8 +22,8 @@
           <h5 class="mb-0"><i class="bi bi-person-circle me-2"></i>Estudiante</h5>
         </div>
         <div class="card-body">
-          <p class="mb-1"><strong>{{ informe.usuario.get_full_name|default:informe.usuario.username }}</strong></p>
-          <p class="mb-0 text-muted">{{ informe.usuario.username }}</p>
+          <p class="mb-1"><strong>{{ informe.usuario.nombre }}</strong></p>
+          <p class="mb-0 text-muted">{{ informe.usuario.codigo }}</p>
         </div>
       </div>
 
@@ -44,12 +44,12 @@
         <div class="card-body">
           <div class="mb-2">
             <label class="text-muted small">Docente:</label>
-            <p>{{ informe.docente_asignado.get_full_name|default:informe.docente_asignado.username }}</p>
+            <p>{{ informe.docente_asignado.nombre }}</p>
           </div>
           <div class="mb-2">
             <label class="text-muted small">Recomendación:</label>
             <p>
-              <span class="badge {% if informe.recomendacion_docente == 'aprobar' %}bg-success{% else %}bg-danger{% endif %}">
+              <span class="badge {% if informe.recomendacion_docente == 'aprobar' %}bg-primary{% else %}bg-warning{% endif %}">
                 {{ informe.get_recomendacion_docente_display }}
               </span>
             </p>
@@ -65,11 +65,11 @@
 
     <div class="col-lg-4">
       <div class="card shadow-sm mb-3">
-        <div class="card-header bg-danger text-white">
+        <div class="card-header-untels">
           <h6 class="mb-0">Estado</h6>
         </div>
         <div class="card-body">
-          <span class="badge bg-{% if 'aprobado' in informe.estado %}success{% elif 'rechazado' in informe.estado %}danger{% else %}warning{% endif %} w-100 py-2">
+          <span class="badge bg-{% if 'aprobado' in informe.estado %}primary{% elif 'rechazado' in informe.estado %}warning{% else %}warning{% endif %} w-100 py-2">
             {{ informe.get_estado_display }}
           </span>
         </div>

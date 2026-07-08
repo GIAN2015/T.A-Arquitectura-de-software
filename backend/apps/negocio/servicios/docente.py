@@ -162,8 +162,15 @@ class DocenteService:
                         texto.append(page_text)
                 return '\n'.join(texto)
             
+            elif nombre.endswith('.txt'):
+                # Leer archivo de texto plano (útil para pruebas)
+                contenido = archivo.read()
+                if isinstance(contenido, bytes):
+                    contenido = contenido.decode('utf-8')
+                return contenido
+            
             else:
-                raise ValueError("Formato no soportado. Solo se permiten archivos PDF o DOCX.")
+                raise ValueError("Formato no soportado. Solo se permiten archivos PDF, DOCX o TXT.")
         
         except Exception as e:
             raise ValueError(f"Error al leer el archivo: {str(e)}")
@@ -171,7 +178,8 @@ class DocenteService:
     @staticmethod
     def activar_banco(banco_id, docente):
         """
-        Activar un banco específico (desactiva los demás del mismo docente)
+        Activar un banco de observaciones
+        Versión 2.1: Permite múltiples bancos activos simultáneamente
         
         Args:
             banco_id: ID del banco a activar
@@ -181,17 +189,47 @@ class DocenteService:
             tuple: (success: bool, banco: BancoObservacionesDocente, error: str)
         """
         try:
-            # Desactivar todos los bancos del docente
-            BancoObservacionesDocente.objects.filter(
-                docente=docente
-            ).update(activo=False)
-            
-            # Activar el seleccionado
             banco = BancoObservacionesDocente.objects.get(
                 id=banco_id,
                 docente=docente
             )
+            
+            if banco.activo:
+                return True, banco, None  # Ya está activo
+            
             banco.activo = True
+            banco.save()
+            
+            return True, banco, None
+            
+        except BancoObservacionesDocente.DoesNotExist:
+            return False, None, "Banco de observaciones no encontrado"
+        except Exception as e:
+            return False, None, f"Error inesperado: {str(e)}"
+    
+    @staticmethod
+    def desactivar_banco(banco_id, docente):
+        """
+        Desactivar un banco de observaciones
+        Versión 2.1: Permite desactivar bancos individualmente
+        
+        Args:
+            banco_id: ID del banco a desactivar
+            docente: Usuario docente propietario
+        
+        Returns:
+            tuple: (success: bool, banco: BancoObservacionesDocente, error: str)
+        """
+        try:
+            banco = BancoObservacionesDocente.objects.get(
+                id=banco_id,
+                docente=docente
+            )
+            
+            if not banco.activo:
+                return True, banco, None  # Ya está inactivo
+            
+            banco.activo = False
             banco.save()
             
             return True, banco, None
@@ -234,13 +272,15 @@ class DocenteService:
             return False, f"Error inesperado: {str(e)}"
     
     @staticmethod
-    def validar_informe_con_ia(informe_id, docente):
+    def validar_informe_con_ia(informe_id, docente, banco_especifico=None):
         """
         Validar informe usando IA con el banco de observaciones del docente
+        Versión 2.1: Permite especificar el banco a usar
         
         Args:
             informe_id: ID del informe
             docente: Usuario docente
+            banco_especifico: BancoObservacionesDocente específico (v2.1)
         
         Returns:
             tuple: (success: bool, observaciones: list, error: str)
@@ -249,14 +289,21 @@ class DocenteService:
             informe = Informe.objects.get(
                 id=informe_id,
                 docente_revisor=docente,
-                estado__in=[Informe.ESTADO_PENDIENTE_DOCENTE, Informe.ESTADO_RECHAZADO_PRESIDENTE]
+                estado__in=[
+                    Informe.ESTADO_PENDIENTE_DOCENTE, 
+                    Informe.ESTADO_RECHAZADO_PRESIDENTE,
+                    Informe.ESTADO_REVISION_DOCENTE  # Permitir re-validar
+                ]
             )
             
-            # Obtener banco activo del docente
-            banco = DocenteService.obtener_banco_activo(docente)
+            # Obtener banco a usar (específico o el primer activo)
+            if banco_especifico:
+                banco = banco_especifico
+            else:
+                banco = DocenteService.obtener_banco_activo(docente)
             
             if not banco:
-                return False, [], "No tiene un banco de observaciones activo. Debe subir uno primero."
+                return False, [], "No tiene un banco de observaciones activo. Debe crear y activar uno primero."
             
             # Actualizar estado y banco usado
             informe.banco_observaciones_usado = banco
@@ -265,11 +312,13 @@ class DocenteService:
             
             # Llamar al servicio de IA (importar dinámicamente)
             try:
-                from apps.observaciones.services import validar_informe_con_ia
+                from apps.observaciones.services import validar_informe
                 
-                observaciones = validar_informe_con_ia(
+                # Usar el banco del docente como observaciones personalizadas
+                observaciones = validar_informe(
                     contenido_informe=informe.contenido,
-                    banco_observaciones=banco.contenido_extraido
+                    reglamento="Reglamento de Prácticas Preprofesionales UNTELS",
+                    observaciones=banco.contenido_extraido
                 )
                 
             except ImportError:
@@ -325,9 +374,128 @@ class DocenteService:
         }]
     
     @staticmethod
+    def _generar_dictamen_estructurado(informe, comentario_docente, recomendar_aprobacion):
+        """
+        Generar dictamen estructurado para el presidente
+        Incluye el comentario del docente + lista detallada de observaciones confirmadas
+        
+        Args:
+            informe: Informe objeto
+            comentario_docente: Texto del dictamen del docente
+            recomendar_aprobacion: Si recomienda aprobar
+        
+        Returns:
+            str: Dictamen completo estructurado
+        """
+        # Obtener observaciones confirmadas agrupadas por severidad
+        obs_confirmadas = informe.observaciones.filter(
+            estado=ObservacionGenerada.ESTADO_CONFIRMADA
+        ).order_by('severidad', 'seccion')
+        
+        # Agrupar por severidad
+        criticas = obs_confirmadas.filter(severidad=ObservacionGenerada.SEVERIDAD_CRITICA)
+        importantes = obs_confirmadas.filter(severidad=ObservacionGenerada.SEVERIDAD_IMPORTANTE)
+        menores = obs_confirmadas.filter(severidad=ObservacionGenerada.SEVERIDAD_MENOR)
+        sugerencias = obs_confirmadas.filter(severidad=ObservacionGenerada.SEVERIDAD_SUGERENCIA)
+        
+        # Construir dictamen estructurado
+        dictamen_partes = []
+        
+        # 1. Comentario del docente
+        dictamen_partes.append("=" * 80)
+        dictamen_partes.append("DICTAMEN DEL DOCENTE REVISOR")
+        dictamen_partes.append("=" * 80)
+        dictamen_partes.append("")
+        dictamen_partes.append(comentario_docente.strip())
+        dictamen_partes.append("")
+        
+        # 2. Recomendación
+        dictamen_partes.append("=" * 80)
+        dictamen_partes.append("RECOMENDACIÓN")
+        dictamen_partes.append("=" * 80)
+        dictamen_partes.append("")
+        if recomendar_aprobacion:
+            dictamen_partes.append("✅ RECOMIENDO APROBAR este informe")
+        else:
+            dictamen_partes.append("❌ RECOMIENDO RECHAZAR este informe")
+        dictamen_partes.append("")
+        
+        # 3. Resumen de observaciones
+        dictamen_partes.append("=" * 80)
+        dictamen_partes.append("OBSERVACIONES DETECTADAS Y CONFIRMADAS")
+        dictamen_partes.append("=" * 80)
+        dictamen_partes.append("")
+        dictamen_partes.append(f"Total de observaciones confirmadas: {obs_confirmadas.count()}")
+        dictamen_partes.append(f"  • Críticas: {criticas.count()}")
+        dictamen_partes.append(f"  • Importantes: {importantes.count()}")
+        dictamen_partes.append(f"  • Menores: {menores.count()}")
+        dictamen_partes.append(f"  • Sugerencias: {sugerencias.count()}")
+        dictamen_partes.append("")
+        
+        # 4. Detalle de observaciones CRÍTICAS
+        if criticas.exists():
+            dictamen_partes.append("-" * 80)
+            dictamen_partes.append("🔴 OBSERVACIONES CRÍTICAS (Deben corregirse obligatoriamente)")
+            dictamen_partes.append("-" * 80)
+            for i, obs in enumerate(criticas, 1):
+                dictamen_partes.append(f"\n{i}. [{obs.seccion}]")
+                dictamen_partes.append(f"   Observación: {obs.observacion}")
+                if obs.ubicacion_error and obs.ubicacion_error != "No especificada":
+                    dictamen_partes.append(f"   Ubicación: {obs.ubicacion_error}")
+                if obs.comentario_docente:
+                    dictamen_partes.append(f"   Comentario del docente: {obs.comentario_docente}")
+            dictamen_partes.append("")
+        
+        # 5. Detalle de observaciones IMPORTANTES
+        if importantes.exists():
+            dictamen_partes.append("-" * 80)
+            dictamen_partes.append("🟠 OBSERVACIONES IMPORTANTES (Deben corregirse)")
+            dictamen_partes.append("-" * 80)
+            for i, obs in enumerate(importantes, 1):
+                dictamen_partes.append(f"\n{i}. [{obs.seccion}]")
+                dictamen_partes.append(f"   Observación: {obs.observacion}")
+                if obs.ubicacion_error and obs.ubicacion_error != "No especificada":
+                    dictamen_partes.append(f"   Ubicación: {obs.ubicacion_error}")
+                if obs.comentario_docente:
+                    dictamen_partes.append(f"   Comentario del docente: {obs.comentario_docente}")
+            dictamen_partes.append("")
+        
+        # 6. Detalle de observaciones MENORES
+        if menores.exists():
+            dictamen_partes.append("-" * 80)
+            dictamen_partes.append("🟡 OBSERVACIONES MENORES (Recomendadas)")
+            dictamen_partes.append("-" * 80)
+            for i, obs in enumerate(menores, 1):
+                dictamen_partes.append(f"\n{i}. [{obs.seccion}]")
+                dictamen_partes.append(f"   Observación: {obs.observacion}")
+                if obs.comentario_docente:
+                    dictamen_partes.append(f"   Comentario del docente: {obs.comentario_docente}")
+            dictamen_partes.append("")
+        
+        # 7. Detalle de SUGERENCIAS
+        if sugerencias.exists():
+            dictamen_partes.append("-" * 80)
+            dictamen_partes.append("💡 SUGERENCIAS (Opcionales)")
+            dictamen_partes.append("-" * 80)
+            for i, obs in enumerate(sugerencias, 1):
+                dictamen_partes.append(f"\n{i}. [{obs.seccion}]")
+                dictamen_partes.append(f"   Sugerencia: {obs.observacion}")
+                if obs.comentario_docente:
+                    dictamen_partes.append(f"   Comentario del docente: {obs.comentario_docente}")
+            dictamen_partes.append("")
+        
+        # 8. Pie de dictamen
+        dictamen_partes.append("=" * 80)
+        dictamen_partes.append("FIN DEL DICTAMEN")
+        dictamen_partes.append("=" * 80)
+        
+        return "\n".join(dictamen_partes)
+    
+    @staticmethod
     def enviar_dictamen_a_presidente(informe_id, docente, comentario_docente, recomendar_aprobacion=True):
         """
         Enviar dictamen final al presidente
+        Versión 2.1: Genera dictamen estructurado con observaciones detalladas
         
         Args:
             informe_id: ID del informe
@@ -348,8 +516,13 @@ class DocenteService:
                 estado__in=[Informe.ESTADO_REVISION_DOCENTE, Informe.ESTADO_RECHAZADO_PRESIDENTE]
             )
             
+            # Generar dictamen estructurado
+            dictamen_completo = DocenteService._generar_dictamen_estructurado(
+                informe, comentario_docente, recomendar_aprobacion
+            )
+            
             # Actualizar informe
-            informe.comentario_docente = comentario_docente
+            informe.comentario_docente = dictamen_completo
             informe.fecha_revision_docente = timezone.now()
             informe.estado = Informe.ESTADO_PENDIENTE_APROBACION_PRESIDENTE
             informe.save()
@@ -407,6 +580,8 @@ class DocenteService:
         
         return {
             'total_asignados': total_asignados,
+            'asignados': pendientes_revisar + en_revision,  # Total pendientes de trabajar
+            'revisados': enviados_presidente,  # Ya enviados al presidente
             'pendientes_revisar': pendientes_revisar,
             'en_revision': en_revision,
             'enviados_presidente': enviados_presidente,

@@ -26,19 +26,19 @@
       <div class="card-body p-3">
         <nav class="nav nav-pills nav-fill">
           <a class="nav-link" href="{% url 'admin_dashboard' %}">
-            📊 Dashboard
+            <i class="bi bi-bar-chart-fill"></i> Dashboard
           </a>
           <a class="nav-link active" href="{% url 'admin_usuarios' %}">
-            👥 Usuarios
+            <i class="bi bi-people-fill"></i> Usuarios
           </a>
           <a class="nav-link" href="{% url 'admin_reglamento' %}">
-            📋 Reglamento
+            <i class="bi bi-journal-text"></i> Reglamento
           </a>
           <a class="nav-link" href="{% url 'admin_observaciones' %}">
-            📝 Banco de Observaciones
+            <i class="bi bi-chat-dots-fill"></i> Banco de Observaciones
           </a>
           <a class="nav-link" href="{% url 'admin_reportes' %}">
-            📈 Reportes
+            <i class="bi bi-graph-up-arrow"></i> Reportes
           </a>
         </nav>
       </div>
@@ -67,7 +67,7 @@
           </div>
           <div class="col-md-2 d-flex align-items-end">
             <button type="submit" class="btn btn-untels w-100">
-              🔍 Filtrar
+              <i class="bi bi-search"></i> Filtrar
             </button>
           </div>
         </form>
@@ -81,7 +81,7 @@
   <div class="col-12">
     <div class="card border-0 shadow-sm">
       <div class="card-header bg-light border-0">
-        <h5 class="mb-0 fw-bold">👥 Usuarios Registrados ({{ usuarios|length }})</h5>
+        <h5 class="mb-0 fw-bold"><i class="bi bi-people-fill"></i> Usuarios Registrados ({{ usuarios|length }})</h5>
       </div>
       <div class="card-body p-0">
         {% if usuarios %}
@@ -107,11 +107,11 @@
                   </td>
                   <td>
                     {% if usuario.tipo_usuario == 'estudiante' %}
-                      <span class="badge bg-info">📚 Estudiante</span>
+                      <span class="badge bg-primary"><i class="bi bi-book"></i> Estudiante</span>
                     {% elif usuario.tipo_usuario == 'egresado' %}
-                      <span class="badge bg-success">🎓 Egresado</span>
+                      <span class="badge bg-primary"><i class="bi bi-mortarboard-fill"></i> Egresado</span>
                     {% elif usuario.tipo_usuario == 'docente' %}
-                      <span class="badge bg-warning text-dark">👨‍🏫 Docente</span>
+                      <span class="badge bg-warning"><i class="bi bi-person-badge"></i> Docente</span>
                     {% endif %}
                   </td>
                   <td>
@@ -131,7 +131,7 @@
           </div>
         {% else %}
           <div class="text-center py-5">
-            <div class="mb-3" style="font-size: 3rem; opacity: 0.3;">👥</div>
+            <div class="mb-3 fs-1 text-muted opacity-25"><i class="bi bi-people-fill"></i></div>
             <p class="text-muted">No se encontraron usuarios con los filtros aplicados</p>
             <a href="{% url 'admin_usuarios' %}" class="btn btn-outline-untels">
               Ver Todos los Usuarios

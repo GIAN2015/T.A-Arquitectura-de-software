@@ -1,13 +1,9 @@
 /**
  * UNTELS - Sistema de Validación de Informes
  * Tema institucional formal
- * 
- * Clean Architecture: Estilos separados y reutilizables
+ * Paleta: Azul oscuro + Blanco + Naranja/Dorado institucional
  */
 
-/* ========================================
-   VARIABLES CSS (Design System)
-   ======================================== */
 :root {
   /* Colores Institucionales UNTELS */
   --untels-blue: #1a3a6b;
@@ -16,14 +12,19 @@
   --untels-gold: #f0a500;
   --untels-gold-light: #ffc547;
   --untels-gold-dark: #c78600;
-  
-  /* Colores de Estado */
-  --color-success: #198754;
-  --color-danger: #dc3545;
-  --color-warning: #ffc107;
-  --color-info: #0dcaf0;
-  --color-secondary: #6c757d;
-  
+
+  /* Override Bootstrap theme colors for formal consistency */
+  --bs-primary: #1a3a6b;
+  --bs-primary-rgb: 26, 58, 107;
+  --bs-success: #1a3a6b;
+  --bs-success-rgb: 26, 58, 107;
+  --bs-danger: #b8860b;
+  --bs-danger-rgb: 184, 134, 11;
+  --bs-warning: #f0a500;
+  --bs-warning-rgb: 240, 165, 0;
+  --bs-info: #2d5a9b;
+  --bs-info-rgb: 45, 90, 155;
+
   /* Grises */
   --gray-50: #f8f9fa;
   --gray-100: #f4f6f9;
@@ -35,36 +36,34 @@
   --gray-700: #495057;
   --gray-800: #343a40;
   --gray-900: #212529;
-  
+
   /* Sombras */
   --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.05);
   --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
   --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.12);
-  
+
   /* Bordes */
   --border-radius: 0.375rem;
   --border-radius-lg: 0.5rem;
   --border-radius-xl: 0.75rem;
-  
+
   /* Espaciado */
   --spacing-xs: 0.25rem;
   --spacing-sm: 0.5rem;
   --spacing-md: 1rem;
   --spacing-lg: 1.5rem;
   --spacing-xl: 2rem;
-  
+
   /* Tipografía */
   --font-family-base: 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
   --font-family-headings: 'Segoe UI Semibold', 'Roboto Medium', sans-serif;
-  
+
   /* Transiciones */
   --transition-base: all 0.2s ease-in-out;
   --transition-fast: all 0.15s ease-in-out;
 }
 
-/* ========================================
-   BASE - Estilos globales
-   ======================================== */
+/* BASE */
 body {
   background-color: var(--gray-100);
   font-family: var(--font-family-base);
@@ -79,9 +78,7 @@ h1, h2, h3, h4, h5, h6 {
   margin-bottom: var(--spacing-md);
 }
 
-/* ========================================
-   NAVBAR - Barra de navegación institucional
-   ======================================== */
+/* NAVBAR */
 .navbar-untels {
   background: linear-gradient(135deg, var(--untels-blue) 0%, var(--untels-blue-dark) 100%);
   box-shadow: var(--shadow-md);
@@ -109,9 +106,56 @@ h1, h2, h3, h4, h5, h6 {
   letter-spacing: 0.3px;
 }
 
-/* ========================================
-   CARDS - Tarjetas formales
-   ======================================== */
+/* NAVBAR V2 - Multi-role navigation */
+.navbar-untels-v2 {
+  background: linear-gradient(135deg, var(--untels-blue) 0%, var(--untels-blue-dark) 100%);
+  padding: 1rem 0;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.navbar-untels-v2 .navbar-brand {
+  color: #ffffff !important;
+  font-weight: 600;
+}
+
+.navbar-untels-v2 .nav-link {
+  color: rgba(255,255,255,0.9) !important;
+  transition: all 0.3s ease;
+  padding: 0.5rem 1rem;
+  border-radius: 0.375rem;
+  margin: 0 0.25rem;
+}
+
+.navbar-untels-v2 .nav-link:hover {
+  color: #ffffff !important;
+  background: rgba(255,255,255,0.1);
+}
+
+.navbar-untels-v2 .nav-link.active {
+  background: rgba(255,255,255,0.2);
+  color: #ffffff !important;
+}
+
+.badge-notificaciones {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  font-size: 0.65rem;
+  padding: 0.25em 0.5em;
+}
+
+.user-info {
+  color: #ffffff;
+  font-size: 0.9rem;
+}
+
+.role-badge {
+  font-size: 0.75rem;
+  padding: 0.25rem 0.5rem;
+  margin-left: 0.5rem;
+}
+
+/* CARDS */
 .card {
   border: none;
   border-radius: var(--border-radius-lg);
@@ -147,9 +191,7 @@ h1, h2, h3, h4, h5, h6 {
   padding: var(--spacing-xl);
 }
 
-/* ========================================
-   BOTONES - Estilos formales
-   ======================================== */
+/* BUTTONS */
 .btn-untels {
   background-color: var(--untels-blue);
   border: 2px solid var(--untels-blue);
@@ -194,9 +236,7 @@ h1, h2, h3, h4, h5, h6 {
   color: #ffffff;
 }
 
-/* ========================================
-   BADGES - Etiquetas de estado
-   ======================================== */
+/* BADGES - Estados formales con paleta institucional */
 .badge {
   padding: 0.5rem 0.875rem;
   font-weight: 600;
@@ -222,25 +262,33 @@ h1, h2, h3, h4, h5, h6 {
   font-weight: 700;
 }
 
-/* Estados de informe */
+/* Estados de informe - Paleta formal */
 .badge-enviado {
   background-color: var(--gray-500);
   color: #ffffff;
 }
 
 .badge-en_revision {
-  background-color: var(--color-warning);
-  color: var(--gray-900);
+  background-color: var(--untels-gold);
+  color: var(--untels-blue);
 }
 
 .badge-completado {
-  background-color: var(--color-success);
+  background-color: var(--untels-blue);
   color: #ffffff;
 }
 
-/* ========================================
-   ALERTAS - Notificaciones formales
-   ======================================== */
+.badge-aprobado {
+  background-color: var(--untels-blue);
+  color: #ffffff;
+}
+
+.badge-rechazado {
+  background-color: var(--untels-gold-dark);
+  color: #ffffff;
+}
+
+/* ALERTS - Formales con paleta institucional */
 .alert {
   border: none;
   border-radius: var(--border-radius-lg);
@@ -250,27 +298,27 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .alert-danger {
-  background-color: #fff5f5;
-  color: #842029;
-  border-left: 4px solid var(--color-danger);
+  background-color: #fff8f0;
+  color: #8b6914;
+  border-left: 4px solid var(--untels-gold-dark);
 }
 
 .alert-success {
-  background-color: #f0f9f4;
-  color: #0f5132;
-  border-left: 4px solid var(--color-success);
+  background-color: #f0f3f9;
+  color: #1a3a6b;
+  border-left: 4px solid var(--untels-blue);
 }
 
 .alert-warning {
   background-color: #fffbeb;
-  color: #664d03;
-  border-left: 4px solid var(--color-warning);
+  color: #856404;
+  border-left: 4px solid var(--untels-gold);
 }
 
 .alert-info {
-  background-color: #e7f6fd;
-  color: #055160;
-  border-left: 4px solid var(--color-info);
+  background-color: #eef3fa;
+  color: #1a3a6b;
+  border-left: 4px solid var(--untels-blue-light);
 }
 
 .alert-heading {
@@ -279,9 +327,7 @@ h1, h2, h3, h4, h5, h6 {
   margin-bottom: var(--spacing-sm);
 }
 
-/* ========================================
-   TABLAS - Tablas formales
-   ======================================== */
+/* TABLES */
 .table {
   background-color: #ffffff;
   border-radius: var(--border-radius-lg);
@@ -316,9 +362,7 @@ h1, h2, h3, h4, h5, h6 {
   font-size: 0.9375rem;
 }
 
-/* ========================================
-   FORMULARIOS - Inputs formales
-   ======================================== */
+/* FORMS */
 .form-label {
   font-weight: 600;
   color: var(--gray-700);
@@ -357,9 +401,7 @@ h1, h2, h3, h4, h5, h6 {
   margin-top: var(--spacing-xs);
 }
 
-/* ========================================
-   CONTENEDORES
-   ======================================== */
+/* CONTAINERS */
 .container {
   max-width: 1200px;
 }
@@ -389,9 +431,7 @@ h1, h2, h3, h4, h5, h6 {
   letter-spacing: 0.5px;
 }
 
-/* ========================================
-   UTILIDADES
-   ======================================== */
+/* UTILITIES */
 .text-untels-blue {
   color: var(--untels-blue) !important;
 }
@@ -402,17 +442,23 @@ h1, h2, h3, h4, h5, h6 {
 
 .bg-untels-blue {
   background-color: var(--untels-blue) !important;
+  color: #ffffff !important;
 }
 
 .bg-untels-gold {
   background-color: var(--untels-gold) !important;
+  color: var(--untels-blue) !important;
 }
 
-.border-untels {
+.border-untels-blue {
   border-color: var(--untels-blue) !important;
 }
 
-/* Sombras */
+.border-untels-gold {
+  border-color: var(--untels-gold) !important;
+}
+
+/* Shadows */
 .shadow-untels {
   box-shadow: var(--shadow-md) !important;
 }
@@ -421,7 +467,7 @@ h1, h2, h3, h4, h5, h6 {
   box-shadow: var(--shadow-lg) !important;
 }
 
-/* Espaciado */
+/* Spacing */
 .p-untels {
   padding: var(--spacing-lg) !important;
 }
@@ -430,9 +476,7 @@ h1, h2, h3, h4, h5, h6 {
   margin: var(--spacing-lg) !important;
 }
 
-/* ========================================
-   ANIMACIONES
-   ======================================== */
+/* ANIMATIONS */
 @keyframes slideInDown {
   from {
     transform: translateY(-100%);
@@ -461,27 +505,23 @@ h1, h2, h3, h4, h5, h6 {
   animation: fadeIn 0.3s ease-out;
 }
 
-/* ========================================
-   RESPONSIVE
-   ======================================== */
+/* RESPONSIVE */
 @media (max-width: 768px) {
   .card-body {
     padding: var(--spacing-md);
   }
-  
+
   .table {
     font-size: 0.875rem;
   }
-  
+
   .btn-untels {
     padding: 0.5rem 1rem;
     font-size: 0.8125rem;
   }
 }
 
-/* ========================================
-   ACCESIBILIDAD
-   ======================================== */
+/* ACCESSIBILITY */
 :focus-visible {
   outline: 2px solid var(--untels-gold);
   outline-offset: 2px;
@@ -499,16 +539,14 @@ h1, h2, h3, h4, h5, h6 {
   border-width: 0;
 }
 
-/* ========================================
-   PRINT
-   ======================================== */
+/* PRINT */
 @media print {
   .navbar-untels,
   .btn,
   .alert {
     display: none;
   }
-  
+
   .card {
     box-shadow: none;
     border: 1px solid var(--gray-300);

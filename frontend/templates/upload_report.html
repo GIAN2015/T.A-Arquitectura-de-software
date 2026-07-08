@@ -8,11 +8,11 @@
     <div class="card">
       <div class="card-header-untels d-flex justify-content-between align-items-center">
         <div>
-          <h5 class="mb-0">📤 Carga de Informe de Prácticas</h5>
+          <h5 class="mb-0"><i class="bi bi-upload me-2"></i>Carga de Informe de Prácticas</h5>
           <small class="text-warning">Sube tu informe en formato .docx o .pdf</small>
         </div>
         <div>
-          <a href="{% url 'historial' %}" class="btn btn-sm btn-light me-2">📋 Mi Historial</a>
+          <a href="{% url 'historial' %}" class="btn btn-sm btn-light me-2"><i class="bi bi-clock-history me-1"></i>Mi Historial</a>
           <a href="{% url 'logout' %}" class="btn btn-sm btn-outline-light">Salir</a>
         </div>
       </div>
@@ -40,12 +40,13 @@
 
         <!-- Información del proceso -->
         <div class="alert alert-info border-0 mb-4">
-          <strong>ℹ️ ¿Cómo funciona?</strong>
+          <strong><i class="bi bi-info-circle-fill me-1"></i>¿Cómo funciona el proceso?</strong>
           <ol class="mb-0 mt-2">
             <li>Sube tu informe en formato .docx o .pdf</li>
-            <li>La IA analizará el contenido automáticamente</li>
-            <li>El docente revisará y dará su veredicto final</li>
-            <li>Si es rechazado, podrás corregir y reenviar</li>
+            <li>Tu informe será enviado a la secretaría académica</li>
+            <li>Un docente revisará el contenido de tu informe</li>
+            <li>El presidente de la escuela dará la aprobación final</li>
+            <li>Recibirás notificación del resultado</li>
           </ol>
         </div>
 
@@ -57,12 +58,12 @@
             <input type="file" name="informe" class="form-control form-control-lg"
                    accept=".docx,.pdf" required>
             <div class="form-text">
-              ⚠️ Solo se aceptan archivos .docx o .pdf (máximo 10MB)
+              <i class="bi bi-exclamation-triangle-fill me-1"></i>Solo se aceptan archivos .docx o .pdf (máximo 10MB)
             </div>
           </div>
           <div class="d-grid">
             <button type="submit" class="btn btn-untels btn-lg" id="btnSubmit">
-              🤖 Validar Informe con IA
+              <i class="bi bi-send-fill me-1"></i>Enviar Informe
             </button>
           </div>
         </form>
@@ -77,7 +78,7 @@
   document.querySelector('form').addEventListener('submit', function() {
     const btn = document.getElementById('btnSubmit');
     btn.disabled = true;
-    btn.innerHTML = '🔄 Procesando... La IA está analizando tu informe (esto puede tomar 30-60 segundos)';
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Enviando tu informe...';
   });
 </script>
 {% endblock %}

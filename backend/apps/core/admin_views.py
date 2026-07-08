@@ -40,12 +40,12 @@ def admin_dashboard(request):
     
     total_informes = Informe.objects.count()
     informes_enviados = Informe.objects.filter(estado=Informe.ESTADO_ENVIADO).count()
-    informes_validando = Informe.objects.filter(estado=Informe.ESTADO_VALIDANDO).count()
-    informes_observado = Informe.objects.filter(estado=Informe.ESTADO_OBSERVADO).count()
-    informes_revision_docente = Informe.objects.filter(estado=Informe.ESTADO_EN_REVISION_DOCENTE).count()
-    informes_rechazado = Informe.objects.filter(estado=Informe.ESTADO_RECHAZADO).count()
-    informes_aprobado = Informe.objects.filter(estado=Informe.ESTADO_APROBADO).count()
-    informes_completados = Informe.objects.filter(estado=Informe.ESTADO_COMPLETADO).count()
+    informes_validando = Informe.objects.filter(estado=Informe.ESTADO_VALIDANDO_IA).count()
+    informes_observado = Informe.objects.filter(estado=Informe.ESTADO_REVISION_DOCENTE).count()
+    informes_revision_docente = Informe.objects.filter(estado=Informe.ESTADO_REVISION_DOCENTE).count()
+    informes_rechazado = Informe.objects.filter(estado=Informe.ESTADO_RECHAZADO_ESTUDIANTE).count()
+    informes_aprobado = Informe.objects.filter(estado=Informe.ESTADO_APROBADO_FINAL).count()
+    informes_completados = Informe.objects.filter(estado=Informe.ESTADO_APROBADO_FINAL).count()
     
     # Informes recientes (últimos 7 días)
     hace_7_dias = timezone.now() - timedelta(days=7)
@@ -145,7 +145,7 @@ def admin_usuario_detalle(request, usuario_id):
     
     # Estadísticas del usuario
     total_informes = informes.count()
-    informes_completados = informes.filter(estado=Informe.ESTADO_COMPLETADO).count()
+    informes_completados = informes.filter(estado=Informe.ESTADO_APROBADO_FINAL).count()
     total_observaciones = ObservacionGenerada.objects.filter(informe__usuario=usuario).count()
     
     context = {
@@ -277,15 +277,15 @@ def admin_reportes(request):
         messages.error(request, 'Acceso denegado.')
         return redirect('upload')
     
-    # Informes por estado
+    # Informes por estado (v2.0)
     informes_por_estado = {
         'enviado': Informe.objects.filter(estado=Informe.ESTADO_ENVIADO).count(),
-        'validando': Informe.objects.filter(estado=Informe.ESTADO_VALIDANDO).count(),
-        'observado': Informe.objects.filter(estado=Informe.ESTADO_OBSERVADO).count(),
-        'revision_docente': Informe.objects.filter(estado=Informe.ESTADO_EN_REVISION_DOCENTE).count(),
-        'rechazado': Informe.objects.filter(estado=Informe.ESTADO_RECHAZADO).count(),
-        'aprobado': Informe.objects.filter(estado=Informe.ESTADO_APROBADO).count(),
-        'completado': Informe.objects.filter(estado=Informe.ESTADO_COMPLETADO).count(),
+        'validando': Informe.objects.filter(estado=Informe.ESTADO_VALIDANDO_IA).count(),
+        'observado': Informe.objects.filter(estado=Informe.ESTADO_REVISION_DOCENTE).count(),
+        'revision_docente': Informe.objects.filter(estado=Informe.ESTADO_REVISION_DOCENTE).count(),
+        'rechazado': Informe.objects.filter(estado=Informe.ESTADO_RECHAZADO_ESTUDIANTE).count(),
+        'aprobado': Informe.objects.filter(estado=Informe.ESTADO_APROBADO_FINAL).count(),
+        'completado': Informe.objects.filter(estado=Informe.ESTADO_APROBADO_FINAL).count(),
     }
     
     # Informes por tipo de usuario
@@ -360,14 +360,14 @@ def admin_revisar_informe(request, informe_id):
         informe.comentario_docente = comentario_general
         informe.fecha_revision_docente = timezone.now()
 
-        if informe.estado == Informe.ESTADO_OBSERVADO:
-            informe.transition_to(Informe.ESTADO_EN_REVISION_DOCENTE)
+        if informe.estado == Informe.ESTADO_REVISION_DOCENTE:
+            informe.transition_to(Informe.ESTADO_REVISION_DOCENTE)
 
         if accion == 'aprobar':
-            informe.transition_to(Informe.ESTADO_APROBADO)
+            informe.transition_to(Informe.ESTADO_APROBADO_FINAL)
             messages.success(request, f'Informe "{informe.nombre_archivo}" aprobado exitosamente.')
         elif accion == 'rechazar':
-            informe.transition_to(Informe.ESTADO_RECHAZADO)
+            informe.transition_to(Informe.ESTADO_RECHAZADO_ESTUDIANTE)
             messages.warning(request, f'Informe "{informe.nombre_archivo}" rechazado. El alumno debe corregir.')
         
         informe.save()

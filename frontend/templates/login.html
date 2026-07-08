@@ -15,7 +15,7 @@
     <div class="card shadow-untels">
       <div class="card-header-untels">
         <div class="d-flex align-items-center">
-          <span class="me-2" style="font-size: 1.5rem;">🎓</span>
+          <span class="me-2" style="font-size: 1.5rem;"><i class="bi bi-mortarboard-fill"></i></span>
           <div>
             <h5 class="mb-0 fw-bold">Acceso Estudiantes</h5>
             <small class="text-white-50">Envía y consulta tus informes</small>
@@ -63,19 +63,17 @@
         <!-- Separador -->
         <hr class="my-4">
 
-        <!-- Enlaces adicionales -->
-        <div class="text-center">
-          <p class="mb-2">
-            <a href="{% url 'registro' %}" class="text-untels-blue fw-semibold text-decoration-none">
-              ¿No tiene cuenta? Registrarse aquí
-            </a>
-          </p>
+        <!-- Registro para estudiantes -->
+        <div class="text-center mb-3">
           <p class="mb-0">
-            <a href="{% url 'login_docente' %}" class="text-muted text-decoration-none">
-              ¿Eres docente? Accede aquí
+            <a href="{% url 'registro' %}" class="text-untels-blue fw-semibold text-decoration-none">
+              <i class="bi bi-person-plus"></i> ¿No tiene cuenta? Registrarse aquí
             </a>
           </p>
         </div>
+
+        <!-- Navegación entre roles -->
+        {% include 'components/login_role_switcher.html' with current_role='estudiante' %}
       </div>
     </div>
 

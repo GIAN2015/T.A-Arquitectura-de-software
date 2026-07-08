@@ -8,11 +8,11 @@
     <div class="card">
       <div class="card-header-untels d-flex justify-content-between align-items-center">
         <div>
-          <h5 class="mb-0">📋 Historial de Mis Informes</h5>
+          <h5 class="mb-0"><i class="bi bi-clock-history me-2"></i>Historial de Mis Informes</h5>
           <small class="text-warning">{{ nombre }} - {{ codigo }}</small>
         </div>
         <div>
-          <a href="{% url 'upload' %}" class="btn btn-sm btn-light me-2">📤 Subir Nuevo Informe</a>
+          <a href="{% url 'upload' %}" class="btn btn-sm btn-light me-2"><i class="bi bi-upload me-1"></i>Subir Nuevo Informe</a>
           <a href="{% url 'logout' %}" class="btn btn-sm btn-outline-light">Cerrar Sesión</a>
         </div>
       </div>
@@ -32,7 +32,6 @@
                   <th>Versión</th>
                   <th>Fecha de Envío</th>
                   <th>Estado</th>
-                  <th>Observaciones</th>
                   <th>Acciones</th>
                 </tr>
               </thead>
@@ -54,37 +53,42 @@
                   </td>
                   <td>
                     {% if informe.estado == 'enviado' %}
-                      <span class="badge bg-secondary">📨 Enviado</span>
+                      <span class="badge bg-secondary"><i class="bi bi-envelope-fill me-1"></i>Enviado</span>
                     {% elif informe.estado == 'validando' %}
-                      <span class="badge bg-info">🔄 Validando con IA</span>
-                    {% elif informe.estado == 'observado' %}
-                      <span class="badge bg-warning text-dark">⚠️ Con Observaciones</span>
+                      <span class="badge bg-info"><i class="bi bi-arrow-repeat me-1"></i>En Proceso</span>
+                    {% elif informe.estado == 'pendiente_secretaria' %}
+                      <span class="badge bg-secondary"><i class="bi bi-hourglass-split me-1"></i>En Proceso</span>
+                    {% elif informe.estado == 'pendiente_presidente' %}
+                      <span class="badge bg-info"><i class="bi bi-hourglass-split me-1"></i>En Revisión</span>
+                    {% elif informe.estado == 'pendiente_docente' %}
+                      <span class="badge bg-primary"><i class="bi bi-hourglass-split me-1"></i>En Revisión</span>
+                    {% elif informe.estado == 'validando_ia' %}
+                      <span class="badge bg-info"><i class="bi bi-robot me-1"></i>En Revisión</span>
                     {% elif informe.estado == 'revision_docente' %}
-                      <span class="badge bg-primary">👨‍🏫 En Revisión Docente</span>
+                      <span class="badge bg-primary"><i class="bi bi-hourglass-split me-1"></i>En Revisión</span>
+                    {% elif informe.estado == 'pendiente_aprobacion_presidente' %}
+                      <span class="badge bg-warning text-dark"><i class="bi bi-hourglass-split me-1"></i>En Revisión</span>
+                    {% elif informe.estado == 'rechazado_presidente' %}
+                      <span class="badge bg-warning text-dark"><i class="bi bi-hourglass-split me-1"></i>En Revisión</span>
+                    {% elif informe.estado == 'aprobado_presidente' %}
+                      <span class="badge bg-success"><i class="bi bi-check-circle me-1"></i>Aprobado</span>
+                    {% elif informe.estado == 'aprobado_final' %}
+                      <span class="badge bg-success"><i class="bi bi-check-circle-fill me-1"></i>APROBADO</span>
+                    {% elif informe.estado == 'rechazado_estudiante' %}
+                      <span class="badge bg-danger"><i class="bi bi-x-circle-fill me-1"></i>Con Observaciones</span>
                     {% elif informe.estado == 'rechazado' %}
-                      <span class="badge bg-danger">❌ Rechazado</span>
-                    {% elif informe.estado == 'aprobado' %}
-                      <span class="badge bg-success">✅ Aprobado</span>
-                    {% elif informe.estado == 'completado' %}
-                      <span class="badge bg-success">✅ Completado</span>
+                      <span class="badge bg-danger"><i class="bi bi-x-circle-fill me-1"></i>Con Observaciones</span>
+                    {% else %}
+                      <span class="badge bg-secondary">{{ informe.get_estado_display }}</span>
                     {% endif %}
                   </td>
                   <td>
-                    {% with obs_count=informe.observaciones.count %}
-                      {% if obs_count > 0 %}
-                        <span class="badge bg-danger rounded-pill">{{ obs_count }}</span>
-                      {% else %}
-                        <span class="badge bg-success rounded-pill">0</span>
-                      {% endif %}
-                    {% endwith %}
-                  </td>
-                  <td>
-                    <a href="{% url 'resultado' informe.id %}" class="btn btn-sm btn-untels">
-                      👁️ Ver Detalle
+                      <a href="{% url 'resultado' informe.id %}" class="btn btn-sm btn-untels">
+                      <i class="bi bi-eye me-1"></i>Ver Detalle
                     </a>
                     {% if informe.estado == 'rechazado' %}
                       <a href="{% url 'upload' %}" class="btn btn-sm btn-warning">
-                        📤 Reenviar
+                        <i class="bi bi-upload me-1"></i>Reenviar
                       </a>
                     {% endif %}
                   </td>
@@ -95,11 +99,11 @@
           </div>
         {% else %}
           <div class="text-center py-5">
-            <div style="font-size: 4rem; opacity: 0.3;">📋</div>
+            <div style="font-size: 4rem; opacity: 0.3;"><i class="bi bi-clock-history"></i></div>
             <h5 class="text-muted mt-3">No has subido ningún informe aún</h5>
             <p class="text-muted">Comienza subiendo tu primer informe de prácticas preprofesionales</p>
             <a href="{% url 'upload' %}" class="btn btn-untels btn-lg mt-3">
-              📤 Subir mi Primer Informe
+              <i class="bi bi-upload me-1"></i>Subir mi Primer Informe
             </a>
           </div>
         {% endif %}

@@ -1,4 +1,5 @@
 {% extends 'presidente/base_presidente.html' %}
+{% load dictamen_filters %}
 {% block title %}Revisar Dictamen - Presidente{% endblock %}
 
 {% block content %}
@@ -11,7 +12,7 @@
           <li class="breadcrumb-item active">Revisar Dictamen</li>
         </ol>
       </nav>
-      <h2><i class="bi bi-clipboard-check text-danger me-2"></i>Revisar Dictamen del Docente</h2>
+      <h2><i class="bi bi-clipboard-check text-untels-blue me-2"></i>Revisar Dictamen del Docente</h2>
     </div>
   </div>
 
@@ -24,20 +25,27 @@
         <div class="card-body">
           <div class="mb-3">
             <label class="text-muted small">Docente Revisor</label>
-            <p><strong>{{ informe.docente_asignado.get_full_name|default:informe.docente_asignado.username }}</strong></p>
+            <p><strong>{{ informe.docente_revisor.nombre }}</strong></p>
           </div>
           <div class="mb-3">
-            <label class="text-muted small">Recomendación</label>
-            <p>
-              <span class="badge {% if informe.recomendacion_docente == 'aprobar' %}bg-success{% else %}bg-danger{% endif %} fs-6">
-                {{ informe.get_recomendacion_docente_display }}
-              </span>
+            <label class="text-muted small">Fecha de Revisión</label>
+            <p class="mb-0"><small>{{ informe.fecha_revision_docente|date:"d/m/Y H:i" }}</small></p>
+          </div>
+          <div class="mb-3">
+            <label class="text-muted small">Total de Observaciones</label>
+            <p class="mb-0">
+              <span class="badge bg-info">{{ total_confirmadas }} confirmadas</span>
+              <span class="badge bg-secondary">{{ total_observaciones }} total</span>
             </p>
           </div>
           <div class="mb-0">
-            <label class="text-muted small">Dictamen Completo</label>
-            <div class="alert alert-info">
-              {{ informe.dictamen_docente }}
+            <label class="text-muted small">Dictamen Completo del Docente</label>
+            <div class="border rounded p-3 bg-light">
+              {% if informe.comentario_docente %}
+                {{ informe.comentario_docente|formatear_dictamen }}
+              {% else %}
+                <em class="text-muted">Sin dictamen del docente</em>
+              {% endif %}
             </div>
           </div>
         </div>
@@ -45,92 +53,111 @@
 
       <div class="card shadow-sm mb-3">
         <div class="card-header bg-light">
-          <h5 class="mb-0"><i class="bi bi-list-check me-2"></i>Observaciones Confirmadas</h5>
+          <h5 class="mb-0">
+            <i class="bi bi-list-check me-2"></i>Observaciones del Docente 
+            <span class="badge bg-info ms-2">{{ obs_confirmadas.count }} confirmadas</span>
+          </h5>
         </div>
         <div class="card-body">
-          {% if observaciones %}
+          {% if obs_confirmadas %}
+            <div class="alert alert-info mb-3">
+              <small><i class="bi bi-info-circle me-1"></i>
+                El docente confirmó {{ obs_confirmadas.count }} observaciones que el estudiante debe corregir.
+                {% if obs_descartadas %}También descartó {{ obs_descartadas.count }} observaciones.{% endif %}
+              </small>
+            </div>
             <div class="table-responsive">
-              <table class="table table-sm">
+              <table class="table table-sm table-hover">
                 <thead class="table-light">
                   <tr>
-                    <th>Sección</th>
-                    <th>Observación</th>
-                    <th>Severidad</th>
+                    <th style="width: 20%">Sección</th>
+                    <th style="width: 60%">Observación</th>
+                    <th style="width: 20%">Severidad</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {% for obs in observaciones %}
-                    {% if obs.confirmada %}
+                  {% for obs in obs_confirmadas %}
                     <tr>
-                      <td>{{ obs.seccion }}</td>
+                      <td><small class="text-muted">{{ obs.seccion }}</small></td>
                       <td>{{ obs.observacion }}</td>
                       <td>
-                        <span class="badge {% if obs.severidad == 'critica' %}bg-danger{% elif obs.severidad == 'importante' %}bg-warning text-dark{% else %}bg-info{% endif %}">
-                          {{ obs.get_severidad_display }}
-                        </span>
+                        {% if obs.severidad == 'critica' %}
+                          <span class="badge bg-danger">{{ obs.get_severidad_display }}</span>
+                        {% elif obs.severidad == 'importante' %}
+                          <span class="badge bg-warning text-dark">{{ obs.get_severidad_display }}</span>
+                        {% elif obs.severidad == 'menor' %}
+                          <span class="badge bg-info">{{ obs.get_severidad_display }}</span>
+                        {% else %}
+                          <span class="badge bg-secondary">{{ obs.get_severidad_display }}</span>
+                        {% endif %}
                       </td>
                     </tr>
-                    {% endif %}
                   {% endfor %}
                 </tbody>
               </table>
             </div>
           {% else %}
-            <p class="text-muted mb-0">No hay observaciones confirmadas</p>
+            <div class="text-center py-4">
+              <i class="bi bi-check-circle text-success" style="font-size: 3rem;"></i>
+              <p class="text-muted mt-2 mb-0">El docente no confirmó ninguna observación. El informe estaría apto según su criterio.</p>
+            </div>
           {% endif %}
         </div>
       </div>
 
       <div class="card shadow-sm">
-        <div class="card-header bg-danger text-white">
+        <div class="card-header-untels">
           <h5 class="mb-0"><i class="bi bi-check-circle me-2"></i>Decisión del Presidente</h5>
         </div>
         <div class="card-body">
           <ul class="nav nav-tabs mb-3" role="tablist">
             <li class="nav-item">
               <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#aprobar">
-                <i class="bi bi-check-circle-fill text-success me-1"></i>Aprobar
+                <i class="bi bi-check-circle-fill text-untels-blue me-1"></i>Aprobar
               </button>
             </li>
             <li class="nav-item">
               <button class="nav-link" data-bs-toggle="tab" data-bs-target="#rechazar">
-                <i class="bi bi-x-circle-fill text-danger me-1"></i>Rechazar
+                <i class="bi bi-x-circle-fill text-untels-blue me-1"></i>Rechazar
               </button>
             </li>
           </ul>
 
           <div class="tab-content">
             <div class="tab-pane fade show active" id="aprobar">
-              <form method="post" action="{% url 'presidente_aprobar' informe.id %}">
+              <form method="post">
                 {% csrf_token %}
+                <input type="hidden" name="accion" value="aprobar">
                 <div class="alert alert-success">
-                  <h6>Aprobar Dictamen</h6>
-                  <p class="mb-0">El informe será aprobado y notificado a la secretaria para notificar al estudiante.</p>
+                  <h6><i class="bi bi-check-circle-fill me-2"></i>Aprobar Dictamen</h6>
+                  <p class="mb-0">Al aprobar, el informe será enviado a secretaría para notificar al estudiante de la aprobación final.</p>
                 </div>
                 <div class="mb-3">
-                  <label for="comentario_aprobar" class="form-label">Comentario (Opcional)</label>
-                  <textarea class="form-control" id="comentario_aprobar" name="comentario" rows="3"></textarea>
+                  <label for="comentario_aprobar" class="form-label">Comentario Adicional (Opcional)</label>
+                  <textarea class="form-control" id="comentario_aprobar" name="comentario" rows="3" placeholder="Puede agregar algún comentario adicional..."></textarea>
+                  <small class="text-muted">Este comentario será visible para la secretaría</small>
                 </div>
-                <button type="submit" class="btn btn-success">
-                  <i class="bi bi-check-circle-fill me-2"></i>Confirmar Aprobación
+                <button type="submit" class="btn btn-success btn-lg">
+                  <i class="bi bi-check-circle-fill me-2"></i>Aprobar y Enviar a Secretaría
                 </button>
               </form>
             </div>
 
             <div class="tab-pane fade" id="rechazar">
-              <form method="post" action="{% url 'presidente_rechazar' informe.id %}">
+              <form method="post">
                 {% csrf_token %}
+                <input type="hidden" name="accion" value="rechazar">
                 <div class="alert alert-danger">
-                  <h6>Rechazar Dictamen</h6>
-                  <p class="mb-0">El dictamen volverá al docente para revisión. <strong>Debe especificar el motivo.</strong></p>
+                  <h6><i class="bi bi-x-circle-fill me-2"></i>Rechazar y Devolver al Docente</h6>
+                  <p class="mb-0">El dictamen será devuelto al docente para que revise nuevamente el informe. <strong>Debe explicar el motivo del rechazo.</strong></p>
                 </div>
                 <div class="mb-3">
                   <label for="motivo" class="form-label">Motivo del Rechazo <span class="text-danger">*</span></label>
-                  <textarea class="form-control" id="motivo" name="motivo" rows="4" required placeholder="Explique por qué rechaza el dictamen (mínimo 10 caracteres)"></textarea>
-                  <small class="form-text text-muted">Este motivo será enviado al docente</small>
+                  <textarea class="form-control" id="motivo" name="comentario" rows="4" required placeholder="Explique claramente por qué rechaza el dictamen del docente (mínimo 10 caracteres)..."></textarea>
+                  <small class="form-text text-muted">Este comentario será enviado al docente para que pueda corregir su revisión</small>
                 </div>
-                <button type="submit" class="btn btn-danger">
-                  <i class="bi bi-x-circle-fill me-2"></i>Confirmar Rechazo
+                <button type="submit" class="btn btn-danger btn-lg">
+                  <i class="bi bi-x-circle-fill me-2"></i>Rechazar y Devolver al Docente
                 </button>
               </form>
             </div>
@@ -145,8 +172,8 @@
           <h6 class="mb-0"><i class="bi bi-person-circle me-2"></i>Estudiante</h6>
         </div>
         <div class="card-body">
-          <p class="mb-1"><strong>{{ informe.usuario.get_full_name|default:informe.usuario.username }}</strong></p>
-          <p class="mb-0 small text-muted">{{ informe.usuario.username }}</p>
+          <p class="mb-1"><strong>{{ informe.usuario.nombre }}</strong></p>
+          <p class="mb-0 small text-muted">{{ informe.usuario.codigo }}</p>
         </div>
       </div>
 

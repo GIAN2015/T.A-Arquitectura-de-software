@@ -11,7 +11,7 @@
           <li class="breadcrumb-item active">Revisar Informe #{{ informe.id }}</li>
         </ol>
       </nav>
-      <h2><i class="bi bi-clipboard-check text-success me-2"></i>Revisar Informe con IA</h2>
+      <h2><i class="bi bi-clipboard-check text-untels-blue me-2"></i>Revisar Informe con IA</h2>
     </div>
   </div>
 
@@ -23,8 +23,8 @@
           <h6 class="mb-0"><i class="bi bi-person-circle me-2"></i>Estudiante</h6>
         </div>
         <div class="card-body">
-          <p class="mb-1"><strong>{{ informe.usuario.get_full_name|default:informe.usuario.username }}</strong></p>
-          <p class="mb-0 small text-muted">{{ informe.usuario.username }}</p>
+          <p class="mb-1"><strong>{{ informe.usuario.nombre }}</strong></p>
+          <p class="mb-0 small text-muted">{{ informe.usuario.codigo }}</p>
         </div>
       </div>
 
@@ -41,35 +41,132 @@
       </div>
 
       <div class="card shadow-sm">
-        <div class="card-header bg-success text-white">
-          <h6 class="mb-0"><i class="bi bi-book me-2"></i>Banco Usado</h6>
+        <div class="card-header-untels">
+          <h6 class="mb-0"><i class="bi bi-book me-2"></i>Bancos Disponibles</h6>
         </div>
         <div class="card-body">
-          {% if banco_activo %}
-            <p class="mb-1"><strong>{{ banco_activo.nombre }}</strong></p>
-            <small class="text-muted">Las observaciones se generan con este banco</small>
+          {% if bancos_disponibles %}
+            <p class="mb-2 small text-muted">Tienes {{ bancos_disponibles.count }} banco(s) activo(s):</p>
+            {% for banco in bancos_disponibles %}
+            <div class="{% if not forloop.last %}mb-2 pb-2 border-bottom{% endif %}">
+              <p class="mb-0"><strong>{{ banco.nombre }}</strong></p>
+              <small class="text-muted">{{ banco.contenido_extraido|length }} caracteres</small>
+            </div>
+            {% endfor %}
+            
+            {% if banco_usado %}
+            <hr>
+            <p class="mb-1 small text-success"><i class="bi bi-check-circle-fill me-1"></i><strong>Usado en este informe:</strong></p>
+            <p class="mb-0">{{ banco_usado.nombre }}</p>
+            {% endif %}
           {% else %}
             <div class="alert alert-warning mb-0">
-              <small>No tienes banco activo</small>
+              <small>No tienes bancos activos</small>
             </div>
           {% endif %}
         </div>
       </div>
     </div>
 
-    <!-- PANEL CENTRAL: OBSERVACIONES -->
+    <!-- PANEL CENTRAL: VALIDACIÓN Y OBSERVACIONES -->
     <div class="col-lg-8">
+      
+      <!-- ALERTA: INFORME RECHAZADO POR PRESIDENTE -->
+      {% if informe.estado == 'rechazado_presidente' %}
+      <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <h5 class="alert-heading">
+          <i class="bi bi-exclamation-triangle-fill me-2"></i>El Presidente Rechazó este Informe
+        </h5>
+        <p class="mb-2">El presidente revisó tu dictamen y lo rechazó. Debes revisar nuevamente el informe considerando sus observaciones.</p>
+        
+        <hr>
+        
+        <h6 class="fw-bold">Comentario del Presidente:</h6>
+        <div class="bg-white p-3 rounded border">
+          {% if informe.comentario_presidente %}
+            <p class="mb-0 text-dark">{{ informe.comentario_presidente }}</p>
+          {% else %}
+            <p class="mb-0 text-muted fst-italic">Sin comentarios específicos</p>
+          {% endif %}
+        </div>
+        
+        <div class="mt-3">
+          <small class="text-dark">
+            <i class="bi bi-info-circle-fill me-1"></i>
+            <strong>Qué hacer:</strong> Puedes re-validar el informe con tu banco actualizado o editar manualmente las observaciones antes de volver a enviar tu dictamen.
+          </small>
+        </div>
+        
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+      </div>
+      {% endif %}
+      
+      <!-- INDICADOR DE PROGRESO GLOBAL (usado para validar Y re-validar) -->
+      <div id="progressIndicator" class="card shadow-sm mb-4" style="display: none;">
+        <div class="card-body text-center py-5">
+          <div class="d-flex justify-content-center mb-3">
+            <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
+              <span class="visually-hidden">Procesando...</span>
+            </div>
+          </div>
+          <div class="progress" style="height: 25px;">
+            <div id="progressBar" class="progress-bar progress-bar-striped progress-bar-animated bg-untels-blue" 
+                 role="progressbar" style="width: 0%">0%</div>
+          </div>
+          <p id="progressMessage" class="text-center mt-3 fw-bold text-untels-blue"></p>
+          <p class="text-center text-muted small" id="progressTimer"></p>
+        </div>
+      </div>
+      
+      <!-- PASO 1: BOTÓN INICIAR VALIDACIÓN (solo si no hay observaciones) -->
+      {% if not observaciones and informe.estado in 'pendiente_docente,rechazado_presidente' %}
+        <div class="card shadow-sm mb-4">
+          <div class="card-header-untels">
+            <h5 class="mb-0"><i class="bi bi-robot me-2"></i>Validación con IA</h5>
+          </div>
+          <div class="card-body text-center py-5">
+            <div class="mb-4">
+              <i class="bi bi-robot text-untels-blue" style="font-size: 4rem;"></i>
+            </div>
+            
+            <h4 class="mb-3">¿Listo para validar este informe?</h4>
+            
+            <div class="alert alert-info text-start mb-4">
+              <h6 class="alert-heading"><i class="bi bi-info-circle-fill me-2"></i>El sistema hará lo siguiente:</h6>
+              <ol class="mb-0">
+                <li>Seleccionarás el banco de observaciones a usar</li>
+                <li>Analizará el contenido del informe del estudiante ({{ informe.contenido|length }} caracteres)</li>
+                <li>Usará IA para detectar problemas basándose en el banco elegido</li>
+                <li>Generará observaciones que podrás editar antes de enviar</li>
+              </ol>
+            </div>
+            
+            <button type="button" class="btn btn-lg bg-untels-blue text-white" data-bs-toggle="modal" data-bs-target="#seleccionarBancoModal">
+              <i class="bi bi-play-circle-fill me-2"></i>Iniciar Validación con IA
+            </button>
+            
+            <p class="text-muted mt-3 mb-0">
+              <small><i class="bi bi-clock me-1"></i>Tiempo estimado: 20-30 segundos</small>
+            </p>
+          </div>
+        </div>
+      {% endif %}
+      
+      <!-- PASO 2: OBSERVACIONES GENERADAS -->
       {% if observaciones %}
         <div class="card shadow-sm mb-4">
-          <div class="card-header bg-success text-white">
+          <div class="card-header-untels d-flex justify-content-between align-items-center">
             <h5 class="mb-0"><i class="bi bi-list-check me-2"></i>Observaciones de la IA</h5>
+            <button type="button" class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#revalidarModal">
+              <i class="bi bi-arrow-repeat me-1"></i>Re-validar con Nuevo Banco
+            </button>
           </div>
           <div class="card-body">
             <div class="alert alert-info">
               <p class="mb-0"><i class="bi bi-info-circle-fill me-2"></i>Revisa cada observación y decide si confirmarla o descartarla. Puedes cambiar la severidad y agregar comentarios.</p>
             </div>
 
-            <form method="post" action="{% url 'docente_revisar' informe.id %}">
+            <form method="post" action="{% url 'docente_revisar_informe' informe.id %}" id="formCompleto">
               {% csrf_token %}
               <div class="table-responsive">
                 <table class="table table-sm table-hover">
@@ -89,7 +186,7 @@
                       <td><strong class="small">{{ obs.seccion|truncatewords:3 }}</strong></td>
                       <td><small>{{ obs.observacion|truncatewords:15 }}</small></td>
                       <td>
-                        <select class="form-select form-select-sm" name="severidad_{{ obs.id }}">
+                        <select class="form-select form-select-sm" name="obs_severidad_{{ obs.id }}">
                           <option value="critica" {% if obs.severidad == 'critica' %}selected{% endif %}>Crítica</option>
                           <option value="importante" {% if obs.severidad == 'importante' %}selected{% endif %}>Importante</option>
                           <option value="menor" {% if obs.severidad == 'menor' %}selected{% endif %}>Menor</option>
@@ -98,13 +195,13 @@
                       </td>
                       <td>
                         <div class="btn-group btn-group-sm" role="group">
-                          <input type="radio" class="btn-check" name="accion_{{ obs.id }}" id="confirmar_{{ obs.id }}" value="confirmar" {% if obs.confirmada %}checked{% endif %}>
-                          <label class="btn btn-outline-success" for="confirmar_{{ obs.id }}">
+                          <input type="radio" class="btn-check" name="obs_accion_{{ obs.id }}" id="confirmar_{{ obs.id }}" value="confirmar" {% if obs.estado == 'confirmada' %}checked{% endif %}>
+                          <label class="btn btn-outline-primary" for="confirmar_{{ obs.id }}">
                             <i class="bi bi-check"></i> Confirmar
                           </label>
 
-                          <input type="radio" class="btn-check" name="accion_{{ obs.id }}" id="descartar_{{ obs.id }}" value="descartar" {% if not obs.confirmada %}checked{% endif %}>
-                          <label class="btn btn-outline-danger" for="descartar_{{ obs.id }}">
+                          <input type="radio" class="btn-check" name="obs_accion_{{ obs.id }}" id="descartar_{{ obs.id }}" value="descartar" {% if obs.estado == 'descartada' %}checked{% endif %}>
+                          <label class="btn btn-outline-warning" for="descartar_{{ obs.id }}">
                             <i class="bi bi-x"></i> Descartar
                           </label>
                         </div>
@@ -116,11 +213,10 @@
               </div>
 
               <div class="d-grid gap-2 mt-3">
-                <button type="submit" name="action" value="actualizar_observaciones" class="btn btn-info btn-lg">
+                <button type="submit" name="accion" value="actualizar_observaciones" class="btn btn-primary btn-lg">
                   <i class="bi bi-arrow-repeat me-2"></i>Actualizar Observaciones
                 </button>
               </div>
-            </form>
           </div>
         </div>
       {% else %}
@@ -130,52 +226,293 @@
         </div>
       {% endif %}
 
-      <!-- DICTAMEN FINAL -->
+      <!-- DICTAMEN FINAL (dentro del mismo formulario) -->
       <div class="card shadow-sm">
         <div class="card-header bg-warning">
           <h5 class="mb-0"><i class="bi bi-clipboard-check me-2"></i>Dictamen Final</h5>
         </div>
         <div class="card-body">
-          <form method="post" action="{% url 'docente_revisar' informe.id %}">
-            {% csrf_token %}
-            <div class="mb-3">
-              <label for="dictamen" class="form-label fw-semibold">Escribe tu Dictamen <span class="text-danger">*</span></label>
-              <textarea 
-                class="form-control" 
-                id="dictamen" 
-                name="dictamen" 
-                rows="6" 
-                required 
-                placeholder="Escribe tu dictamen final sobre el informe (mínimo 20 caracteres)..."
-              >{{ informe.dictamen_docente }}</textarea>
-              <small class="form-text text-muted">Este dictamen será revisado por el Presidente de Escuela</small>
+          <div class="mb-3">
+            <label for="comentario_general" class="form-label fw-semibold">Escribe tu Dictamen <span class="text-warning">*</span></label>
+            <textarea 
+              class="form-control" 
+              id="comentario_general" 
+              name="comentario_general" 
+              rows="6" 
+              placeholder="Escribe tu dictamen final sobre el informe (mínimo 20 caracteres)..."
+              form="formCompleto"
+            >{{ informe.comentario_docente }}</textarea>
+            <small class="form-text text-muted">Este dictamen será revisado por el Presidente de Escuela</small>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Tu Recomendación <span class="text-warning">*</span></label>
+            <div class="btn-group w-100" role="group">
+              <input type="radio" class="btn-check" name="recomendar" id="recomendar_aprobar" value="aprobar" form="formCompleto">
+              <label class="btn btn-outline-primary" for="recomendar_aprobar">
+                <i class="bi bi-check-circle-fill me-1"></i>Recomendar APROBAR
+              </label>
+
+              <input type="radio" class="btn-check" name="recomendar" id="recomendar_rechazar" value="rechazar" form="formCompleto">
+              <label class="btn btn-outline-warning" for="recomendar_rechazar">
+                <i class="bi bi-x-circle-fill me-1"></i>Recomendar RECHAZAR
+              </label>
             </div>
+          </div>
 
-            <div class="mb-3">
-              <label class="form-label fw-semibold">Tu Recomendación <span class="text-danger">*</span></label>
-              <div class="btn-group w-100" role="group">
-                <input type="radio" class="btn-check" name="recomendacion" id="recomendar_aprobar" value="aprobar" {% if informe.recomendacion_docente == 'aprobar' %}checked{% endif %} required>
-                <label class="btn btn-outline-success" for="recomendar_aprobar">
-                  <i class="bi bi-check-circle-fill me-1"></i>Recomendar APROBAR
-                </label>
+          <div class="d-grid gap-2">
+            <button type="submit" name="accion" value="enviar_dictamen" class="btn bg-untels-blue text-white btn-lg" form="formCompleto">
+              <i class="bi bi-send-fill me-2"></i>Enviar Dictamen al Presidente
+            </button>
+            <a href="{% url 'panel_docente' %}" class="btn btn-outline-secondary">Cancelar</a>
+          </div>
+        </div>
+      </div>
+      
+      </form> <!-- Cierre del formulario único -->
+    </div>
+  </div>
+</div>
 
-                <input type="radio" class="btn-check" name="recomendacion" id="recomendar_rechazar" value="rechazar" {% if informe.recomendacion_docente == 'rechazar' %}checked{% endif %}>
-                <label class="btn btn-outline-danger" for="recomendar_rechazar">
-                  <i class="bi bi-x-circle-fill me-1"></i>Recomendar RECHAZAR
+<!-- Modal: Seleccionar Banco para Validar (v2.1) -->
+<div class="modal fade" id="seleccionarBancoModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header bg-untels-blue text-white">
+        <h5 class="modal-title"><i class="bi bi-book me-2"></i>Seleccionar Banco de Observaciones</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <p><i class="bi bi-info-circle-fill text-primary me-2"></i>Elige el banco de observaciones que la IA usará como referencia para validar este informe.</p>
+        
+        <form method="post" id="formValidarIA">
+          {% csrf_token %}
+          <input type="hidden" name="accion" value="validar_ia">
+          
+          <div class="list-group">
+            {% for banco in bancos_disponibles %}
+            <label class="list-group-item list-group-item-action">
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="banco_id" value="{{ banco.id }}" 
+                       id="banco{{ banco.id }}" {% if forloop.first %}checked{% endif %} required>
+                <label class="form-check-label w-100" for="banco{{ banco.id }}">
+                  <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                      <h6 class="mb-1">{{ banco.nombre }}</h6>
+                      <small class="text-muted">
+                        <i class="bi bi-calendar3 me-1"></i>Creado: {{ banco.fecha_creacion|date:"d/m/Y" }}
+                      </small>
+                      <br>
+                      <small class="text-muted">
+                        <i class="bi bi-file-text me-1"></i>{{ banco.contenido_extraido|length }} caracteres
+                      </small>
+                    </div>
+                    {% if banco.activo %}
+                    <span class="badge bg-success">Activo</span>
+                    {% endif %}
+                  </div>
                 </label>
               </div>
+            </label>
+            {% empty %}
+            <div class="alert alert-warning mb-0">
+              <i class="bi bi-exclamation-triangle me-2"></i>No tienes bancos activos. Crea uno primero.
             </div>
-
-            <div class="d-grid gap-2">
-              <button type="submit" name="action" value="enviar_dictamen" class="btn btn-success btn-lg">
-                <i class="bi bi-send-fill me-2"></i>Enviar Dictamen al Presidente
-              </button>
-              <a href="{% url 'panel_docente' %}" class="btn btn-outline-secondary">Cancelar</a>
-            </div>
-          </form>
-        </div>
+            {% endfor %}
+          </div>
+          
+          <div class="modal-footer border-0 px-0 pb-0">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+            {% if bancos_disponibles %}
+            <button type="submit" class="btn btn-untels" id="btnValidar">
+              <i class="bi bi-play-circle-fill me-2"></i>Iniciar Validación
+            </button>
+            {% endif %}
+          </div>
+        </form>
       </div>
     </div>
   </div>
 </div>
+
+<!-- Modal: Re-validar con Nuevo Banco -->
+<div class="modal fade" id="revalidarModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header bg-warning">
+        <h5 class="modal-title"><i class="bi bi-exclamation-triangle-fill me-2"></i>Re-validar con Nuevo Banco</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <div class="alert alert-warning">
+          <h6 class="alert-heading"><i class="bi bi-info-circle-fill me-2"></i>¿Por qué re-validar?</h6>
+          <p class="mb-0">Si quieres usar un banco diferente o actualizaste tu banco de observaciones.</p>
+        </div>
+        
+        <p><strong>Banco usado anteriormente:</strong> {% if banco_usado %}{{ banco_usado.nombre }}{% else %}Desconocido{% endif %}</p>
+        
+        <hr>
+        
+        <p class="text-danger"><strong>⚠️ Advertencia:</strong></p>
+        <ul class="text-danger small">
+          <li>Se eliminarán las {{ observaciones.count }} observaciones actuales</li>
+          <li>Se generarán nuevas observaciones con el banco que elijas</li>
+          <li>Esta acción no se puede deshacer</li>
+        </ul>
+        
+        <hr>
+        
+        <p class="fw-bold">Selecciona el banco a usar:</p>
+        
+        <form method="post" id="formRevalidar">
+          {% csrf_token %}
+          <input type="hidden" name="accion" value="revalidar">
+          
+          <div class="list-group mb-3">
+            {% for banco in bancos_disponibles %}
+            <label class="list-group-item list-group-item-action">
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="banco_id" value="{{ banco.id }}" 
+                       id="banco_rev{{ banco.id }}" {% if banco.id == banco_usado.id %}checked{% endif %} required>
+                <label class="form-check-label w-100" for="banco_rev{{ banco.id }}">
+                  <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                      <h6 class="mb-1">{{ banco.nombre }}</h6>
+                      <small class="text-muted">{{ banco.contenido_extraido|length }} caracteres</small>
+                    </div>
+                    {% if banco.id == banco_usado.id %}
+                    <span class="badge bg-info">Actual</span>
+                    {% endif %}
+                  </div>
+                </label>
+              </div>
+            </label>
+            {% endfor %}
+          </div>
+          
+          <div class="d-flex justify-content-end gap-2">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+            <button type="submit" class="btn btn-warning" id="btnRevalidar">
+              <i class="bi bi-arrow-repeat me-1"></i>Sí, Re-validar Ahora
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Elementos compartidos
+    const indicator = document.getElementById('progressIndicator');
+    const progressBar = document.getElementById('progressBar');
+    const progressMessage = document.getElementById('progressMessage');
+    const progressTimer = document.getElementById('progressTimer');
+    
+    // Mensajes de progreso
+    const messages = [
+        { sec: 0, msg: '🔍 Leyendo tu banco de observaciones...', progress: 5 },
+        { sec: 2, msg: '📄 Leyendo informe del estudiante...', progress: 10 },
+        { sec: 4, msg: '🌐 Conectando con API de IA...', progress: 15 },
+        { sec: 6, msg: '🤖 IA procesando (esto tomará ~20 segundos)...', progress: 25 },
+        { sec: 10, msg: '🧠 Analizando contenido del informe...', progress: 40 },
+        { sec: 15, msg: '🔎 Comparando con tu banco de observaciones...', progress: 60 },
+        { sec: 20, msg: '📝 Detectando problemas y generando observaciones...', progress: 75 },
+        { sec: 25, msg: '✨ Finalizando análisis...', progress: 90 },
+        { sec: 30, msg: '💾 Guardando resultados...', progress: 95 }
+    ];
+    
+    // Función para mostrar progreso
+    function showProgress(btn, originalHtml) {
+        // Ocultar todo el contenido EXCEPTO el indicador
+        const contentCards = document.querySelectorAll('.col-lg-8 > .card:not(#progressIndicator)');
+        contentCards.forEach(card => card.style.display = 'none');
+        
+        // Mostrar indicador
+        indicator.style.display = 'block';
+        
+        // Resetear progreso
+        progressBar.style.width = '0%';
+        progressBar.textContent = '0%';
+        progressBar.className = 'progress-bar progress-bar-striped progress-bar-animated bg-untels-blue';
+        progressMessage.className = 'text-center mt-3 fw-bold text-untels-blue';
+        
+        let seconds = 0;
+        let progress = 0;
+        
+        const interval = setInterval(function() {
+            seconds++;
+            progressTimer.textContent = `Tiempo transcurrido: ${seconds} segundos`;
+            
+            // Actualizar mensaje según el tiempo
+            for (let i = messages.length - 1; i >= 0; i--) {
+                if (seconds >= messages[i].sec) {
+                    progressMessage.textContent = messages[i].msg;
+                    progress = messages[i].progress;
+                    break;
+                }
+            }
+            
+            // Actualizar barra de progreso
+            progressBar.style.width = progress + '%';
+            progressBar.textContent = progress + '%';
+            
+            // Si pasa de 60 segundos, mostrar advertencia
+            if (seconds === 60) {
+                progressMessage.textContent = '⚠️ Esto está tomando más tiempo del esperado...';
+                progressMessage.className = 'text-center mt-3 fw-bold text-warning';
+            }
+            
+            // Si pasa de 90 segundos, mostrar error
+            if (seconds === 90) {
+                progressMessage.textContent = '❌ Timeout: La API tardó demasiado. Recarga la página.';
+                progressMessage.className = 'text-center mt-3 fw-bold text-danger';
+                clearInterval(interval);
+                btn.disabled = false;
+                btn.innerHTML = originalHtml;
+            }
+        }, 1000);
+        
+        // Limpiar intervalo cuando la página se recarga
+        window.addEventListener('beforeunload', function() {
+            clearInterval(interval);
+        });
+    }
+    
+    // FORMULARIO 1: Validar por primera vez
+    const formValidar = document.getElementById('formValidarIA');
+    if (formValidar) {
+        const btnValidar = document.getElementById('btnValidar');
+        const originalHtml = btnValidar.innerHTML;
+        
+        formValidar.addEventListener('submit', function(e) {
+            btnValidar.disabled = true;
+            btnValidar.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Procesando...';
+            showProgress(btnValidar, originalHtml);
+        });
+    }
+    
+    // FORMULARIO 2: Re-validar
+    const formRevalidar = document.getElementById('formRevalidar');
+    if (formRevalidar) {
+        const btnRevalidar = document.getElementById('btnRevalidar');
+        const originalHtml = btnRevalidar.innerHTML;
+        
+        formRevalidar.addEventListener('submit', function(e) {
+            // Cerrar modal
+            const modal = bootstrap.Modal.getInstance(document.getElementById('revalidarModal'));
+            if (modal) modal.hide();
+            
+            // Deshabilitar botón
+            btnRevalidar.disabled = true;
+            btnRevalidar.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Procesando...';
+            
+            // Mostrar progreso
+            showProgress(btnRevalidar, originalHtml);
+        });
+    }
+});
+</script>
+
 {% endblock %}

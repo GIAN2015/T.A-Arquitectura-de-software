@@ -1,0 +1,32 @@
+#!/bin/bash
+
+cd "$(dirname "$0")"
+
+echo "=========================================="
+echo " Sistema UNTELS - Validación de Informes"
+echo " Versión 2.0 - Flujo Multi-Rol"
+echo "=========================================="
+echo ""
+echo "Iniciando servidor Django..."
+echo ""
+echo "URLs del Sistema:"
+echo "  🏠 Home:               http://localhost:8000/"
+echo "  👥 Login v2:           http://localhost:8000/v2/login/"
+echo "  📋 Secretaria:         http://localhost:8000/v2/secretaria/login/"
+echo "  👔 Presidente:         http://localhost:8000/v2/presidente/login/"
+echo "  👨‍🏫 Docente:            http://localhost:8000/v2/docente/login/"
+echo "  🎓 Login Estudiantes:  http://localhost:8000/login/"
+echo "  🔧 Admin Django:       http://localhost:8000/admin/"
+echo ""
+echo "Credenciales de Prueba:"
+echo "  Secretaria:   secretaria1 / test123"
+echo "  Presidente:   presidente_isi / test123"
+echo "  Docente:      docente_isi_1 / test123"
+echo "  Estudiante:   2020123456 / test123"
+echo ""
+echo "=========================================="
+echo "Presiona Ctrl+C para detener el servidor"
+echo "=========================================="
+echo ""
+
+./venv/bin/python manage.py runserver 0.0.0.0:8000
