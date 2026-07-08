@@ -233,28 +233,121 @@ class Informe(models.Model):
 class ObservacionGenerada(models.Model):
     """
     Observación generada por IA sobre un informe
-    El docente puede confirmar o descartar
+    El docente puede confirmar, descartar o editar
+    
+    Estados posibles:
+    - pendiente: IA generó, docente aún no revisa
+    - confirmada: Docente la aceptó (se incluye en dictamen)
+    - descartada: Docente la rechazó (no aparece en dictamen)
+    - corregida: Estudiante ya corrigió (futuro)
+    
+    Severidades:
+    - critica: Error grave que impide aprobación (🔴)
+    - importante: Error significativo (🟠)
+    - menor: Detalle a mejorar (🟡)
+    - sugerencia: Recomendación opcional (💡)
     """
     ESTADO_PENDIENTE = 'pendiente'
     ESTADO_CONFIRMADA = 'confirmada'
     ESTADO_DESCARTADA = 'descartada'
     ESTADO_CORREGIDA = 'corregida'
     
+    ESTADO_CHOICES = [
+        (ESTADO_PENDIENTE, 'Pendiente de revisión'),
+        (ESTADO_CONFIRMADA, 'Confirmada por docente'),
+        (ESTADO_DESCARTADA, 'Descartada por docente'),
+        (ESTADO_CORREGIDA, 'Corregida por estudiante'),
+    ]
+    
     SEVERIDAD_CRITICA = 'critica'
     SEVERIDAD_IMPORTANTE = 'importante'
     SEVERIDAD_MENOR = 'menor'
     SEVERIDAD_SUGERENCIA = 'sugerencia'
     
-    informe = models.ForeignKey(Informe, related_name='observaciones')
-    seccion = models.CharField(max_length=100)
-    observacion = models.TextField()
-    ubicacion_error = models.CharField(max_length=255)
-    severidad = models.CharField(max_length=20, choices=SEVERIDAD_CHOICES)
-    estado = models.CharField(max_length=20, choices=ESTADO_CHOICES)
+    SEVERIDAD_CHOICES = [
+        (SEVERIDAD_CRITICA, 'Crítica'),
+        (SEVERIDAD_IMPORTANTE, 'Importante'),
+        (SEVERIDAD_MENOR, 'Menor'),
+        (SEVERIDAD_SUGERENCIA, 'Sugerencia'),
+    ]
+    
+    # Relaciones
+    informe = models.ForeignKey(
+        Informe, 
+        on_delete=models.CASCADE,
+        related_name='observaciones',
+        help_text='Informe al que pertenece esta observación'
+    )
+    
+    # Contenido de la observación
+    seccion = models.CharField(
+        max_length=100,
+        help_text='Sección del informe (Introducción, Marco Teórico, etc.)'
+    )
+    observacion = models.TextField(
+        help_text='Descripción detallada de la observación'
+    )
+    ubicacion_error = models.CharField(
+        max_length=255,
+        blank=True,
+        help_text='Ubicación específica en el texto (página, párrafo)'
+    )
+    severidad = models.CharField(
+        max_length=20,
+        choices=SEVERIDAD_CHOICES,
+        default=SEVERIDAD_MENOR,
+        help_text='Nivel de severidad de la observación'
+    )
+    estado = models.CharField(
+        max_length=20,
+        choices=ESTADO_CHOICES,
+        default=ESTADO_PENDIENTE,
+        help_text='Estado actual de la observación'
+    )
     
     # Revisión del docente
-    comentario_docente = models.TextField(blank=True)
-    fecha_revision = models.DateTimeField(null=True)
+    comentario_docente = models.TextField(
+        blank=True,
+        help_text='Comentario adicional del docente sobre esta observación'
+    )
+    fecha_generacion = models.DateTimeField(
+        auto_now_add=True,
+        help_text='Fecha en que la IA generó la observación'
+    )
+    fecha_revision = models.DateTimeField(
+        null=True,
+        blank=True,
+        help_text='Fecha en que el docente revisó (confirmó/descartó)'
+    )
+    
+    class Meta:
+        db_table = 'observaciones_observaciongenerada'
+        ordering = ['-severidad', 'seccion']
+        verbose_name = 'Observación Generada'
+        verbose_name_plural = 'Observaciones Generadas'
+        indexes = [
+            models.Index(fields=['informe', 'estado']),
+            models.Index(fields=['severidad']),
+        ]
+    
+    def __str__(self):
+        return f"{self.get_severidad_display()} - {self.seccion}: {self.observacion[:50]}"
+    
+    def confirmar(self, comentario=''):
+        """Confirma la observación (docente la acepta)"""
+        from django.utils import timezone
+        self.estado = self.ESTADO_CONFIRMADA
+        self.comentario_docente = comentario
+        self.fecha_revision = timezone.now()
+        self.save()
+    
+    def descartar(self, comentario=''):
+        """Descarta la observación (docente la rechaza)"""
+        from django.utils import timezone
+        self.estado = self.ESTADO_DESCARTADA
+        self.comentario_docente = comentario
+        self.fecha_revision = timezone.now()
+        self.save()
 ```
 
 ---
@@ -267,14 +360,118 @@ class ObservacionGenerada(models.Model):
 class BancoObservacionesDocente(models.Model):
     """
     Banco personalizado de observaciones del docente
-    v2.1: Permite múltiples bancos activos
+    
+    v2.1 Features:
+    - Permite múltiples bancos por docente
+    - Solo UNO puede estar activo a la vez (el que se usa por defecto)
+    - El docente puede elegir otro banco al validar
+    - Soporta PDF, DOCX, TXT
+    - Extracción automática de texto
+    
+    El banco contiene:
+    - Criterios de evaluación
+    - Errores comunes a buscar
+    - Formato esperado
+    - Estándares de la escuela
+    
+    La IA usa este banco como "memoria" contextual para generar
+    observaciones coherentes con los criterios del docente.
     """
-    docente = models.ForeignKey(Usuario, related_name='bancos_observaciones')
-    nombre = models.CharField(max_length=200)
-    archivo = models.FileField(upload_to='bancos/')
-    contenido_extraido = models.TextField()
-    activo = models.BooleanField(default=True)
-    fecha_creacion = models.DateTimeField(auto_now_add=True)
+    
+    # Relaciones
+    docente = models.ForeignKey(
+        'usuarios.Usuario',
+        on_delete=models.CASCADE,
+        related_name='bancos_observaciones',
+        limit_choices_to={'tipo_usuario': 'docente'},
+        help_text='Docente propietario del banco'
+    )
+    
+    # Información del banco
+    nombre = models.CharField(
+        max_length=200,
+        help_text='Nombre descriptivo del banco (ej: "Criterios Informes ISI 2024")'
+    )
+    descripcion = models.TextField(
+        blank=True,
+        help_text='Descripción opcional de qué contiene este banco'
+    )
+    
+    # Archivo y contenido
+    archivo = models.FileField(
+        upload_to='bancos/',
+        help_text='Archivo PDF/DOCX/TXT con el banco de observaciones'
+    )
+    contenido_extraido = models.TextField(
+        help_text='Texto extraído del archivo para usar con la IA'
+    )
+    
+    # Estado
+    activo = models.BooleanField(
+        default=True,
+        help_text='Si está activo, se usa por defecto en validaciones'
+    )
+    
+    # Estadísticas de uso
+    veces_usado = models.IntegerField(
+        default=0,
+        help_text='Contador de veces que se ha usado este banco'
+    )
+    
+    # Fechas
+    fecha_creacion = models.DateTimeField(
+        auto_now_add=True,
+        help_text='Fecha de creación del banco'
+    )
+    fecha_modificacion = models.DateTimeField(
+        auto_now=True,
+        help_text='Última modificación'
+    )
+    
+    class Meta:
+        db_table = 'observaciones_bancoobservacionesdocente'
+        ordering = ['-activo', '-fecha_creacion']
+        verbose_name = 'Banco de Observaciones'
+        verbose_name_plural = 'Bancos de Observaciones'
+        indexes = [
+            models.Index(fields=['docente', 'activo']),
+        ]
+        # Constraint: Solo UN banco activo por docente
+        # (implementado en lógica de negocio)
+    
+    def __str__(self):
+        estado = "✅ Activo" if self.activo else "⏸️ Inactivo"
+        return f"{self.nombre} [{estado}] - {self.docente.nombre}"
+    
+    def activar(self):
+        """
+        Activa este banco y desactiva todos los demás del mismo docente
+        """
+        # Desactivar todos los bancos del docente
+        BancoObservacionesDocente.objects.filter(
+            docente=self.docente
+        ).update(activo=False)
+        
+        # Activar este
+        self.activo = True
+        self.save()
+    
+    def incrementar_uso(self):
+        """Incrementa el contador de uso"""
+        self.veces_usado += 1
+        self.save(update_fields=['veces_usado'])
+    
+    def save(self, *args, **kwargs):
+        """
+        Override save para garantizar solo UN banco activo
+        """
+        if self.activo:
+            # Si este se está activando, desactivar los demás
+            BancoObservacionesDocente.objects.filter(
+                docente=self.docente
+            ).exclude(pk=self.pk).update(activo=False)
+        
+        super().save(*args, **kwargs)
 ```
 
 ---

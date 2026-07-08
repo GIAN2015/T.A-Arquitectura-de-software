@@ -39,8 +39,8 @@ def upload_view(request):
                 messages.error(request, 'Error al leer el archivo: archivo dañado o formato incorrecto.')
                 return render(request, 'upload_report.html', context)
 
-            if not contenido or len(contenido.strip()) < 50:
-                messages.error(request, 'El archivo está vacío o tiene muy poco contenido.')
+            if not contenido or len(contenido.strip()) < 1:
+                messages.error(request, 'El archivo está vacío.')
                 return render(request, 'upload_report.html', context)
 
             informe_previo = Informe.objects.filter(

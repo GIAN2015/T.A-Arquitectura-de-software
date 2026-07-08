@@ -310,52 +310,164 @@ class DocenteService:
 
 ---
 
-### Paso 6: Presidente Revisa Dictamen
+### Paso 6: Presidente Revisa Dictamen (3 Decisiones Posibles)
 
 **Actor**: Presidente  
 **Vista**: `presidente/revisar.html`  
-**Endpoint**: `POST /presidente/revisar/{id}/`
+**Endpoints**: 
+- `POST /presidente/aprobar_informe/{id}/`
+- `POST /presidente/rechazar_informe/{id}/`
+- `POST /presidente/devolver_dictamen/{id}/`
 
 ```python
 # apps/negocio/servicios/presidente.py
 class PresidenteService:
+    
     @staticmethod
-    def aprobar_dictamen_docente(informe_id, presidente, comentario, aprobar_informe=True):
-        informe = Informe.objects.get(
-            id=informe_id,
-            presidente_asignado=presidente
+    def aprobar_dictamen_docente(informe_id, presidente, comentario='', accion='aprobar_informe'):
+        """
+        El presidente tiene 3 opciones al revisar un dictamen:
+        
+        1. Aprobar el informe final → estado: aprobado_presidente
+           - Envía a secretaría para notificar al estudiante
+        
+        2. Rechazar el informe final → estado: rechazado_presidente
+           - Envía a secretaría para notificar al estudiante con observaciones
+        
+        3. Devolver el dictamen al docente → estado: revision_docente
+           - El docente debe rehacer la revisión
+        
+        Args:
+            informe_id: ID del informe
+            presidente: Usuario presidente
+            comentario: Comentario del presidente
+            accion: 'aprobar_informe' | 'rechazar_informe' | 'devolver_dictamen'
+        
+        Returns:
+            tuple: (success, informe, error_message)
+        """
+        try:
+            informe = Informe.objects.get(
+                id=informe_id,
+                presidente_asignado=presidente,
+                estado=Informe.ESTADO_PENDIENTE_APROBACION_PRESIDENTE
+            )
+            
+            # Guardar comentario del presidente
+            informe.comentario_presidente = comentario
+            
+            if accion == 'aprobar_informe':
+                # ============================================
+                # DECISIÓN 1: APROBAR EL INFORME FINAL
+                # ============================================
+                # El presidente está de acuerdo con el dictamen del docente
+                # y aprueba el informe para que vaya a secretaría
+                
+                informe.transition_to('aprobado_presidente')
+                informe.fecha_aprobacion_presidente = timezone.now()
+                informe.save()
+                
+                # Notificar a secretaría para que notifique aprobación final
+                NotificacionService.crear_notificacion(
+                    usuario=informe.secretaria_asignada,
+                    tipo='aprobacion_presidente',
+                    titulo='✅ Presidente aprobó informe',
+                    mensaje=f'El presidente aprobó el informe de {informe.usuario.nombre}. '
+                            f'Puede notificar al estudiante.',
+                    informe=informe
+                )
+                
+                return True, informe, None
+            
+            elif accion == 'rechazar_informe':
+                # ============================================
+                # DECISIÓN 2: RECHAZAR EL INFORME FINAL
+                # ============================================
+                # El presidente está de acuerdo con el dictamen del docente
+                # y rechaza el informe (estudiante debe corregir)
+                
+                if not comentario:
+                    return False, None, "Debe proporcionar un comentario al rechazar"
+                
+                informe.transition_to('rechazado_presidente')
+                informe.fecha_aprobacion_presidente = timezone.now()
+                informe.save()
+                
+                # Notificar a secretaría para que notifique rechazo final
+                NotificacionService.crear_notificacion(
+                    usuario=informe.secretaria_asignada,
+                    tipo='rechazo_presidente',
+                    titulo='❌ Presidente rechazó informe',
+                    mensaje=f'El presidente rechazó el informe de {informe.usuario.nombre}. '
+                            f'Puede notificar al estudiante para que corrija.',
+                    informe=informe
+                )
+                
+                return True, informe, None
+            
+            elif accion == 'devolver_dictamen':
+                # ============================================
+                # DECISIÓN 3: DEVOLVER EL DICTAMEN AL DOCENTE
+                # ============================================
+                # El presidente NO está de acuerdo con el dictamen
+                # El docente debe rehacer la revisión
+                
+                if not comentario:
+                    return False, None, "Debe explicar por qué devuelve el dictamen"
+                
+                # NO usar transition_to porque no es una transición normal
+                # El presidente devuelve el trabajo al docente
+                informe.estado = Informe.ESTADO_REVISION_DOCENTE
+                informe.save()
+                
+                # Notificar al docente
+                NotificacionService.crear_notificacion(
+                    usuario=informe.docente_revisor,
+                    tipo='dictamen_devuelto',
+                    titulo='🔄 Presidente devolvió el dictamen',
+                    mensaje=f'El presidente devolvió su dictamen del informe de {informe.usuario.nombre}. '
+                            f'Debe rehacerlo. Comentario: {comentario}',
+                    informe=informe
+                )
+                
+                return True, informe, None
+            
+            else:
+                return False, None, f"Acción desconocida: {accion}"
+        
+        except Informe.DoesNotExist:
+            return False, None, "Informe no encontrado o no está en estado pendiente"
+        except Exception as e:
+            return False, None, f"Error: {str(e)}"
+    
+    @staticmethod
+    def rechazar_dictamen_docente(informe_id, presidente, comentario):
+        """
+        Método legacy - usar aprobar_dictamen_docente con accion='devolver_dictamen'
+        """
+        return PresidenteService.aprobar_dictamen_docente(
+            informe_id, presidente, comentario, accion='devolver_dictamen'
         )
-        
-        # Guardar comentario del presidente
-        informe.comentario_presidente = comentario
-        
-        if accion == 'aprobar_final':
-            # APRUEBA el informe final y lo envía a secretaría
-            informe.transition_to('aprobado_presidente')
-            NotificacionService.notificar_aprobacion_presidente_a_secretaria(
-                informe, informe.secretaria_asignada
-            )
-        elif accion == 'rechazar_final':
-            # RECHAZA el informe final y lo envía a secretaría
-            informe.transition_to('rechazado_presidente')
-            NotificacionService.notificar_rechazo_presidente_a_secretaria(
-                informe, informe.secretaria_asignada
-            )
-        else:
-            # DEVUELVE el dictamen al docente para rehacer revisión
-            informe.estado = 'revision_docente'
-            NotificacionService.notificar_rechazo_presidente_a_docente(
-                informe, informe.docente_revisor
-            )
-        
-        informe.fecha_aprobacion_presidente = timezone.now()
-        informe.save()
 ```
 
 **Resultados posibles**:
-- `pendiente_aprobacion_presidente` → `aprobado_presidente` (aprueba informe final)
-- `pendiente_aprobacion_presidente` → `rechazado_presidente` (rechaza informe final)
-- `pendiente_aprobacion_presidente` → `revision_docente` (devuelve dictamen al docente)
+
+| Decisión del Presidente | Estado Resultante | Siguiente Responsable |
+|-------------------------|-------------------|----------------------|
+| **Aprobar informe** | `aprobado_presidente` | Secretaria → Notifica aprobación |
+| **Rechazar informe** | `rechazado_presidente` | Secretaria → Notifica rechazo |
+| **Devolver dictamen** | `revision_docente` | Docente → Rehace revisión |
+
+**Diagrama de Decisión**:
+```
+Presidente recibe dictamen
+         │
+         ├─► ✅ Aprobar informe → aprobado_presidente → Secretaría
+         │
+         ├─► ❌ Rechazar informe → rechazado_presidente → Secretaría
+         │
+         └─► 🔄 Devolver dictamen → revision_docente → Docente
+```
 
 ---
 

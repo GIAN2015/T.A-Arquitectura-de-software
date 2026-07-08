@@ -8,18 +8,82 @@
 - **Producción**: PostgreSQL (recomendado)
 - **ORM**: Django ORM
 
-## Diagrama ER Simplificado
+## Diagrama ER Detallado
 
 ```
-┌─────────────┐       ┌──────────────┐       ┌─────────────────────┐
-│   Usuario   │──────<│   Informe    │>──────│  ObservacionGenerada│
-└─────────────┘       └──────────────┘       └─────────────────────┘
-      │                      │
-      │                      │
-      ▼                      ▼
-┌─────────────┐       ┌────────────────────────┐
-│   Escuela   │       │ BancoObservacionesDoc  │
-└─────────────┘       └────────────────────────┘
+┌──────────────────────────────────────┐
+│          USUARIO (5 tipos)           │
+│  - estudiante                        │
+│  - docente                           │
+│  - presidente                        │
+│  - secretaria                        │
+│  - admin                             │
+└────┬────────────────────────┬────────┘
+     │                        │
+     │ escuela_id             │ presidente_id
+     │                        │
+     ▼                        │
+┌─────────────┐               │
+│   ESCUELA   │◄──────────────┘
+│             │
+└─────────────┘
+     ▲
+     │
+     │ (4 relaciones desde Informe)
+     │
+┌────┴──────────────────────────────────────────────────────┐
+│                       INFORME                             │
+│  + usuario_id (estudiante)                                │
+│  + secretaria_asignada_id                                 │
+│  + presidente_asignado_id                                 │
+│  + docente_revisor_id                                     │
+│  + escuela_id                                             │
+│  + banco_observaciones_usado_id                           │
+│  + informe_anterior_id (versionado)                       │
+│  + estado (11 estados posibles)                           │
+│  + version (1, 2, 3...)                                   │
+└─────┬──────────────────────────┬─────────────────────────┘
+      │ 1                     1  │
+      │                          │
+      │ N                     N  │
+      ▼                          ▼
+┌──────────────────────┐   ┌─────────────────────────────┐
+│ OBSERVACION_GENERADA │   │ BANCO_OBSERVACIONES_DOCENTE │
+│  + informe_id        │   │  + docente_id               │
+│  + severidad         │   │  + activo (bool)            │
+│  + estado            │   │  + veces_usado              │
+│  + seccion           │   └─────────────────────────────┘
+└──────────────────────┘
+      │
+      │ (futuro: tracking de correcciones)
+      │
+      ▼
+┌──────────────────────┐
+│   NOTIFICACION       │
+│  + usuario_id        │
+│  + informe_id        │
+│  + tipo              │
+│  + leida             │
+└──────────────────────┘
+```
+
+### Cardinalidades
+
+```
+Usuario (1) ────< Informe (N)  [como estudiante]
+Usuario (1) ────< Informe (N)  [como secretaria_asignada]
+Usuario (1) ────< Informe (N)  [como presidente_asignado]
+Usuario (1) ────< Informe (N)  [como docente_revisor]
+
+Escuela (1) ────< Usuario (N)  [usuarios de la escuela]
+Escuela (1) ────< Informe (N)  [informes de la escuela]
+
+Informe (1) ────< ObservacionGenerada (N)
+Informe (1) ────> BancoObservacionesDocente (1)  [banco usado]
+Informe (1) ────> Informe (1)  [informe_anterior - versionado]
+
+Usuario-Docente (1) ────< BancoObservacionesDocente (N)
+Usuario (1) ────< Notificacion (N)
 ```
 
 ## Tablas Principales
@@ -75,13 +139,54 @@
 **Interpretación operativa de estados finales**:
 - `aprobado_presidente`: El presidente aprobó el informe y secretaría aún debe notificar
 - `rechazado_presidente`: El presidente rechazó el informe final y secretaría aún debe notificar al estudiante
-- `rechazado_estudiante`: El estudiante ya fue notificado y debe corregir
+- `aprobado_final`: ✅ ESTADO FINAL - Informe completamente aprobado, secretaría ya notificó al estudiante
+- `rechazado_estudiante`: ❌ El estudiante ya fue notificado y debe corregir y reenviar
 - `revision_docente` con `comentario_presidente`: El presidente devolvió el dictamen al docente para rehacer la revisión
 
 **Versionado de reenvíos**:
 - Cada reenvío crea un nuevo registro `Informe`
 - `informe_anterior_id` apunta a la versión rechazada previa
-- Una versión rechazada que ya tiene `versiones_posteriores` queda cerrada y no debe volver a reenviarse
+- `version` se incrementa automáticamente (1 → 2 → 3)
+- Una versión rechazada que ya tiene `versiones_posteriores` (reverse relation) queda cerrada
+- Solo la última versión en estado `rechazado_estudiante` puede reenviarse
+- El botón de reenvío solo aparece si:
+  - `estado == 'rechazado_estudiante'`
+  - No existe `Informe.objects.filter(informe_anterior=this_informe).exists()`
+
+**Máquina de Estados - Transiciones Válidas**:
+
+```python
+# Cada estado define qué estados siguientes son válidos
+
+enviado → [pendiente_secretaria]
+pendiente_secretaria → [pendiente_presidente]
+pendiente_presidente → [pendiente_docente]
+pendiente_docente → [validando_ia]
+validando_ia → [revision_docente]
+revision_docente → [pendiente_aprobacion_presidente, rechazado_estudiante]
+pendiente_aprobacion_presidente → [aprobado_presidente, rechazado_presidente, revision_docente*]
+aprobado_presidente → [aprobado_final]
+rechazado_presidente → [rechazado_estudiante]
+aprobado_final → []  # FINAL, sin salida
+rechazado_estudiante → [enviado]  # Reenvío crea nueva versión
+
+# *revision_docente: solo si presidente devuelve dictamen (no usa transition_to)
+```
+
+**Índices para Optimización**:
+```sql
+-- Índice compuesto para queries frecuentes del docente
+CREATE INDEX idx_informe_docente_estado ON informes_informe(docente_revisor_id, estado);
+
+-- Índice para filtrar por presidente y estado
+CREATE INDEX idx_informe_presidente_estado ON informes_informe(presidente_asignado_id, estado);
+
+-- Índice para versiones (queries de versionado)
+CREATE INDEX idx_informe_anterior ON informes_informe(informe_anterior_id);
+
+-- Índice para obtener última versión de un estudiante
+CREATE INDEX idx_informe_usuario_version ON informes_informe(usuario_id, version DESC);
+```
 
 ### 3. observaciones_observaciongenerada
 

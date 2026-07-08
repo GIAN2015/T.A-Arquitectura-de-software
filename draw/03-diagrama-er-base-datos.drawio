@@ -1,0 +1,266 @@
+<mxfile host="app.diagrams.net" modified="2026-07-08T12:00:00.000Z" agent="5.0" version="24.0.0">
+  <diagram name="Diagrama ER" id="diagrama-er">
+    <mxGraphModel dx="1422" dy="1800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1400" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+        
+        <!-- TÍTULO -->
+        <mxCell id="titulo" value="&lt;h1&gt;Diagrama Entidad-Relación (ER)&lt;/h1&gt;&lt;p&gt;Sistema de Validación de Informes UNTELS&lt;/p&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=16;" vertex="1" parent="1">
+          <mxGeometry x="500" y="20" width="600" height="60" as="geometry"/>
+        </mxCell>
+        
+        <!-- ==================== TABLA USUARIO ==================== -->
+        <mxCell id="usuario-table" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="100" y="120" width="350" height="340" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="usuario-header" value="&lt;b&gt;👤 USUARIO&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#6c8ebf;strokeColor=#000000;fontColor=#ffffff;fontSize=14;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="100" y="120" width="350" height="40" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="usuario-fields" value="&lt;b&gt;PK&lt;/b&gt; id: Integer&lt;br&gt;&lt;b&gt;UNIQUE&lt;/b&gt; codigo: VARCHAR(20)&lt;br&gt;nombre: VARCHAR(200)&lt;br&gt;&lt;b&gt;tipo_usuario: VARCHAR(20)&lt;/b&gt;&lt;br&gt;  • estudiante&lt;br&gt;  • docente&lt;br&gt;  • presidente&lt;br&gt;  • secretaria&lt;br&gt;  • admin&lt;br&gt;password: VARCHAR(255)&lt;br&gt;email: VARCHAR(254)&lt;br&gt;&lt;b&gt;FK&lt;/b&gt; escuela_id: Integer&lt;br&gt;activo: Boolean&lt;br&gt;&lt;br&gt;&lt;i&gt;fecha_creacion: DateTime&lt;/i&gt;&lt;br&gt;&lt;i&gt;fecha_modificacion: DateTime&lt;/i&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=11;fontFamily=Courier New;" vertex="1" parent="1">
+          <mxGeometry x="110" y="170" width="330" height="280" as="geometry"/>
+        </mxCell>
+        
+        <!-- ==================== TABLA ESCUELA ==================== -->
+        <mxCell id="escuela-table" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="100" y="500" width="350" height="200" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="escuela-header" value="&lt;b&gt;🏫 ESCUELA&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#82b366;strokeColor=#000000;fontColor=#ffffff;fontSize=14;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="100" y="500" width="350" height="40" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="escuela-fields" value="&lt;b&gt;PK&lt;/b&gt; id: Integer&lt;br&gt;&lt;b&gt;UNIQUE&lt;/b&gt; codigo: VARCHAR(10)&lt;br&gt;nombre: VARCHAR(200)&lt;br&gt;&lt;b&gt;FK&lt;/b&gt; presidente_id: Integer&lt;br&gt;activo: Boolean&lt;br&gt;&lt;br&gt;&lt;i&gt;fecha_creacion: DateTime&lt;/i&gt;&lt;br&gt;&lt;i&gt;fecha_modificacion: DateTime&lt;/i&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=11;fontFamily=Courier New;" vertex="1" parent="1">
+          <mxGeometry x="110" y="550" width="330" height="140" as="geometry"/>
+        </mxCell>
+        
+        <!-- Relación Usuario -> Escuela -->
+        <mxCell id="rel-usuario-escuela" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;endArrow=ERmany;startArrow=ERone;strokeColor=#666666;" edge="1" parent="1" source="usuario-table" target="escuela-table">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="rel-label-1" value="N usuarios&lt;br&gt;pertenecen a 1 escuela" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=10;" vertex="1" connectable="0" parent="rel-usuario-escuela">
+          <mxGeometry x="-0.2" y="2" relative="1" as="geometry">
+            <mxPoint x="60" as="offset"/>
+          </mxGeometry>
+        </mxCell>
+        
+        <!-- ==================== TABLA INFORME ==================== -->
+        <mxCell id="informe-table" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="600" y="120" width="450" height="620" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="informe-header" value="&lt;b&gt;📄 INFORME&lt;/b&gt; (Núcleo del sistema)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d79b00;strokeColor=#000000;fontColor=#ffffff;fontSize=14;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="600" y="120" width="450" height="40" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="informe-fields" value="&lt;b&gt;PK&lt;/b&gt; id: Integer&lt;br&gt;&lt;br&gt;&lt;b&gt;-- Relaciones con usuarios --&lt;/b&gt;&lt;br&gt;&lt;b&gt;FK&lt;/b&gt; usuario_id (estudiante)&lt;br&gt;&lt;b&gt;FK&lt;/b&gt; secretaria_asignada_id&lt;br&gt;&lt;b&gt;FK&lt;/b&gt; presidente_asignado_id&lt;br&gt;&lt;b&gt;FK&lt;/b&gt; docente_revisor_id&lt;br&gt;&lt;b&gt;FK&lt;/b&gt; escuela_id&lt;br&gt;&lt;br&gt;&lt;b&gt;-- Archivo y contenido --&lt;/b&gt;&lt;br&gt;nombre_archivo: VARCHAR(255)&lt;br&gt;archivo: FileField&lt;br&gt;contenido: Text (contenido extraído)&lt;br&gt;&lt;br&gt;&lt;b&gt;-- Estado y flujo --&lt;/b&gt;&lt;br&gt;&lt;b&gt;estado: VARCHAR(50)&lt;/b&gt; (11 estados posibles)&lt;br&gt;  1. enviado&lt;br&gt;  2. pendiente_secretaria&lt;br&gt;  3. pendiente_presidente&lt;br&gt;  4. pendiente_docente&lt;br&gt;  5. validando_ia&lt;br&gt;  6. revision_docente&lt;br&gt;  7. pendiente_aprobacion_presidente&lt;br&gt;  8. aprobado_presidente&lt;br&gt;  9. rechazado_presidente&lt;br&gt;  10. aprobado_final&lt;br&gt;  11. rechazado_estudiante&lt;br&gt;&lt;br&gt;&lt;b&gt;-- Versionado --&lt;/b&gt;&lt;br&gt;version: Integer (1, 2, 3...)&lt;br&gt;&lt;b&gt;FK&lt;/b&gt; informe_anterior_id (self reference)&lt;br&gt;&lt;br&gt;&lt;b&gt;-- Dictámenes --&lt;/b&gt;&lt;br&gt;comentario_secretaria: Text&lt;br&gt;comentario_docente: Text (dictamen estructurado)&lt;br&gt;comentario_presidente: Text&lt;br&gt;&lt;br&gt;&lt;b&gt;-- Banco usado --&lt;/b&gt;&lt;br&gt;&lt;b&gt;FK&lt;/b&gt; banco_observaciones_usado_id&lt;br&gt;&lt;br&gt;&lt;b&gt;-- Trazabilidad --&lt;/b&gt;&lt;br&gt;&lt;i&gt;fecha_registro: DateTime&lt;/i&gt;&lt;br&gt;&lt;i&gt;fecha_asignacion_secretaria: DateTime&lt;/i&gt;&lt;br&gt;&lt;i&gt;fecha_asignacion_presidente: DateTime&lt;/i&gt;&lt;br&gt;&lt;i&gt;fecha_asignacion_docente: DateTime&lt;/i&gt;&lt;br&gt;&lt;i&gt;fecha_revision_docente: DateTime&lt;/i&gt;&lt;br&gt;&lt;i&gt;fecha_aprobacion_presidente: DateTime&lt;/i&gt;&lt;br&gt;&lt;i&gt;fecha_completado: DateTime&lt;/i&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=10;fontFamily=Courier New;" vertex="1" parent="1">
+          <mxGeometry x="610" y="170" width="430" height="560" as="geometry"/>
+        </mxCell>
+        
+        <!-- Relaciones Usuario -> Informe -->
+        <mxCell id="rel-usuario-informe" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;endArrow=ERmany;startArrow=ERone;strokeColor=#666666;" edge="1" parent="1" source="usuario-table" target="informe-table">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="rel-label-2" value="1 Usuario tiene N informes&lt;br&gt;(como estudiante, docente,&lt;br&gt;presidente o secretaria)" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=10;" vertex="1" connectable="0" parent="rel-usuario-informe">
+          <mxGeometry x="-0.2" y="2" relative="1" as="geometry">
+            <mxPoint x="10" y="-30" as="offset"/>
+          </mxGeometry>
+        </mxCell>
+        
+        <!-- Relación Escuela -> Informe -->
+        <mxCell id="rel-escuela-informe" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;endArrow=ERmany;startArrow=ERone;strokeColor=#666666;" edge="1" parent="1" source="escuela-table" target="informe-table">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="500" y="600"/>
+              <mxPoint x="500" y="430"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="rel-label-3" value="1 Escuela&lt;br&gt;tiene N informes" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=10;" vertex="1" connectable="0" parent="rel-escuela-informe">
+          <mxGeometry x="-0.2" y="2" relative="1" as="geometry">
+            <mxPoint x="20" y="-80" as="offset"/>
+          </mxGeometry>
+        </mxCell>
+        
+        <!-- ==================== TABLA OBSERVACION GENERADA ==================== -->
+        <mxCell id="observacion-table" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="1150" y="120" width="400" height="380" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="observacion-header" value="&lt;b&gt;📝 OBSERVACION_GENERADA&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#b85450;strokeColor=#000000;fontColor=#ffffff;fontSize=14;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="1150" y="120" width="400" height="40" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="observacion-fields" value="&lt;b&gt;PK&lt;/b&gt; id: Integer&lt;br&gt;&lt;b&gt;FK&lt;/b&gt; informe_id&lt;br&gt;&lt;br&gt;&lt;b&gt;-- Contenido --&lt;/b&gt;&lt;br&gt;seccion: VARCHAR(100)&lt;br&gt;observacion: Text&lt;br&gt;ubicacion_error: VARCHAR(255)&lt;br&gt;&lt;br&gt;&lt;b&gt;-- Severidad --&lt;/b&gt;&lt;br&gt;severidad: VARCHAR(20)&lt;br&gt;  • critica (🔴)&lt;br&gt;  • importante (🟠)&lt;br&gt;  • menor (🟡)&lt;br&gt;  • sugerencia (💡)&lt;br&gt;&lt;br&gt;&lt;b&gt;-- Estado --&lt;/b&gt;&lt;br&gt;estado: VARCHAR(20)&lt;br&gt;  • pendiente&lt;br&gt;  • confirmada&lt;br&gt;  • descartada&lt;br&gt;  • corregida&lt;br&gt;&lt;br&gt;&lt;b&gt;-- Revisión docente --&lt;/b&gt;&lt;br&gt;comentario_docente: Text&lt;br&gt;&lt;i&gt;fecha_generacion: DateTime&lt;/i&gt;&lt;br&gt;&lt;i&gt;fecha_revision: DateTime&lt;/i&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=10;fontFamily=Courier New;" vertex="1" parent="1">
+          <mxGeometry x="1160" y="170" width="380" height="320" as="geometry"/>
+        </mxCell>
+        
+        <!-- Relación Informe -> ObservacionGenerada -->
+        <mxCell id="rel-informe-obs" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;endArrow=ERmany;startArrow=ERone;strokeColor=#666666;" edge="1" parent="1" source="informe-table" target="observacion-table">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="rel-label-4" value="1 Informe tiene N observaciones" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=10;" vertex="1" connectable="0" parent="rel-informe-obs">
+          <mxGeometry x="-0.2" y="2" relative="1" as="geometry">
+            <mxPoint y="-10" as="offset"/>
+          </mxGeometry>
+        </mxCell>
+        
+        <!-- ==================== TABLA BANCO OBSERVACIONES DOCENTE ==================== -->
+        <mxCell id="banco-table" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="1150" y="540" width="400" height="280" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="banco-header" value="&lt;b&gt;🗂️ BANCO_OBSERVACIONES_DOCENTE&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#9673a6;strokeColor=#000000;fontColor=#ffffff;fontSize=14;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="1150" y="540" width="400" height="40" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="banco-fields" value="&lt;b&gt;PK&lt;/b&gt; id: Integer&lt;br&gt;&lt;b&gt;FK&lt;/b&gt; docente_id&lt;br&gt;&lt;br&gt;&lt;b&gt;-- Información --&lt;/b&gt;&lt;br&gt;nombre: VARCHAR(200)&lt;br&gt;descripcion: Text&lt;br&gt;&lt;br&gt;&lt;b&gt;-- Archivo --&lt;/b&gt;&lt;br&gt;archivo: FileField (PDF/DOCX/TXT)&lt;br&gt;contenido_extraido: Text&lt;br&gt;&lt;br&gt;&lt;b&gt;-- Estado --&lt;/b&gt;&lt;br&gt;activo: Boolean&lt;br&gt;  (Solo 1 banco activo por docente)&lt;br&gt;&lt;br&gt;&lt;b&gt;-- Estadísticas --&lt;/b&gt;&lt;br&gt;veces_usado: Integer&lt;br&gt;&lt;br&gt;&lt;i&gt;fecha_creacion: DateTime&lt;/i&gt;&lt;br&gt;&lt;i&gt;fecha_modificacion: DateTime&lt;/i&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=10;fontFamily=Courier New;" vertex="1" parent="1">
+          <mxGeometry x="1160" y="590" width="380" height="220" as="geometry"/>
+        </mxCell>
+        
+        <!-- Relación Usuario -> BancoObservaciones -->
+        <mxCell id="rel-usuario-banco" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;endArrow=ERmany;startArrow=ERone;strokeColor=#666666;exitX=1;exitY=0.25;entryX=0;entryY=0.5;" edge="1" parent="1" source="usuario-table" target="banco-table">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="550" y="205"/>
+              <mxPoint x="550" y="880"/>
+              <mxPoint x="1100" y="880"/>
+              <mxPoint x="1100" y="680"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="rel-label-5" value="1 Docente tiene N bancos" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=10;" vertex="1" connectable="0" parent="rel-usuario-banco">
+          <mxGeometry x="-0.2" y="2" relative="1" as="geometry">
+            <mxPoint x="100" y="-10" as="offset"/>
+          </mxGeometry>
+        </mxCell>
+        
+        <!-- Relación Informe -> BancoObservaciones (banco usado) -->
+        <mxCell id="rel-informe-banco" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;endArrow=ERone;startArrow=ERmany;strokeColor=#666666;dashed=1;" edge="1" parent="1" source="informe-table" target="banco-table">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1100" y="430"/>
+              <mxPoint x="1100" y="650"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="rel-label-6" value="N Informes usan&lt;br&gt;1 Banco (usado)" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=10;" vertex="1" connectable="0" parent="rel-informe-banco">
+          <mxGeometry x="-0.2" y="2" relative="1" as="geometry">
+            <mxPoint x="20" y="30" as="offset"/>
+          </mxGeometry>
+        </mxCell>
+        
+        <!-- ==================== TABLA NOTIFICACION ==================== -->
+        <mxCell id="notificacion-table" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="100" y="780" width="400" height="260" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="notificacion-header" value="&lt;b&gt;🔔 NOTIFICACION&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d6b656;strokeColor=#000000;fontColor=#ffffff;fontSize=14;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="100" y="780" width="400" height="40" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="notificacion-fields" value="&lt;b&gt;PK&lt;/b&gt; id: Integer&lt;br&gt;&lt;b&gt;FK&lt;/b&gt; usuario_id (destinatario)&lt;br&gt;&lt;b&gt;FK&lt;/b&gt; informe_id (opcional)&lt;br&gt;&lt;br&gt;&lt;b&gt;-- Contenido --&lt;/b&gt;&lt;br&gt;tipo: VARCHAR(50)&lt;br&gt;  • informe_nuevo&lt;br&gt;  • informe_derivado&lt;br&gt;  • asignacion_docente&lt;br&gt;  • dictamen_pendiente&lt;br&gt;  • dictamen_devuelto&lt;br&gt;  • aprobacion_final&lt;br&gt;  • rechazo_final&lt;br&gt;&lt;br&gt;titulo: VARCHAR(200)&lt;br&gt;mensaje: Text&lt;br&gt;&lt;br&gt;&lt;b&gt;-- Estado --&lt;/b&gt;&lt;br&gt;leida: Boolean&lt;br&gt;&lt;br&gt;&lt;i&gt;fecha_creacion: DateTime&lt;/i&gt;&lt;br&gt;&lt;i&gt;fecha_leida: DateTime&lt;/i&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=10;fontFamily=Courier New;" vertex="1" parent="1">
+          <mxGeometry x="110" y="830" width="380" height="200" as="geometry"/>
+        </mxCell>
+        
+        <!-- Relación Usuario -> Notificacion -->
+        <mxCell id="rel-usuario-notif" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;endArrow=ERmany;startArrow=ERone;strokeColor=#666666;" edge="1" parent="1" source="usuario-table" target="notificacion-table">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="rel-label-7" value="1 Usuario tiene&lt;br&gt;N notificaciones" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=10;" vertex="1" connectable="0" parent="rel-usuario-notif">
+          <mxGeometry x="-0.2" y="2" relative="1" as="geometry">
+            <mxPoint x="40" as="offset"/>
+          </mxGeometry>
+        </mxCell>
+        
+        <!-- Relación Informe -> Notificacion -->
+        <mxCell id="rel-informe-notif" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;endArrow=ERmany;startArrow=ERzeroToOne;strokeColor=#666666;dashed=1;" edge="1" parent="1" source="informe-table" target="notificacion-table">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="550" y="700"/>
+              <mxPoint x="550" y="910"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="rel-label-8" value="1 Informe puede tener&lt;br&gt;N notificaciones" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=10;" vertex="1" connectable="0" parent="rel-informe-notif">
+          <mxGeometry x="-0.2" y="2" relative="1" as="geometry">
+            <mxPoint x="20" y="30" as="offset"/>
+          </mxGeometry>
+        </mxCell>
+        
+        <!-- Auto-referencia Informe (versionado) -->
+        <mxCell id="rel-informe-self" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;endArrow=ERmany;startArrow=ERzeroToOne;strokeColor=#d79b00;curved=1;" edge="1" parent="1" source="informe-table" target="informe-table">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1080" y="300"/>
+              <mxPoint x="1080" y="500"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="rel-label-self" value="&lt;b&gt;VERSIONADO&lt;/b&gt;&lt;br&gt;informe_anterior_id&lt;br&gt;→ versiones_posteriores" style="edgeLabel;html=1;align=left;verticalAlign=middle;resizable=0;points=[];fontSize=10;fontColor=#d79b00;fontStyle=1" vertex="1" connectable="0" parent="rel-informe-self">
+          <mxGeometry x="-0.2" y="2" relative="1" as="geometry">
+            <mxPoint x="20" as="offset"/>
+          </mxGeometry>
+        </mxCell>
+        
+        <!-- ==================== LEYENDA ==================== -->
+        <mxCell id="leyenda-box" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="600" y="780" width="450" height="260" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="leyenda-titulo" value="&lt;b&gt;📖 LEYENDA&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#666666;strokeColor=#000000;fontColor=#ffffff;fontSize=14;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="600" y="780" width="450" height="40" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="leyenda-content" value="&lt;b&gt;Notaciones:&lt;/b&gt;&lt;br&gt;&lt;b&gt;PK&lt;/b&gt; = Primary Key (Clave Primaria)&lt;br&gt;&lt;b&gt;FK&lt;/b&gt; = Foreign Key (Clave Foránea)&lt;br&gt;&lt;b&gt;UNIQUE&lt;/b&gt; = Valor único en la tabla&lt;br&gt;&lt;i&gt;Cursiva&lt;/i&gt; = Campos de auditoría (fechas)&lt;br&gt;&lt;br&gt;&lt;b&gt;Cardinalidades:&lt;/b&gt;&lt;br&gt;─── (1) = Uno&lt;br&gt;──&lt; (N) = Muchos&lt;br&gt;──o (0..1) = Cero o uno&lt;br&gt;&lt;br&gt;&lt;b&gt;Motor de BD:&lt;/b&gt;&lt;br&gt;• Desarrollo: SQLite 3&lt;br&gt;• Producción: PostgreSQL (recomendado)&lt;br&gt;&lt;br&gt;&lt;b&gt;Total de Tablas Principales: 6&lt;/b&gt;&lt;br&gt;1. Usuario&lt;br&gt;2. Escuela&lt;br&gt;3. Informe (núcleo)&lt;br&gt;4. ObservacionGenerada&lt;br&gt;5. BancoObservacionesDocente&lt;br&gt;6. Notificacion" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="610" y="830" width="430" height="200" as="geometry"/>
+        </mxCell>
+        
+        <!-- ==================== ÍNDICES IMPORTANTES ==================== -->
+        <mxCell id="indices-box" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="1150" y="860" width="400" height="180" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="indices-titulo" value="&lt;b&gt;⚡ ÍNDICES PARA OPTIMIZACIÓN&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#666666;strokeColor=#000000;fontColor=#ffffff;fontSize=13;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="1150" y="860" width="400" height="35" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="indices-content" value="&lt;b&gt;Índices Compuestos:&lt;/b&gt;&lt;br&gt;&lt;br&gt;CREATE INDEX idx_informe_docente_estado&lt;br&gt;  ON informes_informe&lt;br&gt;  (docente_revisor_id, estado);&lt;br&gt;&lt;br&gt;CREATE INDEX idx_informe_presidente_estado&lt;br&gt;  ON informes_informe&lt;br&gt;  (presidente_asignado_id, estado);&lt;br&gt;&lt;br&gt;CREATE INDEX idx_informe_usuario_version&lt;br&gt;  ON informes_informe&lt;br&gt;  (usuario_id, version DESC);&lt;br&gt;&lt;br&gt;CREATE INDEX idx_notificacion_usuario_leida&lt;br&gt;  ON notificaciones_notificacion&lt;br&gt;  (usuario_id, leida);" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=9;fontFamily=Courier New;" vertex="1" parent="1">
+          <mxGeometry x="1160" y="905" width="380" height="125" as="geometry"/>
+        </mxCell>
+        
+        <!-- NOTAS FINALES -->
+        <mxCell id="notas-titulo" value="&lt;b&gt;📝 NOTAS IMPORTANTES DEL MODELO&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=14;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="100" y="1080" width="1450" height="30" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="nota1" value="✅ Usuario tiene 5 tipos diferentes (polimorfismo en un solo modelo)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;align=left;" vertex="1" parent="1">
+          <mxGeometry x="100" y="1120" width="700" height="30" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="nota2" value="🔄 Informe tiene auto-referencia para versionado (informe_anterior_id)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=11;align=left;" vertex="1" parent="1">
+          <mxGeometry x="820" y="1120" width="730" height="30" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="nota3" value="📊 Informe tiene 11 estados posibles gestionados por State Machine Pattern" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;align=left;" vertex="1" parent="1">
+          <mxGeometry x="100" y="1160" width="700" height="30" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="nota4" value="🗂️ Solo 1 banco puede estar activo por docente (constraint lógico)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=11;align=left;" vertex="1" parent="1">
+          <mxGeometry x="820" y="1160" width="730" height="30" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="nota5" value="🔍 Todas las fechas son de auditoría para trazabilidad completa del flujo" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11;align=left;" vertex="1" parent="1">
+          <mxGeometry x="100" y="1200" width="700" height="30" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="nota6" value="📈 Índices compuestos optimizan queries por docente/presidente + estado" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;align=left;" vertex="1" parent="1">
+          <mxGeometry x="820" y="1200" width="730" height="30" as="geometry"/>
+        </mxCell>
+        
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

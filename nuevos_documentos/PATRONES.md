@@ -375,33 +375,107 @@ class Informe(models.Model):
         # NO hace save(), el servicio decide cuándo guardar
 ```
 
-### 📊 Diagrama de Estados
+### 📊 Diagrama de Estados Completo v2.1
 
 ```
-enviado
-  ↓
-pendiente_secretaria
-  ↓
-pendiente_presidente
-  ↓
-pendiente_docente
-  ↓
-validando_ia
-  ↓
-revision_docente
-  ↓         ↘
-  ↓          rechazado_estudiante → enviado (reenvío)
-  ↓
-pendiente_aprobacion_presidente
-  ↓         ↘
-  ↓          rechazado_presidente → rechazado_estudiante (notificación final)
-  ↓
-  aprobado_presidente
-  ↓
-  aprobado_final [FIN]
+                        ┌──────────────────────────────────────────┐
+                        │    ESTUDIANTE SUBE INFORME               │
+                        └──────────────┬───────────────────────────┘
+                                       ↓
+                              ┌────────────────┐
+                              │    enviado     │ [Estado Inicial]
+                              └────────┬───────┘
+                                       ↓
+                        ┌──────────────────────────────────────────┐
+                        │  SECRETARIA DERIVA A PRESIDENTE          │
+                        └──────────────┬───────────────────────────┘
+                                       ↓
+                         ┌──────────────────────┐
+                         │ pendiente_presidente │
+                         └──────────┬───────────┘
+                                    ↓
+                        ┌──────────────────────────────────────────┐
+                        │  PRESIDENTE ASIGNA DOCENTE               │
+                        └──────────────┬───────────────────────────┘
+                                       ↓
+                          ┌─────────────────────┐
+                          │ pendiente_docente   │
+                          └──────────┬──────────┘
+                                     ↓
+                        ┌──────────────────────────────────────────┐
+                        │  DOCENTE VALIDA CON IA                   │
+                        └──────────────┬───────────────────────────┘
+                                       ↓
+                            ┌──────────────────┐
+                            │  validando_ia    │ [Sistema procesando]
+                            └────────┬─────────┘
+                                     ↓
+                        ┌──────────────────────────────────────────┐
+                        │  IA GENERA OBSERVACIONES                 │
+                        └──────────────┬───────────────────────────┘
+                                       ↓
+                          ┌─────────────────────┐
+           ┌──────────────│ revision_docente    │◄──────────────┐
+           │              └──────────┬──────────┘               │
+           │                         │                          │
+           │                         ↓                          │
+           │      ┌──────────────────────────────────┐          │
+           │      │ DOCENTE ENVÍA DICTAMEN           │          │
+           │      └──────────────┬───────────────────┘          │
+           │                     ↓                              │
+           │      ┌────────────────────────────────┐            │
+           │      │ pendiente_aprobacion_presidente│            │
+           │      └─────────┬──────────────────────┘            │
+           │                │                                   │
+           │                ↓                                   │
+           │      ┌──────────────────────────────────────────┐  │
+           │      │ PRESIDENTE TIENE 3 DECISIONES:          │  │
+           │      │  1. Aprobar Informe                     │  │
+           │      │  2. Rechazar Informe                    │  │
+           │      │  3. Devolver Dictamen                   │  │
+           │      └─────┬──────────┬───────────┬─────────────┘  │
+           │            │          │           │                │
+           │            ↓          ↓           ↓                │
+           │  ┌──────────────┐ ┌────────────────┐              │
+           │  │  aprobado_   │ │  rechazado_    │  Devolver ───┘
+           │  │ presidente   │ │  presidente    │  (comentario)
+           │  └──────┬───────┘ └────────┬───────┘
+           │         │                  │
+           │         ↓                  ↓
+           │  ┌─────────────────────────────────────────────┐
+           │  │  SECRETARIA NOTIFICA AL ESTUDIANTE          │
+           │  └──────┬──────────────────────┬───────────────┘
+           │         │                      │
+           │         ↓                      ↓
+           │  ┌──────────────┐    ┌──────────────────────┐
+           │  │ aprobado_    │    │ rechazado_           │
+           │  │    final     │    │   estudiante         │
+           │  │              │    │                      │
+           │  │  [✅ FIN]    │    │ (puede reenviar)     │
+           │  └──────────────┘    └──────┬───────────────┘
+           │                              │
+           │      Nueva versión           │
+           └──────────────────────────────┘
+                  (version++)
 ```
 
-**Nota**: además del flujo de estados final, el `PresidenteService` puede devolver un dictamen al docente regresando el informe a `revision_docente` con comentario del presidente.
+### Transiciones Válidas por Estado
+
+| Estado Actual | Estados Permitidos | Responsable |
+|---------------|-------------------|-------------|
+| `enviado` | → `pendiente_secretaria` | Sistema |
+| `pendiente_secretaria` | → `pendiente_presidente` | Secretaria |
+| `pendiente_presidente` | → `pendiente_docente` | Presidente |
+| `pendiente_docente` | → `validando_ia` | Docente |
+| `validando_ia` | → `revision_docente` | Sistema (IA) |
+| `revision_docente` | → `pendiente_aprobacion_presidente`<br>→ `rechazado_estudiante` (directo) | Docente |
+| `pendiente_aprobacion_presidente` | → `aprobado_presidente`<br>→ `rechazado_presidente`<br>→ `revision_docente`* | Presidente |
+| `aprobado_presidente` | → `aprobado_final` | Secretaria |
+| `rechazado_presidente` | → `rechazado_estudiante` | Secretaria |
+| `aprobado_final` | ∅ (FINAL) | - |
+| `rechazado_estudiante` | → `enviado` (nueva versión) | Estudiante |
+
+**\*Nota especial**: El presidente puede devolver el dictamen al docente. Esta acción NO usa el `transition_to()` de la State Machine, sino que cambia directamente `informe.estado = 'revision_docente'` para que el docente rehaga la revisión. Esta es una excepción controlada al patrón State Machine.
 
 ### ✅ Beneficios Aplicados
 

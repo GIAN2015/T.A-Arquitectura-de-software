@@ -1,0 +1,223 @@
+<mxfile host="app.diagrams.net" modified="2026-07-08T12:00:00.000Z" agent="5.0" version="24.0.0">
+  <diagram name="Estructura Backend" id="estructura-backend">
+    <mxGraphModel dx="1422" dy="1400" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1200" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+        
+        <!-- TÍTULO -->
+        <mxCell id="titulo" value="&lt;h1&gt;Estructura del Backend Django&lt;/h1&gt;&lt;p&gt;Clean Architecture con 3 Capas Internas&lt;/p&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=16;" vertex="1" parent="1">
+          <mxGeometry x="500" y="20" width="600" height="60" as="geometry"/>
+        </mxCell>
+        
+        <!-- ==================== CAPA DE PRESENTACIÓN ==================== -->
+        <mxCell id="presentacion-box" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;strokeWidth=3;" vertex="1" parent="1">
+          <mxGeometry x="100" y="120" width="1400" height="200" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="presentacion-titulo" value="🎨 CAPA DE PRESENTACIÓN (Vistas HTTP)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=16;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="120" y="130" width="500" height="30" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="presentacion-path" value="📁 apps/presentacion/web/" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=12;fontFamily=Courier New;" vertex="1" parent="1">
+          <mxGeometry x="120" y="160" width="300" height="20" as="geometry"/>
+        </mxCell>
+        
+        <!-- Vistas -->
+        <mxCell id="auth-views" value="&lt;b&gt;auth_views.py&lt;/b&gt;&lt;br&gt;• login_view()&lt;br&gt;• logout_view()&lt;br&gt;• registro_view()" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=10;align=left;" vertex="1" parent="1">
+          <mxGeometry x="120" y="190" width="180" height="110" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="estudiante-views" value="&lt;b&gt;estudiante_views.py&lt;/b&gt;&lt;br&gt;• dashboard_view()&lt;br&gt;• enviar_informe_view()&lt;br&gt;• historial_view()&lt;br&gt;• detalle_informe_view()" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=10;align=left;" vertex="1" parent="1">
+          <mxGeometry x="320" y="190" width="230" height="110" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="docente-views" value="&lt;b&gt;docente_views.py&lt;/b&gt;&lt;br&gt;• dashboard_view()&lt;br&gt;• revisar_view()&lt;br&gt;• validar_ia_view()&lt;br&gt;• banco_view()&lt;br&gt;• estadisticas_view()" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=10;align=left;" vertex="1" parent="1">
+          <mxGeometry x="570" y="190" width="230" height="110" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="presidente-views" value="&lt;b&gt;presidente_views.py&lt;/b&gt;&lt;br&gt;• dashboard_view()&lt;br&gt;• asignar_view()&lt;br&gt;• revisar_dictamen_view()&lt;br&gt;• aprobar_view()&lt;br&gt;• rechazar_view()&lt;br&gt;• devolver_view()" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=10;align=left;" vertex="1" parent="1">
+          <mxGeometry x="820" y="190" width="230" height="110" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="secretaria-views" value="&lt;b&gt;secretaria_views.py&lt;/b&gt;&lt;br&gt;• dashboard_view()&lt;br&gt;• derivar_view()&lt;br&gt;• notificar_view()&lt;br&gt;• historial_view()" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=10;align=left;" vertex="1" parent="1">
+          <mxGeometry x="1070" y="190" width="230" height="110" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="admin-views" value="&lt;b&gt;admin_views.py&lt;/b&gt;&lt;br&gt;• panel_admin()&lt;br&gt;• usuarios_view()&lt;br&gt;• reportes_view()" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=10;align=left;" vertex="1" parent="1">
+          <mxGeometry x="1320" y="190" width="160" height="110" as="geometry"/>
+        </mxCell>
+        
+        <!-- Flecha hacia Capa de Negocio -->
+        <mxCell id="arrow-pres-neg" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=3;endArrow=classic;strokeColor=#666666;" edge="1" parent="1" source="presentacion-box" target="negocio-box">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="label-pres-neg" value="Llama a servicios" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=12;fontStyle=1" vertex="1" connectable="0" parent="arrow-pres-neg">
+          <mxGeometry x="-0.2" y="2" relative="1" as="geometry">
+            <mxPoint as="offset"/>
+          </mxGeometry>
+        </mxCell>
+        
+        <!-- ==================== CAPA DE NEGOCIO ==================== -->
+        <mxCell id="negocio-box" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;strokeWidth=3;" vertex="1" parent="1">
+          <mxGeometry x="100" y="360" width="1400" height="280" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="negocio-titulo" value="🔧 CAPA DE NEGOCIO (Servicios)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=16;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="120" y="370" width="400" height="30" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="negocio-path" value="📁 apps/negocio/servicios/" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=12;fontFamily=Courier New;" vertex="1" parent="1">
+          <mxGeometry x="120" y="400" width="300" height="20" as="geometry"/>
+        </mxCell>
+        
+        <!-- Servicios -->
+        <mxCell id="docente-service" value="&lt;b&gt;DocenteService&lt;/b&gt;&lt;br&gt;&lt;br&gt;• obtener_informes_asignados()&lt;br&gt;• obtener_informes_revisados()&lt;br&gt;• obtener_banco_activo()&lt;br&gt;• crear_banco_observaciones()&lt;br&gt;• activar_banco()&lt;br&gt;• desactivar_banco()&lt;br&gt;• eliminar_banco()&lt;br&gt;• validar_informe_con_ia()&lt;br&gt;• confirmar_observacion()&lt;br&gt;• descartar_observacion()&lt;br&gt;• enviar_dictamen_a_presidente()&lt;br&gt;• obtener_estadisticas()" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=9;align=left;fontFamily=Courier New;" vertex="1" parent="1">
+          <mxGeometry x="120" y="430" width="330" height="190" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="presidente-service" value="&lt;b&gt;PresidenteService&lt;/b&gt;&lt;br&gt;&lt;br&gt;• obtener_informes_pendientes()&lt;br&gt;• obtener_informes_para_dictamen()&lt;br&gt;• obtener_docentes_disponibles()&lt;br&gt;• asignar_docente()&lt;br&gt;• aprobar_dictamen_docente()&lt;br&gt;  - aprobar_informe&lt;br&gt;  - rechazar_informe&lt;br&gt;  - devolver_dictamen&lt;br&gt;• rechazar_dictamen_docente()&lt;br&gt;• obtener_estadisticas()" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=9;align=left;fontFamily=Courier New;" vertex="1" parent="1">
+          <mxGeometry x="470" y="430" width="330" height="190" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="secretaria-service" value="&lt;b&gt;SecretariaService&lt;/b&gt;&lt;br&gt;&lt;br&gt;• obtener_informes_pendientes()&lt;br&gt;• obtener_informes_completados()&lt;br&gt;• derivar_a_presidente()&lt;br&gt;• notificar_estudiante_aprobado()&lt;br&gt;• notificar_estudiante_rechazado()&lt;br&gt;• obtener_estadisticas()" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=9;align=left;fontFamily=Courier New;" vertex="1" parent="1">
+          <mxGeometry x="820" y="430" width="330" height="190" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="notificacion-service" value="&lt;b&gt;NotificacionService&lt;/b&gt;&lt;br&gt;&lt;br&gt;• crear_notificacion()&lt;br&gt;• notificar_informe_nuevo()&lt;br&gt;• notificar_informe_derivado()&lt;br&gt;• notificar_informe_asignado()&lt;br&gt;• notificar_dictamen_enviado()&lt;br&gt;• notificar_aprobacion()&lt;br&gt;• notificar_rechazo()&lt;br&gt;• marcar_como_leida()" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=9;align=left;fontFamily=Courier New;" vertex="1" parent="1">
+          <mxGeometry x="1170" y="430" width="310" height="190" as="geometry"/>
+        </mxCell>
+        
+        <!-- Flecha hacia Capa de Datos -->
+        <mxCell id="arrow-neg-datos" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=3;endArrow=classic;strokeColor=#666666;" edge="1" parent="1" source="negocio-box" target="datos-box">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="label-neg-datos" value="Usa repositorios" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=12;fontStyle=1" vertex="1" connectable="0" parent="arrow-neg-datos">
+          <mxGeometry x="-0.2" y="2" relative="1" as="geometry">
+            <mxPoint as="offset"/>
+          </mxGeometry>
+        </mxCell>
+        
+        <!-- ==================== CAPA DE DATOS ==================== -->
+        <mxCell id="datos-box" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;strokeWidth=3;" vertex="1" parent="1">
+          <mxGeometry x="100" y="680" width="1400" height="200" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="datos-titulo" value="💾 CAPA DE DATOS (Repositorios)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=16;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="120" y="690" width="400" height="30" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="datos-path" value="📁 apps/datos/repositorios/" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=12;fontFamily=Courier New;" vertex="1" parent="1">
+          <mxGeometry x="120" y="720" width="300" height="20" as="geometry"/>
+        </mxCell>
+        
+        <!-- Repositorios -->
+        <mxCell id="informe-repo" value="&lt;b&gt;InformeRepository&lt;/b&gt;&lt;br&gt;&lt;br&gt;• obtener_por_id()&lt;br&gt;• obtener_con_observaciones()&lt;br&gt;• obtener_por_estado_y_docente()&lt;br&gt;• obtener_ultimas_versiones()&lt;br&gt;• crear()&lt;br&gt;• actualizar()&lt;br&gt;• eliminar()" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=10;align=left;fontFamily=Courier New;" vertex="1" parent="1">
+          <mxGeometry x="120" y="750" width="330" height="110" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="usuario-repo" value="&lt;b&gt;UsuarioRepository&lt;/b&gt;&lt;br&gt;&lt;br&gt;• obtener_por_id()&lt;br&gt;• obtener_por_codigo()&lt;br&gt;• obtener_docentes_por_escuela()&lt;br&gt;• validar_credenciales()&lt;br&gt;• crear()&lt;br&gt;• actualizar()" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=10;align=left;fontFamily=Courier New;" vertex="1" parent="1">
+          <mxGeometry x="470" y="750" width="330" height="110" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="observacion-repo" value="&lt;b&gt;ObservacionRepository&lt;/b&gt;&lt;br&gt;&lt;br&gt;• obtener_por_informe()&lt;br&gt;• obtener_confirmadas()&lt;br&gt;• obtener_descartadas()&lt;br&gt;• crear()&lt;br&gt;• actualizar()&lt;br&gt;• eliminar()" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=10;align=left;fontFamily=Courier New;" vertex="1" parent="1">
+          <mxGeometry x="820" y="750" width="330" height="110" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="banco-repo" value="&lt;b&gt;BancoRepository&lt;/b&gt;&lt;br&gt;&lt;br&gt;• obtener_por_docente()&lt;br&gt;• obtener_activo()&lt;br&gt;• crear()&lt;br&gt;• activar()&lt;br&gt;• desactivar()" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=10;align=left;fontFamily=Courier New;" vertex="1" parent="1">
+          <mxGeometry x="1170" y="750" width="310" height="110" as="geometry"/>
+        </mxCell>
+        
+        <!-- Flecha hacia Modelos -->
+        <mxCell id="arrow-datos-modelos" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=3;endArrow=classic;strokeColor=#666666;" edge="1" parent="1" source="datos-box" target="modelos-box">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="label-datos-modelos" value="Accede a ORM" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=12;fontStyle=1" vertex="1" connectable="0" parent="arrow-datos-modelos">
+          <mxGeometry x="-0.2" y="2" relative="1" as="geometry">
+            <mxPoint as="offset"/>
+          </mxGeometry>
+        </mxCell>
+        
+        <!-- ==================== MODELOS (Apps Django) ==================== -->
+        <mxCell id="modelos-box" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;strokeWidth=3;" vertex="1" parent="1">
+          <mxGeometry x="100" y="920" width="1400" height="220" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="modelos-titulo" value="📦 MODELOS (Django ORM)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=16;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="120" y="930" width="400" height="30" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="modelos-path" value="📁 apps/*/models.py" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=12;fontFamily=Courier New;" vertex="1" parent="1">
+          <mxGeometry x="120" y="960" width="300" height="20" as="geometry"/>
+        </mxCell>
+        
+        <!-- Apps con Modelos -->
+        <mxCell id="app-usuarios" value="&lt;b&gt;usuarios/&lt;/b&gt;&lt;br&gt;• Usuario&lt;br&gt;  - 5 tipos" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=10;align=left;fontFamily=Courier New;" vertex="1" parent="1">
+          <mxGeometry x="120" y="990" width="160" height="130" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="app-informes" value="&lt;b&gt;informes/&lt;/b&gt;&lt;br&gt;• Informe&lt;br&gt;  - 11 estados&lt;br&gt;  - versionado&lt;br&gt;&lt;br&gt;• state.py&lt;br&gt;  (State Machine)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=10;align=left;fontFamily=Courier New;" vertex="1" parent="1">
+          <mxGeometry x="300" y="990" width="180" height="130" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="app-obs" value="&lt;b&gt;observaciones/&lt;/b&gt;&lt;br&gt;• ObservacionGenerada&lt;br&gt;  - 4 severidades&lt;br&gt;  - 4 estados&lt;br&gt;&lt;br&gt;• BancoObservaciones&lt;br&gt;&lt;br&gt;• services.py&lt;br&gt;  (IA integration)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=10;align=left;fontFamily=Courier New;" vertex="1" parent="1">
+          <mxGeometry x="500" y="990" width="230" height="130" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="app-escuelas" value="&lt;b&gt;escuelas/&lt;/b&gt;&lt;br&gt;• Escuela" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=10;align=left;fontFamily=Courier New;" vertex="1" parent="1">
+          <mxGeometry x="750" y="990" width="160" height="130" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="app-notif" value="&lt;b&gt;notificaciones/&lt;/b&gt;&lt;br&gt;• Notificacion&lt;br&gt;  - 7 tipos&lt;br&gt;&lt;br&gt;• services.py&lt;br&gt;  (Observer)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=10;align=left;fontFamily=Courier New;" vertex="1" parent="1">
+          <mxGeometry x="930" y="990" width="200" height="130" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="app-core" value="&lt;b&gt;core/&lt;/b&gt;&lt;br&gt;• decorators.py&lt;br&gt;  @requiere_rol&lt;br&gt;&lt;br&gt;• middleware.py&lt;br&gt;&lt;br&gt;• templatetags/&lt;br&gt;  formatear_dictamen" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=10;align=left;fontFamily=Courier New;" vertex="1" parent="1">
+          <mxGeometry x="1150" y="990" width="180" height="130" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="app-config" value="&lt;b&gt;config/&lt;/b&gt;&lt;br&gt;• settings/&lt;br&gt;• urls.py&lt;br&gt;• wsgi.py" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=10;align=left;fontFamily=Courier New;" vertex="1" parent="1">
+          <mxGeometry x="1350" y="990" width="130" height="130" as="geometry"/>
+        </mxCell>
+        
+        <!-- PATRONES APLICADOS -->
+        <mxCell id="patrones-titulo" value="&lt;b&gt;🧩 PATRONES DE DISEÑO APLICADOS&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=14;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="100" y="1170" width="1400" height="30" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="patron1" value="🔹 Repository Pattern&lt;br&gt;(Capa de Datos)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=11;align=left;" vertex="1" parent="1">
+          <mxGeometry x="100" y="1210" width="270" height="40" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="patron2" value="🔹 Service Layer Pattern&lt;br&gt;(Capa de Negocio)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=11;align=left;" vertex="1" parent="1">
+          <mxGeometry x="390" y="1210" width="270" height="40" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="patron3" value="🔹 State Machine Pattern&lt;br&gt;(11 estados del Informe)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;align=left;" vertex="1" parent="1">
+          <mxGeometry x="680" y="1210" width="270" height="40" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="patron4" value="🔹 Decorator Pattern&lt;br&gt;(@requiere_rol)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;align=left;" vertex="1" parent="1">
+          <mxGeometry x="970" y="1210" width="250" height="40" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="patron5" value="🔹 Observer Pattern&lt;br&gt;(Notificaciones)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;align=left;" vertex="1" parent="1">
+          <mxGeometry x="1240" y="1210" width="260" height="40" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="patron6" value="🔹 Strategy Pattern&lt;br&gt;(Selección de IA: xAI/Groq/Local)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11;align=left;" vertex="1" parent="1">
+          <mxGeometry x="100" y="1260" width="360" height="40" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="patron7" value="🔹 Facade Pattern&lt;br&gt;(Servicios simplifican complejidad)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=11;align=left;" vertex="1" parent="1">
+          <mxGeometry x="480" y="1260" width="360" height="40" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="patron8" value="🔹 Template Method Pattern&lt;br&gt;(Formateo de dictámenes)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;align=left;" vertex="1" parent="1">
+          <mxGeometry x="860" y="1260" width="640" height="40" as="geometry"/>
+        </mxCell>
+        
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

@@ -1,0 +1,1760 @@
+[
+{
+  "model": "usuarios.usuario",
+  "pk": 1,
+  "fields": {
+    "codigo": "secretaria1",
+    "nombre": "Lic. Ana Torres Mendoza",
+    "tipo_usuario": "secretaria",
+    "password": "pbkdf2_sha256$600000$MwzUY8OFjPolwbaGRybxb6$YKxe4064xcE6NSNaNOeRiN8TKb+PZN3rzmWR88cm9gg=",
+    "escuela": null,
+    "email": "secretaria@untels.edu.pe",
+    "activo": true,
+    "fecha_registro": "2026-07-08T03:49:41.624Z"
+  }
+},
+{
+  "model": "usuarios.usuario",
+  "pk": 2,
+  "fields": {
+    "codigo": "presidente_isi",
+    "nombre": "Dr. Juan Pérez García",
+    "tipo_usuario": "presidente",
+    "password": "pbkdf2_sha256$600000$FqyOvAQEPoU0mnvw2ZCpvj$G2fylpQgQP3KlBWC5E086nV7tvjrDs+Ob8VOcnjvl2w=",
+    "escuela": 1,
+    "email": "presidente.isi@untels.edu.pe",
+    "activo": true,
+    "fecha_registro": "2026-07-08T03:49:41.835Z"
+  }
+},
+{
+  "model": "usuarios.usuario",
+  "pk": 3,
+  "fields": {
+    "codigo": "docente_isi_1",
+    "nombre": "Ing. Carlos Ramírez",
+    "tipo_usuario": "docente",
+    "password": "pbkdf2_sha256$600000$pfWM6b33aPgSnXyUJyB5gv$AXFJdYvD5JE3qZ8PbL0y1M6c2XnsUq1Jp8MeyHgNLZ8=",
+    "escuela": 1,
+    "email": "cramirez@untels.edu.pe",
+    "activo": true,
+    "fecha_registro": "2026-07-08T03:49:42.033Z"
+  }
+},
+{
+  "model": "usuarios.usuario",
+  "pk": 4,
+  "fields": {
+    "codigo": "2020123456",
+    "nombre": "José Gonzales",
+    "tipo_usuario": "estudiante",
+    "password": "pbkdf2_sha256$600000$PCu51YgKUDbeSL4FBvxuwi$KvtZLmc8TxAXdzsaASbKyH3AhSzj2gueJ0tB7PEllYE=",
+    "escuela": 1,
+    "email": "2020123456@untels.edu.pe",
+    "activo": true,
+    "fecha_registro": "2026-07-08T03:49:42.233Z"
+  }
+},
+{
+  "model": "informes.informe",
+  "pk": 4,
+  "fields": {
+    "usuario": 4,
+    "nombre_archivo": "Estudiante.pdf",
+    "archivo": "informes/2026/07/Estudiante_3lfSJ8Q.pdf",
+    "contenido": "1. Estudiante:\n• Enviar el informe ( docx, pdf )\n• Recibir Notificación ( Rechazado/Aceptado )\n2. Presidente\n• Designar docente\n3. Secre taria\n• Designa  a la escuel a de carrera\n• Recibe informe del docen te\n• Recibe informe del estudiante\n4. Docente\n• Funcionalidad de IA\n• Ver informe\n• Editar observaciones\n• Subir banco de observaciones\n1. Estudiante envia informe en docx o pdf\n2. El sistema verifica que el arch ivo sea v álido ( validaciones lógicas )\n3. Secretaria recibe notificación\n4. Secretaria reenvía  a presidente de esc uela\n5. Presidente de escuela designa a profesor\n6. Profesor designa su propio banco de observaciones  prompt  docx o pdf\n7. Profesor designado ve rifica con IA el informe  y su banco de obse rvaciones\n8. Aparece la tabla editable , si hay observaciones se envia al estudiante ( paso 01 ), si no\nlas hay el profesor realiza su informe y se envia de vuelta a presi dencia\n9. Presidente verifica informe del profesor , si esta conforme , el estud iante recibe\nnotificación , si lo rechaza, vuelva al docente ( paso 7)",
+    "estado": "aprobado_final",
+    "secretaria_asignada": 1,
+    "presidente_asignado": 2,
+    "docente_revisor": 3,
+    "escuela": 1,
+    "banco_observaciones_usado": 2,
+    "comentario_secretaria": "",
+    "comentario_presidente": "",
+    "comentario_docente": "wdwwwdwdw wedwed wed we dw ed wed we d wed we dwe dwe d wed ew dwe dw ed wed we",
+    "fecha_registro": "2026-07-08T04:46:00.659Z",
+    "fecha_asignacion_secretaria": "2026-07-08T05:21:05.327Z",
+    "fecha_asignacion_presidente": null,
+    "fecha_asignacion_docente": "2026-07-08T06:04:13.978Z",
+    "fecha_revision_docente": "2026-07-08T08:23:57.284Z",
+    "fecha_aprobacion_presidente": "2026-07-08T08:31:46.787Z",
+    "fecha_completado": "2026-07-08T08:37:42.947Z",
+    "version": 1,
+    "informe_anterior": null
+  }
+},
+{
+  "model": "informes.informe",
+  "pk": 5,
+  "fields": {
+    "usuario": 4,
+    "nombre_archivo": "Estudiante.pdf",
+    "archivo": "informes/2026/07/Estudiante_Y6NremU.pdf",
+    "contenido": "1. Estudiante:\n• Enviar el informe ( docx, pdf )\n• Recibir Notificación ( Rechazado/Aceptado )\n2. Presidente\n• Designar docente\n3. Secre taria\n• Designa  a la escuel a de carrera\n• Recibe informe del docen te\n• Recibe informe del estudiante\n4. Docente\n• Funcionalidad de IA\n• Ver informe\n• Editar observaciones\n• Subir banco de observaciones\n1. Estudiante envia informe en docx o pdf\n2. El sistema verifica que el arch ivo sea v álido ( validaciones lógicas )\n3. Secretaria recibe notificación\n4. Secretaria reenvía  a presidente de esc uela\n5. Presidente de escuela designa a profesor\n6. Profesor designa su propio banco de observaciones  prompt  docx o pdf\n7. Profesor designado ve rifica con IA el informe  y su banco de obse rvaciones\n8. Aparece la tabla editable , si hay observaciones se envia al estudiante ( paso 01 ), si no\nlas hay el profesor realiza su informe y se envia de vuelta a presi dencia\n9. Presidente verifica informe del profesor , si esta conforme , el estud iante recibe\nnotificación , si lo rechaza, vuelva al docente ( paso 7)",
+    "estado": "rechazado_estudiante",
+    "secretaria_asignada": 1,
+    "presidente_asignado": 2,
+    "docente_revisor": 3,
+    "escuela": 1,
+    "banco_observaciones_usado": 2,
+    "comentario_secretaria": "",
+    "comentario_presidente": "esta hirrible",
+    "comentario_docente": "xsxas  as as da sd asd as d as das das",
+    "fecha_registro": "2026-07-08T08:56:04.366Z",
+    "fecha_asignacion_secretaria": "2026-07-08T08:56:24.793Z",
+    "fecha_asignacion_presidente": null,
+    "fecha_asignacion_docente": "2026-07-08T08:56:46.488Z",
+    "fecha_revision_docente": "2026-07-08T08:57:27.907Z",
+    "fecha_aprobacion_presidente": null,
+    "fecha_completado": "2026-07-08T09:05:13.598Z",
+    "version": 1,
+    "informe_anterior": null
+  }
+},
+{
+  "model": "informes.informe",
+  "pk": 6,
+  "fields": {
+    "usuario": 4,
+    "nombre_archivo": "Estudiante.pdf",
+    "archivo": "informes/2026/07/Estudiante_YJ9HYBo.pdf",
+    "contenido": "1. Estudiante:\n• Enviar el informe ( docx, pdf )\n• Recibir Notificación ( Rechazado/Aceptado )\n2. Presidente\n• Designar docente\n3. Secre taria\n• Designa  a la escuel a de carrera\n• Recibe informe del docen te\n• Recibe informe del estudiante\n4. Docente\n• Funcionalidad de IA\n• Ver informe\n• Editar observaciones\n• Subir banco de observaciones\n1. Estudiante envia informe en docx o pdf\n2. El sistema verifica que el arch ivo sea v álido ( validaciones lógicas )\n3. Secretaria recibe notificación\n4. Secretaria reenvía  a presidente de esc uela\n5. Presidente de escuela designa a profesor\n6. Profesor designa su propio banco de observaciones  prompt  docx o pdf\n7. Profesor designado ve rifica con IA el informe  y su banco de obse rvaciones\n8. Aparece la tabla editable , si hay observaciones se envia al estudiante ( paso 01 ), si no\nlas hay el profesor realiza su informe y se envia de vuelta a presi dencia\n9. Presidente verifica informe del profesor , si esta conforme , el estud iante recibe\nnotificación , si lo rechaza, vuelva al docente ( paso 7)",
+    "estado": "aprobado_final",
+    "secretaria_asignada": 1,
+    "presidente_asignado": 2,
+    "docente_revisor": 3,
+    "escuela": 1,
+    "banco_observaciones_usado": 2,
+    "comentario_secretaria": "",
+    "comentario_presidente": "",
+    "comentario_docente": "================================================================================\nDICTAMEN DEL DOCENTE REVISOR\n================================================================================\n\ntengo fe de que funcione otra vez esto\n\n================================================================================\nRECOMENDACIÓN\n================================================================================\n\n❌ RECOMIENDO RECHAZAR este informe\n\n================================================================================\nOBSERVACIONES DETECTADAS Y CONFIRMADAS\n================================================================================\n\nTotal de observaciones confirmadas: 6\n  • Críticas: 3\n  • Importantes: 2\n  • Menores: 1\n  • Sugerencias: 0\n\n--------------------------------------------------------------------------------\n🔴 OBSERVACIONES CRÍTICAS (Deben corregirse obligatoriamente)\n--------------------------------------------------------------------------------\n\n1. [Carátula]\n   Observación: No se detecta mención a la UNTELS en el documento. Verificar que la carátula institucional esté completa.\n   Ubicación: Página 1 - Carátula\n\n2. [Conclusiones]\n   Observación: No se detecta una sección de conclusiones en el informe.\n   Ubicación: Final del documento\n\n3. [Contenido]\n   Observación: El informe es muy corto (solo 189 palabras). Se requiere un contenido más extenso y detallado.\n   Ubicación: Todo el documento\n\n--------------------------------------------------------------------------------\n🟠 OBSERVACIONES IMPORTANTES (Deben corregirse)\n--------------------------------------------------------------------------------\n\n1. [Descripción de Empresa]\n   Observación: No se detecta una descripción clara de la empresa/institución donde se realizaron las prácticas.\n   Ubicación: Sección inicial del informe\n\n2. [Índice]\n   Observación: No se detecta un índice o tabla de contenidos en el documento.\n   Ubicación: Inicio del documento\n\n--------------------------------------------------------------------------------\n🟡 OBSERVACIONES MENORES (Recomendadas)\n--------------------------------------------------------------------------------\n\n1. [Anexos]\n   Observación: No se detecta una sección de anexos. Considere agregar evidencias fotográficas y documentos de soporte.\n\n================================================================================\nFIN DEL DICTAMEN\n================================================================================",
+    "fecha_registro": "2026-07-08T09:12:07.820Z",
+    "fecha_asignacion_secretaria": "2026-07-08T09:12:28.613Z",
+    "fecha_asignacion_presidente": null,
+    "fecha_asignacion_docente": "2026-07-08T09:12:52.631Z",
+    "fecha_revision_docente": "2026-07-08T09:32:39.275Z",
+    "fecha_aprobacion_presidente": "2026-07-08T09:35:13.982Z",
+    "fecha_completado": "2026-07-08T09:38:46.671Z",
+    "version": 2,
+    "informe_anterior": 5
+  }
+},
+{
+  "model": "informes.informe",
+  "pk": 7,
+  "fields": {
+    "usuario": 4,
+    "nombre_archivo": "Estudiante.pdf",
+    "archivo": "informes/2026/07/Estudiante_FcDqD8s.pdf",
+    "contenido": "1. Estudiante:\n• Enviar el informe ( docx, pdf )\n• Recibir Notificación ( Rechazado/Aceptado )\n2. Presidente\n• Designar docente\n3. Secre taria\n• Designa  a la escuel a de carrera\n• Recibe informe del docen te\n• Recibe informe del estudiante\n4. Docente\n• Funcionalidad de IA\n• Ver informe\n• Editar observaciones\n• Subir banco de observaciones\n1. Estudiante envia informe en docx o pdf\n2. El sistema verifica que el arch ivo sea v álido ( validaciones lógicas )\n3. Secretaria recibe notificación\n4. Secretaria reenvía  a presidente de esc uela\n5. Presidente de escuela designa a profesor\n6. Profesor designa su propio banco de observaciones  prompt  docx o pdf\n7. Profesor designado ve rifica con IA el informe  y su banco de obse rvaciones\n8. Aparece la tabla editable , si hay observaciones se envia al estudiante ( paso 01 ), si no\nlas hay el profesor realiza su informe y se envia de vuelta a presi dencia\n9. Presidente verifica informe del profesor , si esta conforme , el estud iante recibe\nnotificación , si lo rechaza, vuelva al docente ( paso 7)",
+    "estado": "aprobado_final",
+    "secretaria_asignada": 1,
+    "presidente_asignado": 2,
+    "docente_revisor": 3,
+    "escuela": 1,
+    "banco_observaciones_usado": 2,
+    "comentario_secretaria": "hghg",
+    "comentario_presidente": "tienes razon en tu revision",
+    "comentario_docente": "================================================================================\nDICTAMEN DEL DOCENTE REVISOR\n================================================================================\n\nNone das a sd asd as da sd as das d a\n\n================================================================================\nRECOMENDACIÓN\n================================================================================\n\n❌ RECOMIENDO RECHAZAR este informe\n\n================================================================================\nOBSERVACIONES DETECTADAS Y CONFIRMADAS\n================================================================================\n\nTotal de observaciones confirmadas: 9\n  • Críticas: 3\n  • Importantes: 4\n  • Menores: 2\n  • Sugerencias: 0\n\n--------------------------------------------------------------------------------\n🔴 OBSERVACIONES CRÍTICAS (Deben corregirse obligatoriamente)\n--------------------------------------------------------------------------------\n\n1. [Carátula]\n   Observación: No se detecta mención a la UNTELS en el documento. Verificar que la carátula institucional esté completa.\n   Ubicación: Página 1 - Carátula\n\n2. [Conclusiones]\n   Observación: No se detecta una sección de conclusiones en el informe.\n   Ubicación: Final del documento\n\n3. [Contenido]\n   Observación: El informe es muy corto (solo 189 palabras). Se requiere un contenido más extenso y detallado.\n   Ubicación: Todo el documento\n\n--------------------------------------------------------------------------------\n🟠 OBSERVACIONES IMPORTANTES (Deben corregirse)\n--------------------------------------------------------------------------------\n\n1. [Descripción de Empresa]\n   Observación: No se detecta una descripción clara de la empresa/institución donde se realizaron las prácticas.\n   Ubicación: Sección inicial del informe\n\n2. [Introducción]\n   Observación: No se detecta una sección de introducción claramente identificada.\n   Ubicación: Después del índice\n\n3. [Objetivos]\n   Observación: No se detectan objetivos claramente planteados en la introducción.\n   Ubicación: Sección de introducción\n\n4. [Índice]\n   Observación: No se detecta un índice o tabla de contenidos en el documento.\n   Ubicación: Inicio del documento\n\n--------------------------------------------------------------------------------\n🟡 OBSERVACIONES MENORES (Recomendadas)\n--------------------------------------------------------------------------------\n\n1. [Anexos]\n   Observación: No se detecta una sección de anexos. Considere agregar evidencias fotográficas y documentos de soporte.\n\n2. [Referencias]\n   Observación: No se detectan referencias bibliográficas. Se recomienda incluir fuentes consultadas en formato APA.\n\n================================================================================\nFIN DEL DICTAMEN\n================================================================================",
+    "fecha_registro": "2026-07-08T14:54:33.783Z",
+    "fecha_asignacion_secretaria": "2026-07-08T18:36:15.793Z",
+    "fecha_asignacion_presidente": null,
+    "fecha_asignacion_docente": "2026-07-08T18:36:37.750Z",
+    "fecha_revision_docente": "2026-07-08T18:37:39.056Z",
+    "fecha_aprobacion_presidente": "2026-07-08T18:38:00.296Z",
+    "fecha_completado": "2026-07-08T18:38:19.100Z",
+    "version": 2,
+    "informe_anterior": 5
+  }
+},
+{
+  "model": "informes.informe",
+  "pk": 8,
+  "fields": {
+    "usuario": 4,
+    "nombre_archivo": "Estudiante.pdf",
+    "archivo": "informes/2026/07/Estudiante_mT2Z490.pdf",
+    "contenido": "1. Estudiante:\n• Enviar el informe ( docx, pdf )\n• Recibir Notificación ( Rechazado/Aceptado )\n2. Presidente\n• Designar docente\n3. Secre taria\n• Designa  a la escuel a de carrera\n• Recibe informe del docen te\n• Recibe informe del estudiante\n4. Docente\n• Funcionalidad de IA\n• Ver informe\n• Editar observaciones\n• Subir banco de observaciones\n1. Estudiante envia informe en docx o pdf\n2. El sistema verifica que el arch ivo sea v álido ( validaciones lógicas )\n3. Secretaria recibe notificación\n4. Secretaria reenvía  a presidente de esc uela\n5. Presidente de escuela designa a profesor\n6. Profesor designa su propio banco de observaciones  prompt  docx o pdf\n7. Profesor designado ve rifica con IA el informe  y su banco de obse rvaciones\n8. Aparece la tabla editable , si hay observaciones se envia al estudiante ( paso 01 ), si no\nlas hay el profesor realiza su informe y se envia de vuelta a presi dencia\n9. Presidente verifica informe del profesor , si esta conforme , el estud iante recibe\nnotificación , si lo rechaza, vuelva al docente ( paso 7)",
+    "estado": "aprobado_final",
+    "secretaria_asignada": 1,
+    "presidente_asignado": 2,
+    "docente_revisor": 3,
+    "escuela": 1,
+    "banco_observaciones_usado": 3,
+    "comentario_secretaria": "ingenieria de sistemas",
+    "comentario_presidente": "",
+    "comentario_docente": "================================================================================\nDICTAMEN DEL DOCENTE REVISOR\n================================================================================\n\n================================================================================\r\nDICTAMEN DEL DOCENTE REVISOR\r\n================================================================================\r\n\r\nesta horrible trabajo q me enviaron\r\n\r\n================================================================================\r\nRECOMENDACIÓN\r\n================================================================================\r\n\r\n❌ RECOMIENDO RECHAZAR este informe\r\n\r\n================================================================================\r\nOBSERVACIONES DETECTADAS Y CONFIRMADAS\r\n================================================================================\r\n\r\nTotal de observaciones confirmadas: 5\r\n  • Críticas: 1\r\n  • Importantes: 3\r\n  • Menores: 1\r\n  • Sugerencias: 0\r\n\r\n--------------------------------------------------------------------------------\r\n🔴 OBSERVACIONES CRÍTICAS (Deben corregirse obligatoriamente)\r\n--------------------------------------------------------------------------------\r\n\r\n1. [Conclusiones]\r\n   Observación: No se detecta una sección de conclusiones en el informe.\r\n   Ubicación: Final del documento\r\n\r\n--------------------------------------------------------------------------------\r\n🟠 OBSERVACIONES IMPORTANTES (Deben corregirse)\r\n--------------------------------------------------------------------------------\r\n\r\n1. [Descripción de Empresa]\r\n   Observación: No se detecta una descripción clara de la empresa/institución donde se realizaron las prácticas.\r\n   Ubicación: Sección inicial del informe\r\n\r\n2. [Introducción]\r\n   Observación: No se detecta una sección de introducción claramente identificada.\r\n   Ubicación: Después del índice\r\n\r\n3. [Índice]\r\n   Observación: No se detecta un índice o tabla de contenidos en el documento.\r\n   Ubicación: Inicio del documento\r\n\r\n--------------------------------------------------------------------------------\r\n🟡 OBSERVACIONES MENORES (Recomendadas)\r\n--------------------------------------------------------------------------------\r\n\r\n1. [Anexos]\r\n   Observación: No se detecta una sección de anexos. Considere agregar evidencias fotográficas y documentos de soporte.\r\n\r\n================================================================================\r\nFIN DEL DICTAMEN\r\n================================================================================\n\n================================================================================\nRECOMENDACIÓN\n================================================================================\n\n✅ RECOMIENDO APROBAR este informe\n\n================================================================================\nOBSERVACIONES DETECTADAS Y CONFIRMADAS\n================================================================================\n\nTotal de observaciones confirmadas: 9\n  • Críticas: 3\n  • Importantes: 4\n  • Menores: 2\n  • Sugerencias: 0\n\n--------------------------------------------------------------------------------\n🔴 OBSERVACIONES CRÍTICAS (Deben corregirse obligatoriamente)\n--------------------------------------------------------------------------------\n\n1. [Carátula]\n   Observación: No se detecta mención a la UNTELS en el documento. Verificar que la carátula institucional esté completa.\n   Ubicación: Página 1 - Carátula\n\n2. [Conclusiones]\n   Observación: No se detecta una sección de conclusiones en el informe.\n   Ubicación: Final del documento\n\n3. [Contenido]\n   Observación: El informe es muy corto (solo 189 palabras). Se requiere un contenido más extenso y detallado.\n   Ubicación: Todo el documento\n\n--------------------------------------------------------------------------------\n🟠 OBSERVACIONES IMPORTANTES (Deben corregirse)\n--------------------------------------------------------------------------------\n\n1. [Descripción de Empresa]\n   Observación: No se detecta una descripción clara de la empresa/institución donde se realizaron las prácticas.\n   Ubicación: Sección inicial del informe\n\n2. [Introducción]\n   Observación: No se detecta una sección de introducción claramente identificada.\n   Ubicación: Después del índice\n\n3. [Objetivos]\n   Observación: No se detectan objetivos claramente planteados en la introducción.\n   Ubicación: Sección de introducción\n\n4. [Índice]\n   Observación: No se detecta un índice o tabla de contenidos en el documento.\n   Ubicación: Inicio del documento\n\n--------------------------------------------------------------------------------\n🟡 OBSERVACIONES MENORES (Recomendadas)\n--------------------------------------------------------------------------------\n\n1. [Anexos]\n   Observación: No se detecta una sección de anexos. Considere agregar evidencias fotográficas y documentos de soporte.\n\n2. [Referencias]\n   Observación: No se detectan referencias bibliográficas. Se recomienda incluir fuentes consultadas en formato APA.\n\n================================================================================\nFIN DEL DICTAMEN\n================================================================================",
+    "fecha_registro": "2026-07-08T18:29:45.331Z",
+    "fecha_asignacion_secretaria": "2026-07-08T18:30:29.352Z",
+    "fecha_asignacion_presidente": null,
+    "fecha_asignacion_docente": "2026-07-08T18:31:16.018Z",
+    "fecha_revision_docente": "2026-07-08T18:35:14.915Z",
+    "fecha_aprobacion_presidente": "2026-07-08T18:35:36.934Z",
+    "fecha_completado": "2026-07-08T18:36:21.827Z",
+    "version": 2,
+    "informe_anterior": 5
+  }
+},
+{
+  "model": "informes.informe",
+  "pk": 9,
+  "fields": {
+    "usuario": 4,
+    "nombre_archivo": "Estudiante.pdf",
+    "archivo": "informes/2026/07/Estudiante_dmyxyD1.pdf",
+    "contenido": "1. Estudiante:\n• Enviar el informe ( docx, pdf )\n• Recibir Notificación ( Rechazado/Aceptado )\n2. Presidente\n• Designar docente\n3. Secre taria\n• Designa  a la escuel a de carrera\n• Recibe informe del docen te\n• Recibe informe del estudiante\n4. Docente\n• Funcionalidad de IA\n• Ver informe\n• Editar observaciones\n• Subir banco de observaciones\n1. Estudiante envia informe en docx o pdf\n2. El sistema verifica que el arch ivo sea v álido ( validaciones lógicas )\n3. Secretaria recibe notificación\n4. Secretaria reenvía  a presidente de esc uela\n5. Presidente de escuela designa a profesor\n6. Profesor designa su propio banco de observaciones  prompt  docx o pdf\n7. Profesor designado ve rifica con IA el informe  y su banco de obse rvaciones\n8. Aparece la tabla editable , si hay observaciones se envia al estudiante ( paso 01 ), si no\nlas hay el profesor realiza su informe y se envia de vuelta a presi dencia\n9. Presidente verifica informe del profesor , si esta conforme , el estud iante recibe\nnotificación , si lo rechaza, vuelva al docente ( paso 7)",
+    "estado": "enviado",
+    "secretaria_asignada": null,
+    "presidente_asignado": null,
+    "docente_revisor": null,
+    "escuela": 1,
+    "banco_observaciones_usado": null,
+    "comentario_secretaria": null,
+    "comentario_presidente": null,
+    "comentario_docente": null,
+    "fecha_registro": "2026-07-08T18:38:47.747Z",
+    "fecha_asignacion_secretaria": null,
+    "fecha_asignacion_presidente": null,
+    "fecha_asignacion_docente": null,
+    "fecha_revision_docente": null,
+    "fecha_aprobacion_presidente": null,
+    "fecha_completado": null,
+    "version": 2,
+    "informe_anterior": 5
+  }
+},
+{
+  "model": "informes.informe",
+  "pk": 10,
+  "fields": {
+    "usuario": 4,
+    "nombre_archivo": "Estudiante.pdf",
+    "archivo": "informes/2026/07/Estudiante_BvLmLkd.pdf",
+    "contenido": "1. Estudiante:\n• Enviar el informe ( docx, pdf )\n• Recibir Notificación ( Rechazado/Aceptado )\n2. Presidente\n• Designar docente\n3. Secre taria\n• Designa  a la escuel a de carrera\n• Recibe informe del docen te\n• Recibe informe del estudiante\n4. Docente\n• Funcionalidad de IA\n• Ver informe\n• Editar observaciones\n• Subir banco de observaciones\n1. Estudiante envia informe en docx o pdf\n2. El sistema verifica que el arch ivo sea v álido ( validaciones lógicas )\n3. Secretaria recibe notificación\n4. Secretaria reenvía  a presidente de esc uela\n5. Presidente de escuela designa a profesor\n6. Profesor designa su propio banco de observaciones  prompt  docx o pdf\n7. Profesor designado ve rifica con IA el informe  y su banco de obse rvaciones\n8. Aparece la tabla editable , si hay observaciones se envia al estudiante ( paso 01 ), si no\nlas hay el profesor realiza su informe y se envia de vuelta a presi dencia\n9. Presidente verifica informe del profesor , si esta conforme , el estud iante recibe\nnotificación , si lo rechaza, vuelva al docente ( paso 7)",
+    "estado": "rechazado_estudiante",
+    "secretaria_asignada": 1,
+    "presidente_asignado": 2,
+    "docente_revisor": 3,
+    "escuela": 1,
+    "banco_observaciones_usado": 3,
+    "comentario_secretaria": "",
+    "comentario_presidente": "se rechazo porque no cumplio con las normas",
+    "comentario_docente": "================================================================================\nDICTAMEN DEL DOCENTE REVISOR\n================================================================================\n\nNonedfs sdfsdfsdfsdfsdf sf sd sdf sdf ds\n\n================================================================================\nRECOMENDACIÓN\n================================================================================\n\n❌ RECOMIENDO RECHAZAR este informe\n\n================================================================================\nOBSERVACIONES DETECTADAS Y CONFIRMADAS\n================================================================================\n\nTotal de observaciones confirmadas: 3\n  • Críticas: 2\n  • Importantes: 0\n  • Menores: 1\n  • Sugerencias: 0\n\n--------------------------------------------------------------------------------\n🔴 OBSERVACIONES CRÍTICAS (Deben corregirse obligatoriamente)\n--------------------------------------------------------------------------------\n\n1. [Conclusiones]\n   Observación: No se detecta una sección de conclusiones en el informe.\n   Ubicación: Final del documento\n\n2. [Contenido]\n   Observación: El informe es muy corto (solo 189 palabras). Se requiere un contenido más extenso y detallado.\n   Ubicación: Todo el documento\n\n--------------------------------------------------------------------------------\n🟡 OBSERVACIONES MENORES (Recomendadas)\n--------------------------------------------------------------------------------\n\n1. [Anexos]\n   Observación: No se detecta una sección de anexos. Considere agregar evidencias fotográficas y documentos de soporte.\n\n================================================================================\nFIN DEL DICTAMEN\n================================================================================",
+    "fecha_registro": "2026-07-08T18:38:59.689Z",
+    "fecha_asignacion_secretaria": "2026-07-08T18:39:17.514Z",
+    "fecha_asignacion_presidente": null,
+    "fecha_asignacion_docente": "2026-07-08T18:39:27.191Z",
+    "fecha_revision_docente": "2026-07-08T18:40:13.100Z",
+    "fecha_aprobacion_presidente": "2026-07-08T18:50:56.617Z",
+    "fecha_completado": "2026-07-08T18:54:24.630Z",
+    "version": 2,
+    "informe_anterior": 5
+  }
+},
+{
+  "model": "informes.informe",
+  "pk": 11,
+  "fields": {
+    "usuario": 4,
+    "nombre_archivo": "Estudiante.pdf",
+    "archivo": "informes/2026/07/Estudiante_uHcpD8E.pdf",
+    "contenido": "1. Estudiante:\n• Enviar el informe ( docx, pdf )\n• Recibir Notificación ( Rechazado/Aceptado )\n2. Presidente\n• Designar docente\n3. Secre taria\n• Designa  a la escuel a de carrera\n• Recibe informe del docen te\n• Recibe informe del estudiante\n4. Docente\n• Funcionalidad de IA\n• Ver informe\n• Editar observaciones\n• Subir banco de observaciones\n1. Estudiante envia informe en docx o pdf\n2. El sistema verifica que el arch ivo sea v álido ( validaciones lógicas )\n3. Secretaria recibe notificación\n4. Secretaria reenvía  a presidente de esc uela\n5. Presidente de escuela designa a profesor\n6. Profesor designa su propio banco de observaciones  prompt  docx o pdf\n7. Profesor designado ve rifica con IA el informe  y su banco de obse rvaciones\n8. Aparece la tabla editable , si hay observaciones se envia al estudiante ( paso 01 ), si no\nlas hay el profesor realiza su informe y se envia de vuelta a presi dencia\n9. Presidente verifica informe del profesor , si esta conforme , el estud iante recibe\nnotificación , si lo rechaza, vuelva al docente ( paso 7)",
+    "estado": "rechazado_estudiante",
+    "secretaria_asignada": 1,
+    "presidente_asignado": 2,
+    "docente_revisor": 3,
+    "escuela": 1,
+    "banco_observaciones_usado": 2,
+    "comentario_secretaria": "asdasd",
+    "comentario_presidente": "esta rechazado tu informe",
+    "comentario_docente": "================================================================================\nDICTAMEN DEL DOCENTE REVISOR\n================================================================================\n\nNone rechazado as\r\ndas\r\nda\r\nsd\r\nas\r\nda\r\nsd\n\n================================================================================\nRECOMENDACIÓN\n================================================================================\n\n❌ RECOMIENDO RECHAZAR este informe\n\n================================================================================\nOBSERVACIONES DETECTADAS Y CONFIRMADAS\n================================================================================\n\nTotal de observaciones confirmadas: 7\n  • Críticas: 2\n  • Importantes: 4\n  • Menores: 1\n  • Sugerencias: 0\n\n--------------------------------------------------------------------------------\n🔴 OBSERVACIONES CRÍTICAS (Deben corregirse obligatoriamente)\n--------------------------------------------------------------------------------\n\n1. [Conclusiones]\n   Observación: No se detecta una sección de conclusiones en el informe.\n   Ubicación: Final del documento\n\n2. [Contenido]\n   Observación: El informe es muy corto (solo 189 palabras). Se requiere un contenido más extenso y detallado.\n   Ubicación: Todo el documento\n\n--------------------------------------------------------------------------------\n🟠 OBSERVACIONES IMPORTANTES (Deben corregirse)\n--------------------------------------------------------------------------------\n\n1. [Descripción de Empresa]\n   Observación: No se detecta una descripción clara de la empresa/institución donde se realizaron las prácticas.\n   Ubicación: Sección inicial del informe\n\n2. [Introducción]\n   Observación: No se detecta una sección de introducción claramente identificada.\n   Ubicación: Después del índice\n\n3. [Objetivos]\n   Observación: No se detectan objetivos claramente planteados en la introducción.\n   Ubicación: Sección de introducción\n\n4. [Índice]\n   Observación: No se detecta un índice o tabla de contenidos en el documento.\n   Ubicación: Inicio del documento\n\n--------------------------------------------------------------------------------\n🟡 OBSERVACIONES MENORES (Recomendadas)\n--------------------------------------------------------------------------------\n\n1. [Referencias]\n   Observación: No se detectan referencias bibliográficas. Se recomienda incluir fuentes consultadas en formato APA.\n\n================================================================================\nFIN DEL DICTAMEN\n================================================================================",
+    "fecha_registro": "2026-07-08T19:00:32.344Z",
+    "fecha_asignacion_secretaria": "2026-07-08T19:01:16.866Z",
+    "fecha_asignacion_presidente": null,
+    "fecha_asignacion_docente": "2026-07-08T19:01:27.296Z",
+    "fecha_revision_docente": "2026-07-08T19:01:55.020Z",
+    "fecha_aprobacion_presidente": "2026-07-08T19:02:18.659Z",
+    "fecha_completado": "2026-07-08T19:02:38.428Z",
+    "version": 3,
+    "informe_anterior": 10
+  }
+},
+{
+  "model": "observaciones.bancoobservacionesdocente",
+  "pk": 1,
+  "fields": {
+    "docente": 3,
+    "nombre": "banco 1",
+    "archivo": "bancos_observaciones/2026/07/Estudiante.pdf",
+    "contenido_extraido": "1. Estudiante:  \n• Enviar el informe ( docx, pdf ) \n• Recibir Notificación ( Rechazado/Aceptado ) \n \n2. Presidente  \n• Designar docente  \n \n3. Secre taria  \n• Designa  a la escuel a de carrera  \n• Recibe informe del docen te \n• Recibe informe del estudiante  \n \n4. Docente  \n• Funcionalidad de IA  \n• Ver informe  \n• Editar observaciones  \n• Subir banco de observaciones  \n \n1. Estudiante envia informe en docx o pdf  \n2. El sistema verifica que el arch ivo sea v álido ( validaciones lógicas ) \n3. Secretaria recibe notificación  \n4. Secretaria reenvía  a presidente de esc uela  \n5. Presidente de escuela designa a profesor  \n6. Profesor designa su propio banco de observaciones  prompt  docx o pdf  \n7. Profesor designado ve rifica con IA el informe  y su banco de obse rvaciones  \n8. Aparece la tabla editable , si hay observaciones se envia al estudiante ( paso 01 ), si no \nlas hay el profesor realiza su informe y se envia de vuelta a presi dencia  \n9. Presidente verifica informe del profesor , si esta conforme , el estud iante recibe \nnotificación , si lo rechaza, vuelva al docente ( paso 7) \n ",
+    "activo": false,
+    "fecha_creacion": "2026-07-08T06:15:34.825Z",
+    "fecha_actualizacion": "2026-07-08T18:31:51.678Z"
+  }
+},
+{
+  "model": "observaciones.bancoobservacionesdocente",
+  "pk": 2,
+  "fields": {
+    "docente": 3,
+    "nombre": "ejemplo",
+    "archivo": "bancos_observaciones/2026/07/Estudiante_uVijG69.pdf",
+    "contenido_extraido": "1. Estudiante:  \n• Enviar el informe ( docx, pdf ) \n• Recibir Notificación ( Rechazado/Aceptado ) \n \n2. Presidente  \n• Designar docente  \n \n3. Secre taria  \n• Designa  a la escuel a de carrera  \n• Recibe informe del docen te \n• Recibe informe del estudiante  \n \n4. Docente  \n• Funcionalidad de IA  \n• Ver informe  \n• Editar observaciones  \n• Subir banco de observaciones  \n \n1. Estudiante envia informe en docx o pdf  \n2. El sistema verifica que el arch ivo sea v álido ( validaciones lógicas ) \n3. Secretaria recibe notificación  \n4. Secretaria reenvía  a presidente de esc uela  \n5. Presidente de escuela designa a profesor  \n6. Profesor designa su propio banco de observaciones  prompt  docx o pdf  \n7. Profesor designado ve rifica con IA el informe  y su banco de obse rvaciones  \n8. Aparece la tabla editable , si hay observaciones se envia al estudiante ( paso 01 ), si no \nlas hay el profesor realiza su informe y se envia de vuelta a presi dencia  \n9. Presidente verifica informe del profesor , si esta conforme , el estud iante recibe \nnotificación , si lo rechaza, vuelva al docente ( paso 7) \n ",
+    "activo": true,
+    "fecha_creacion": "2026-07-08T06:30:48.591Z",
+    "fecha_actualizacion": "2026-07-08T09:21:50.756Z"
+  }
+},
+{
+  "model": "observaciones.bancoobservacionesdocente",
+  "pk": 3,
+  "fields": {
+    "docente": 3,
+    "nombre": "dos",
+    "archivo": "bancos_observaciones/2026/07/Estudiante_3aotbCs.pdf",
+    "contenido_extraido": "1. Estudiante:  \n• Enviar el informe ( docx, pdf ) \n• Recibir Notificación ( Rechazado/Aceptado ) \n \n2. Presidente  \n• Designar docente  \n \n3. Secre taria  \n• Designa  a la escuel a de carrera  \n• Recibe informe del docen te \n• Recibe informe del estudiante  \n \n4. Docente  \n• Funcionalidad de IA  \n• Ver informe  \n• Editar observaciones  \n• Subir banco de observaciones  \n \n1. Estudiante envia informe en docx o pdf  \n2. El sistema verifica que el arch ivo sea v álido ( validaciones lógicas ) \n3. Secretaria recibe notificación  \n4. Secretaria reenvía  a presidente de esc uela  \n5. Presidente de escuela designa a profesor  \n6. Profesor designa su propio banco de observaciones  prompt  docx o pdf  \n7. Profesor designado ve rifica con IA el informe  y su banco de obse rvaciones  \n8. Aparece la tabla editable , si hay observaciones se envia al estudiante ( paso 01 ), si no \nlas hay el profesor realiza su informe y se envia de vuelta a presi dencia  \n9. Presidente verifica informe del profesor , si esta conforme , el estud iante recibe \nnotificación , si lo rechaza, vuelva al docente ( paso 7) \n ",
+    "activo": true,
+    "fecha_creacion": "2026-07-08T09:13:19.367Z",
+    "fecha_actualizacion": "2026-07-08T09:19:14.251Z"
+  }
+},
+{
+  "model": "observaciones.observaciongenerada",
+  "pk": 75,
+  "fields": {
+    "informe": 4,
+    "seccion": "Carátula",
+    "observacion": "No se detecta mención a la UNTELS en el documento. Verificar que la carátula institucional esté completa.",
+    "ubicacion_error": "Página 1 - Carátula",
+    "estado": "pendiente",
+    "comentario_docente": null,
+    "fecha_revision": null,
+    "severidad": "critica"
+  }
+},
+{
+  "model": "observaciones.observaciongenerada",
+  "pk": 76,
+  "fields": {
+    "informe": 4,
+    "seccion": "Índice",
+    "observacion": "No se detecta un índice o tabla de contenidos en el documento.",
+    "ubicacion_error": "Inicio del documento",
+    "estado": "pendiente",
+    "comentario_docente": null,
+    "fecha_revision": null,
+    "severidad": "importante"
+  }
+},
+{
+  "model": "observaciones.observaciongenerada",
+  "pk": 77,
+  "fields": {
+    "informe": 4,
+    "seccion": "Introducción",
+    "observacion": "No se detecta una sección de introducción claramente identificada.",
+    "ubicacion_error": "Después del índice",
+    "estado": "pendiente",
+    "comentario_docente": null,
+    "fecha_revision": null,
+    "severidad": "importante"
+  }
+},
+{
+  "model": "observaciones.observaciongenerada",
+  "pk": 78,
+  "fields": {
+    "informe": 4,
+    "seccion": "Conclusiones",
+    "observacion": "No se detecta una sección de conclusiones en el informe.",
+    "ubicacion_error": "Final del documento",
+    "estado": "pendiente",
+    "comentario_docente": null,
+    "fecha_revision": null,
+    "severidad": "critica"
+  }
+},
+{
+  "model": "observaciones.observaciongenerada",
+  "pk": 79,
+  "fields": {
+    "informe": 4,
+    "seccion": "Contenido",
+    "observacion": "El informe es muy corto (solo 189 palabras). Se requiere un contenido más extenso y detallado.",
+    "ubicacion_error": "Todo el documento",
+    "estado": "pendiente",
+    "comentario_docente": null,
+    "fecha_revision": null,
+    "severidad": "critica"
+  }
+},
+{
+  "model": "observaciones.observaciongenerada",
+  "pk": 80,
+  "fields": {
+    "informe": 4,
+    "seccion": "Descripción de Empresa",
+    "observacion": "No se detecta una descripción clara de la empresa/institución donde se realizaron las prácticas.",
+    "ubicacion_error": "Sección inicial del informe",
+    "estado": "pendiente",
+    "comentario_docente": null,
+    "fecha_revision": null,
+    "severidad": "importante"
+  }
+},
+{
+  "model": "observaciones.observaciongenerada",
+  "pk": 81,
+  "fields": {
+    "informe": 4,
+    "seccion": "Referencias",
+    "observacion": "No se detectan referencias bibliográficas. Se recomienda incluir fuentes consultadas en formato APA.",
+    "ubicacion_error": "Final del documento",
+    "estado": "pendiente",
+    "comentario_docente": null,
+    "fecha_revision": null,
+    "severidad": "menor"
+  }
+},
+{
+  "model": "observaciones.observaciongenerada",
+  "pk": 82,
+  "fields": {
+    "informe": 4,
+    "seccion": "Anexos",
+    "observacion": "No se detecta una sección de anexos. Considere agregar evidencias fotográficas y documentos de soporte.",
+    "ubicacion_error": "Final del documento",
+    "estado": "pendiente",
+    "comentario_docente": null,
+    "fecha_revision": null,
+    "severidad": "menor"
+  }
+},
+{
+  "model": "observaciones.observaciongenerada",
+  "pk": 83,
+  "fields": {
+    "informe": 4,
+    "seccion": "Objetivos",
+    "observacion": "No se detectan objetivos claramente planteados en la introducción.",
+    "ubicacion_error": "Sección de introducción",
+    "estado": "pendiente",
+    "comentario_docente": null,
+    "fecha_revision": null,
+    "severidad": "importante"
+  }
+},
+{
+  "model": "observaciones.observaciongenerada",
+  "pk": 84,
+  "fields": {
+    "informe": 5,
+    "seccion": "Carátula",
+    "observacion": "No se detecta mención a la UNTELS en el documento. Verificar que la carátula institucional esté completa.",
+    "ubicacion_error": "Página 1 - Carátula",
+    "estado": "pendiente",
+    "comentario_docente": null,
+    "fecha_revision": null,
+    "severidad": "critica"
+  }
+},
+{
+  "model": "observaciones.observaciongenerada",
+  "pk": 85,
+  "fields": {
+    "informe": 5,
+    "seccion": "Índice",
+    "observacion": "No se detecta un índice o tabla de contenidos en el documento.",
+    "ubicacion_error": "Inicio del documento",
+    "estado": "pendiente",
+    "comentario_docente": null,
+    "fecha_revision": null,
+    "severidad": "importante"
+  }
+},
+{
+  "model": "observaciones.observaciongenerada",
+  "pk": 86,
+  "fields": {
+    "informe": 5,
+    "seccion": "Introducción",
+    "observacion": "No se detecta una sección de introducción claramente identificada.",
+    "ubicacion_error": "Después del índice",
+    "estado": "pendiente",
+    "comentario_docente": null,
+    "fecha_revision": null,
+    "severidad": "importante"
+  }
+},
+{
+  "model": "observaciones.observaciongenerada",
+  "pk": 87,
+  "fields": {
+    "informe": 5,
+    "seccion": "Conclusiones",
+    "observacion": "No se detecta una sección de conclusiones en el informe.",
+    "ubicacion_error": "Final del documento",
+    "estado": "pendiente",
+    "comentario_docente": null,
+    "fecha_revision": null,
+    "severidad": "critica"
+  }
+},
+{
+  "model": "observaciones.observaciongenerada",
+  "pk": 88,
+  "fields": {
+    "informe": 5,
+    "seccion": "Contenido",
+    "observacion": "El informe es muy corto (solo 189 palabras). Se requiere un contenido más extenso y detallado.",
+    "ubicacion_error": "Todo el documento",
+    "estado": "pendiente",
+    "comentario_docente": null,
+    "fecha_revision": null,
+    "severidad": "critica"
+  }
+},
+{
+  "model": "observaciones.observaciongenerada",
+  "pk": 89,
+  "fields": {
+    "informe": 5,
+    "seccion": "Descripción de Empresa",
+    "observacion": "No se detecta una descripción clara de la empresa/institución donde se realizaron las prácticas.",
+    "ubicacion_error": "Sección inicial del informe",
+    "estado": "pendiente",
+    "comentario_docente": null,
+    "fecha_revision": null,
+    "severidad": "importante"
+  }
+},
+{
+  "model": "observaciones.observaciongenerada",
+  "pk": 90,
+  "fields": {
+    "informe": 5,
+    "seccion": "Referencias",
+    "observacion": "No se detectan referencias bibliográficas. Se recomienda incluir fuentes consultadas en formato APA.",
+    "ubicacion_error": "Final del documento",
+    "estado": "pendiente",
+    "comentario_docente": null,
+    "fecha_revision": null,
+    "severidad": "menor"
+  }
+},
+{
+  "model": "observaciones.observaciongenerada",
+  "pk": 91,
+  "fields": {
+    "informe": 5,
+    "seccion": "Anexos",
+    "observacion": "No se detecta una sección de anexos. Considere agregar evidencias fotográficas y documentos de soporte.",
+    "ubicacion_error": "Final del documento",
+    "estado": "pendiente",
+    "comentario_docente": null,
+    "fecha_revision": null,
+    "severidad": "menor"
+  }
+},
+{
+  "model": "observaciones.observaciongenerada",
+  "pk": 92,
+  "fields": {
+    "informe": 5,
+    "seccion": "Objetivos",
+    "observacion": "No se detectan objetivos claramente planteados en la introducción.",
+    "ubicacion_error": "Sección de introducción",
+    "estado": "pendiente",
+    "comentario_docente": null,
+    "fecha_revision": null,
+    "severidad": "importante"
+  }
+},
+{
+  "model": "observaciones.observaciongenerada",
+  "pk": 102,
+  "fields": {
+    "informe": 6,
+    "seccion": "Carátula",
+    "observacion": "No se detecta mención a la UNTELS en el documento. Verificar que la carátula institucional esté completa.",
+    "ubicacion_error": "Página 1 - Carátula",
+    "estado": "confirmada",
+    "comentario_docente": "",
+    "fecha_revision": null,
+    "severidad": "critica"
+  }
+},
+{
+  "model": "observaciones.observaciongenerada",
+  "pk": 103,
+  "fields": {
+    "informe": 6,
+    "seccion": "Índice",
+    "observacion": "No se detecta un índice o tabla de contenidos en el documento.",
+    "ubicacion_error": "Inicio del documento",
+    "estado": "confirmada",
+    "comentario_docente": "",
+    "fecha_revision": null,
+    "severidad": "importante"
+  }
+},
+{
+  "model": "observaciones.observaciongenerada",
+  "pk": 104,
+  "fields": {
+    "informe": 6,
+    "seccion": "Introducción",
+    "observacion": "No se detecta una sección de introducción claramente identificada.",
+    "ubicacion_error": "Después del índice",
+    "estado": "descartada",
+    "comentario_docente": "",
+    "fecha_revision": null,
+    "severidad": "importante"
+  }
+},
+{
+  "model": "observaciones.observaciongenerada",
+  "pk": 105,
+  "fields": {
+    "informe": 6,
+    "seccion": "Conclusiones",
+    "observacion": "No se detecta una sección de conclusiones en el informe.",
+    "ubicacion_error": "Final del documento",
+    "estado": "confirmada",
+    "comentario_docente": "",
+    "fecha_revision": null,
+    "severidad": "critica"
+  }
+},
+{
+  "model": "observaciones.observaciongenerada",
+  "pk": 106,
+  "fields": {
+    "informe": 6,
+    "seccion": "Contenido",
+    "observacion": "El informe es muy corto (solo 189 palabras). Se requiere un contenido más extenso y detallado.",
+    "ubicacion_error": "Todo el documento",
+    "estado": "confirmada",
+    "comentario_docente": "",
+    "fecha_revision": null,
+    "severidad": "critica"
+  }
+},
+{
+  "model": "observaciones.observaciongenerada",
+  "pk": 107,
+  "fields": {
+    "informe": 6,
+    "seccion": "Descripción de Empresa",
+    "observacion": "No se detecta una descripción clara de la empresa/institución donde se realizaron las prácticas.",
+    "ubicacion_error": "Sección inicial del informe",
+    "estado": "confirmada",
+    "comentario_docente": "",
+    "fecha_revision": null,
+    "severidad": "importante"
+  }
+},
+{
+  "model": "observaciones.observaciongenerada",
+  "pk": 108,
+  "fields": {
+    "informe": 6,
+    "seccion": "Referencias",
+    "observacion": "No se detectan referencias bibliográficas. Se recomienda incluir fuentes consultadas en formato APA.",
+    "ubicacion_error": "Final del documento",
+    "estado": "descartada",
+    "comentario_docente": "",
+    "fecha_revision": null,
+    "severidad": "menor"
+  }
+},
+{
+  "model": "observaciones.observaciongenerada",
+  "pk": 109,
+  "fields": {
+    "informe": 6,
+    "seccion": "Anexos",
+    "observacion": "No se detecta una sección de anexos. Considere agregar evidencias fotográficas y documentos de soporte.",
+    "ubicacion_error": "Final del documento",
+    "estado": "confirmada",
+    "comentario_docente": "",
+    "fecha_revision": null,
+    "severidad": "menor"
+  }
+},
+{
+  "model": "observaciones.observaciongenerada",
+  "pk": 110,
+  "fields": {
+    "informe": 6,
+    "seccion": "Objetivos",
+    "observacion": "No se detectan objetivos claramente planteados en la introducción.",
+    "ubicacion_error": "Sección de introducción",
+    "estado": "descartada",
+    "comentario_docente": "",
+    "fecha_revision": null,
+    "severidad": "importante"
+  }
+},
+{
+  "model": "observaciones.observaciongenerada",
+  "pk": 111,
+  "fields": {
+    "informe": 8,
+    "seccion": "Carátula",
+    "observacion": "No se detecta mención a la UNTELS en el documento. Verificar que la carátula institucional esté completa.",
+    "ubicacion_error": "Página 1 - Carátula",
+    "estado": "confirmada",
+    "comentario_docente": "",
+    "fecha_revision": null,
+    "severidad": "critica"
+  }
+},
+{
+  "model": "observaciones.observaciongenerada",
+  "pk": 112,
+  "fields": {
+    "informe": 8,
+    "seccion": "Índice",
+    "observacion": "No se detecta un índice o tabla de contenidos en el documento.",
+    "ubicacion_error": "Inicio del documento",
+    "estado": "confirmada",
+    "comentario_docente": "",
+    "fecha_revision": null,
+    "severidad": "importante"
+  }
+},
+{
+  "model": "observaciones.observaciongenerada",
+  "pk": 113,
+  "fields": {
+    "informe": 8,
+    "seccion": "Introducción",
+    "observacion": "No se detecta una sección de introducción claramente identificada.",
+    "ubicacion_error": "Después del índice",
+    "estado": "confirmada",
+    "comentario_docente": "",
+    "fecha_revision": null,
+    "severidad": "importante"
+  }
+},
+{
+  "model": "observaciones.observaciongenerada",
+  "pk": 114,
+  "fields": {
+    "informe": 8,
+    "seccion": "Conclusiones",
+    "observacion": "No se detecta una sección de conclusiones en el informe.",
+    "ubicacion_error": "Final del documento",
+    "estado": "confirmada",
+    "comentario_docente": "",
+    "fecha_revision": null,
+    "severidad": "critica"
+  }
+},
+{
+  "model": "observaciones.observaciongenerada",
+  "pk": 115,
+  "fields": {
+    "informe": 8,
+    "seccion": "Contenido",
+    "observacion": "El informe es muy corto (solo 189 palabras). Se requiere un contenido más extenso y detallado.",
+    "ubicacion_error": "Todo el documento",
+    "estado": "confirmada",
+    "comentario_docente": "",
+    "fecha_revision": null,
+    "severidad": "critica"
+  }
+},
+{
+  "model": "observaciones.observaciongenerada",
+  "pk": 116,
+  "fields": {
+    "informe": 8,
+    "seccion": "Descripción de Empresa",
+    "observacion": "No se detecta una descripción clara de la empresa/institución donde se realizaron las prácticas.",
+    "ubicacion_error": "Sección inicial del informe",
+    "estado": "confirmada",
+    "comentario_docente": "",
+    "fecha_revision": null,
+    "severidad": "importante"
+  }
+},
+{
+  "model": "observaciones.observaciongenerada",
+  "pk": 117,
+  "fields": {
+    "informe": 8,
+    "seccion": "Referencias",
+    "observacion": "No se detectan referencias bibliográficas. Se recomienda incluir fuentes consultadas en formato APA.",
+    "ubicacion_error": "Final del documento",
+    "estado": "confirmada",
+    "comentario_docente": "",
+    "fecha_revision": null,
+    "severidad": "menor"
+  }
+},
+{
+  "model": "observaciones.observaciongenerada",
+  "pk": 118,
+  "fields": {
+    "informe": 8,
+    "seccion": "Anexos",
+    "observacion": "No se detecta una sección de anexos. Considere agregar evidencias fotográficas y documentos de soporte.",
+    "ubicacion_error": "Final del documento",
+    "estado": "confirmada",
+    "comentario_docente": "",
+    "fecha_revision": null,
+    "severidad": "menor"
+  }
+},
+{
+  "model": "observaciones.observaciongenerada",
+  "pk": 119,
+  "fields": {
+    "informe": 8,
+    "seccion": "Objetivos",
+    "observacion": "No se detectan objetivos claramente planteados en la introducción.",
+    "ubicacion_error": "Sección de introducción",
+    "estado": "confirmada",
+    "comentario_docente": "",
+    "fecha_revision": null,
+    "severidad": "importante"
+  }
+},
+{
+  "model": "observaciones.observaciongenerada",
+  "pk": 120,
+  "fields": {
+    "informe": 7,
+    "seccion": "Carátula",
+    "observacion": "No se detecta mención a la UNTELS en el documento. Verificar que la carátula institucional esté completa.",
+    "ubicacion_error": "Página 1 - Carátula",
+    "estado": "confirmada",
+    "comentario_docente": "",
+    "fecha_revision": null,
+    "severidad": "critica"
+  }
+},
+{
+  "model": "observaciones.observaciongenerada",
+  "pk": 121,
+  "fields": {
+    "informe": 7,
+    "seccion": "Índice",
+    "observacion": "No se detecta un índice o tabla de contenidos en el documento.",
+    "ubicacion_error": "Inicio del documento",
+    "estado": "confirmada",
+    "comentario_docente": "",
+    "fecha_revision": null,
+    "severidad": "importante"
+  }
+},
+{
+  "model": "observaciones.observaciongenerada",
+  "pk": 122,
+  "fields": {
+    "informe": 7,
+    "seccion": "Introducción",
+    "observacion": "No se detecta una sección de introducción claramente identificada.",
+    "ubicacion_error": "Después del índice",
+    "estado": "confirmada",
+    "comentario_docente": "",
+    "fecha_revision": null,
+    "severidad": "importante"
+  }
+},
+{
+  "model": "observaciones.observaciongenerada",
+  "pk": 123,
+  "fields": {
+    "informe": 7,
+    "seccion": "Conclusiones",
+    "observacion": "No se detecta una sección de conclusiones en el informe.",
+    "ubicacion_error": "Final del documento",
+    "estado": "confirmada",
+    "comentario_docente": "",
+    "fecha_revision": null,
+    "severidad": "critica"
+  }
+},
+{
+  "model": "observaciones.observaciongenerada",
+  "pk": 124,
+  "fields": {
+    "informe": 7,
+    "seccion": "Contenido",
+    "observacion": "El informe es muy corto (solo 189 palabras). Se requiere un contenido más extenso y detallado.",
+    "ubicacion_error": "Todo el documento",
+    "estado": "confirmada",
+    "comentario_docente": "",
+    "fecha_revision": null,
+    "severidad": "critica"
+  }
+},
+{
+  "model": "observaciones.observaciongenerada",
+  "pk": 125,
+  "fields": {
+    "informe": 7,
+    "seccion": "Descripción de Empresa",
+    "observacion": "No se detecta una descripción clara de la empresa/institución donde se realizaron las prácticas.",
+    "ubicacion_error": "Sección inicial del informe",
+    "estado": "confirmada",
+    "comentario_docente": "",
+    "fecha_revision": null,
+    "severidad": "importante"
+  }
+},
+{
+  "model": "observaciones.observaciongenerada",
+  "pk": 126,
+  "fields": {
+    "informe": 7,
+    "seccion": "Referencias",
+    "observacion": "No se detectan referencias bibliográficas. Se recomienda incluir fuentes consultadas en formato APA.",
+    "ubicacion_error": "Final del documento",
+    "estado": "confirmada",
+    "comentario_docente": "",
+    "fecha_revision": null,
+    "severidad": "menor"
+  }
+},
+{
+  "model": "observaciones.observaciongenerada",
+  "pk": 127,
+  "fields": {
+    "informe": 7,
+    "seccion": "Anexos",
+    "observacion": "No se detecta una sección de anexos. Considere agregar evidencias fotográficas y documentos de soporte.",
+    "ubicacion_error": "Final del documento",
+    "estado": "confirmada",
+    "comentario_docente": "",
+    "fecha_revision": null,
+    "severidad": "menor"
+  }
+},
+{
+  "model": "observaciones.observaciongenerada",
+  "pk": 128,
+  "fields": {
+    "informe": 7,
+    "seccion": "Objetivos",
+    "observacion": "No se detectan objetivos claramente planteados en la introducción.",
+    "ubicacion_error": "Sección de introducción",
+    "estado": "confirmada",
+    "comentario_docente": "",
+    "fecha_revision": null,
+    "severidad": "importante"
+  }
+},
+{
+  "model": "observaciones.observaciongenerada",
+  "pk": 129,
+  "fields": {
+    "informe": 10,
+    "seccion": "Carátula",
+    "observacion": "No se detecta mención a la UNTELS en el documento. Verificar que la carátula institucional esté completa.",
+    "ubicacion_error": "Página 1 - Carátula",
+    "estado": "descartada",
+    "comentario_docente": "",
+    "fecha_revision": null,
+    "severidad": "critica"
+  }
+},
+{
+  "model": "observaciones.observaciongenerada",
+  "pk": 130,
+  "fields": {
+    "informe": 10,
+    "seccion": "Índice",
+    "observacion": "No se detecta un índice o tabla de contenidos en el documento.",
+    "ubicacion_error": "Inicio del documento",
+    "estado": "descartada",
+    "comentario_docente": "",
+    "fecha_revision": null,
+    "severidad": "importante"
+  }
+},
+{
+  "model": "observaciones.observaciongenerada",
+  "pk": 131,
+  "fields": {
+    "informe": 10,
+    "seccion": "Introducción",
+    "observacion": "No se detecta una sección de introducción claramente identificada.",
+    "ubicacion_error": "Después del índice",
+    "estado": "descartada",
+    "comentario_docente": "",
+    "fecha_revision": null,
+    "severidad": "importante"
+  }
+},
+{
+  "model": "observaciones.observaciongenerada",
+  "pk": 132,
+  "fields": {
+    "informe": 10,
+    "seccion": "Conclusiones",
+    "observacion": "No se detecta una sección de conclusiones en el informe.",
+    "ubicacion_error": "Final del documento",
+    "estado": "confirmada",
+    "comentario_docente": "",
+    "fecha_revision": null,
+    "severidad": "critica"
+  }
+},
+{
+  "model": "observaciones.observaciongenerada",
+  "pk": 133,
+  "fields": {
+    "informe": 10,
+    "seccion": "Contenido",
+    "observacion": "El informe es muy corto (solo 189 palabras). Se requiere un contenido más extenso y detallado.",
+    "ubicacion_error": "Todo el documento",
+    "estado": "confirmada",
+    "comentario_docente": "",
+    "fecha_revision": null,
+    "severidad": "critica"
+  }
+},
+{
+  "model": "observaciones.observaciongenerada",
+  "pk": 134,
+  "fields": {
+    "informe": 10,
+    "seccion": "Descripción de Empresa",
+    "observacion": "No se detecta una descripción clara de la empresa/institución donde se realizaron las prácticas.",
+    "ubicacion_error": "Sección inicial del informe",
+    "estado": "descartada",
+    "comentario_docente": "",
+    "fecha_revision": null,
+    "severidad": "importante"
+  }
+},
+{
+  "model": "observaciones.observaciongenerada",
+  "pk": 135,
+  "fields": {
+    "informe": 10,
+    "seccion": "Referencias",
+    "observacion": "No se detectan referencias bibliográficas. Se recomienda incluir fuentes consultadas en formato APA.",
+    "ubicacion_error": "Final del documento",
+    "estado": "descartada",
+    "comentario_docente": "",
+    "fecha_revision": null,
+    "severidad": "menor"
+  }
+},
+{
+  "model": "observaciones.observaciongenerada",
+  "pk": 136,
+  "fields": {
+    "informe": 10,
+    "seccion": "Anexos",
+    "observacion": "No se detecta una sección de anexos. Considere agregar evidencias fotográficas y documentos de soporte.",
+    "ubicacion_error": "Final del documento",
+    "estado": "confirmada",
+    "comentario_docente": "",
+    "fecha_revision": null,
+    "severidad": "menor"
+  }
+},
+{
+  "model": "observaciones.observaciongenerada",
+  "pk": 137,
+  "fields": {
+    "informe": 10,
+    "seccion": "Objetivos",
+    "observacion": "No se detectan objetivos claramente planteados en la introducción.",
+    "ubicacion_error": "Sección de introducción",
+    "estado": "descartada",
+    "comentario_docente": "",
+    "fecha_revision": null,
+    "severidad": "importante"
+  }
+},
+{
+  "model": "observaciones.observaciongenerada",
+  "pk": 138,
+  "fields": {
+    "informe": 11,
+    "seccion": "Carátula",
+    "observacion": "No se detecta mención a la UNTELS en el documento. Verificar que la carátula institucional esté completa.",
+    "ubicacion_error": "Página 1 - Carátula",
+    "estado": "descartada",
+    "comentario_docente": "",
+    "fecha_revision": null,
+    "severidad": "critica"
+  }
+},
+{
+  "model": "observaciones.observaciongenerada",
+  "pk": 139,
+  "fields": {
+    "informe": 11,
+    "seccion": "Índice",
+    "observacion": "No se detecta un índice o tabla de contenidos en el documento.",
+    "ubicacion_error": "Inicio del documento",
+    "estado": "confirmada",
+    "comentario_docente": "",
+    "fecha_revision": null,
+    "severidad": "importante"
+  }
+},
+{
+  "model": "observaciones.observaciongenerada",
+  "pk": 140,
+  "fields": {
+    "informe": 11,
+    "seccion": "Introducción",
+    "observacion": "No se detecta una sección de introducción claramente identificada.",
+    "ubicacion_error": "Después del índice",
+    "estado": "confirmada",
+    "comentario_docente": "",
+    "fecha_revision": null,
+    "severidad": "importante"
+  }
+},
+{
+  "model": "observaciones.observaciongenerada",
+  "pk": 141,
+  "fields": {
+    "informe": 11,
+    "seccion": "Conclusiones",
+    "observacion": "No se detecta una sección de conclusiones en el informe.",
+    "ubicacion_error": "Final del documento",
+    "estado": "confirmada",
+    "comentario_docente": "",
+    "fecha_revision": null,
+    "severidad": "critica"
+  }
+},
+{
+  "model": "observaciones.observaciongenerada",
+  "pk": 142,
+  "fields": {
+    "informe": 11,
+    "seccion": "Contenido",
+    "observacion": "El informe es muy corto (solo 189 palabras). Se requiere un contenido más extenso y detallado.",
+    "ubicacion_error": "Todo el documento",
+    "estado": "confirmada",
+    "comentario_docente": "",
+    "fecha_revision": null,
+    "severidad": "critica"
+  }
+},
+{
+  "model": "observaciones.observaciongenerada",
+  "pk": 143,
+  "fields": {
+    "informe": 11,
+    "seccion": "Descripción de Empresa",
+    "observacion": "No se detecta una descripción clara de la empresa/institución donde se realizaron las prácticas.",
+    "ubicacion_error": "Sección inicial del informe",
+    "estado": "confirmada",
+    "comentario_docente": "",
+    "fecha_revision": null,
+    "severidad": "importante"
+  }
+},
+{
+  "model": "observaciones.observaciongenerada",
+  "pk": 144,
+  "fields": {
+    "informe": 11,
+    "seccion": "Referencias",
+    "observacion": "No se detectan referencias bibliográficas. Se recomienda incluir fuentes consultadas en formato APA.",
+    "ubicacion_error": "Final del documento",
+    "estado": "confirmada",
+    "comentario_docente": "",
+    "fecha_revision": null,
+    "severidad": "menor"
+  }
+},
+{
+  "model": "observaciones.observaciongenerada",
+  "pk": 145,
+  "fields": {
+    "informe": 11,
+    "seccion": "Anexos",
+    "observacion": "No se detecta una sección de anexos. Considere agregar evidencias fotográficas y documentos de soporte.",
+    "ubicacion_error": "Final del documento",
+    "estado": "descartada",
+    "comentario_docente": "",
+    "fecha_revision": null,
+    "severidad": "menor"
+  }
+},
+{
+  "model": "observaciones.observaciongenerada",
+  "pk": 146,
+  "fields": {
+    "informe": 11,
+    "seccion": "Objetivos",
+    "observacion": "No se detectan objetivos claramente planteados en la introducción.",
+    "ubicacion_error": "Sección de introducción",
+    "estado": "confirmada",
+    "comentario_docente": "",
+    "fecha_revision": null,
+    "severidad": "importante"
+  }
+},
+{
+  "model": "escuelas.escuela",
+  "pk": 1,
+  "fields": {
+    "nombre": "Ingeniería de Sistemas e Informática",
+    "codigo": "ISI",
+    "presidente": 2,
+    "activo": true,
+    "fecha_creacion": "2026-07-08T03:49:41.622Z"
+  }
+},
+{
+  "model": "notificaciones.notificacion",
+  "pk": 1,
+  "fields": {
+    "usuario": 2,
+    "informe": 4,
+    "tipo": "asignado_presidente",
+    "titulo": "Informe Asignado a su Escuela",
+    "mensaje": "Se le ha asignado el informe \"Estudiante.pdf\" del estudiante José Gonzales (2020123456). Debe designar un docente revisor de su escuela.",
+    "leida": false,
+    "fecha_creacion": "2026-07-08T05:21:05.329Z",
+    "fecha_leida": null
+  }
+},
+{
+  "model": "notificaciones.notificacion",
+  "pk": 2,
+  "fields": {
+    "usuario": 3,
+    "informe": 4,
+    "tipo": "asignado_docente",
+    "titulo": "Informe Asignado para Revisión",
+    "mensaje": "El presidente Dr. Juan Pérez García le ha asignado el informe \"Estudiante.pdf\" del estudiante José Gonzales. Debe revisar el informe utilizando su banco de observaciones.",
+    "leida": false,
+    "fecha_creacion": "2026-07-08T06:04:13.987Z",
+    "fecha_leida": null
+  }
+},
+{
+  "model": "notificaciones.notificacion",
+  "pk": 3,
+  "fields": {
+    "usuario": 2,
+    "informe": 4,
+    "tipo": "revision_completa",
+    "titulo": "Revisión de Docente Completada",
+    "mensaje": "El docente Ing. Carlos Ramírez ha completado la revisión del informe \"Estudiante.pdf\". Debe revisar el dictamen y aprobar o rechazar.",
+    "leida": false,
+    "fecha_creacion": "2026-07-08T08:03:54.799Z",
+    "fecha_leida": null
+  }
+},
+{
+  "model": "notificaciones.notificacion",
+  "pk": 4,
+  "fields": {
+    "usuario": 2,
+    "informe": 4,
+    "tipo": "revision_completa",
+    "titulo": "Revisión de Docente Completada",
+    "mensaje": "El docente Ing. Carlos Ramírez ha completado la revisión del informe \"Estudiante.pdf\". Debe revisar el dictamen y aprobar o rechazar.",
+    "leida": false,
+    "fecha_creacion": "2026-07-08T08:23:57.289Z",
+    "fecha_leida": null
+  }
+},
+{
+  "model": "notificaciones.notificacion",
+  "pk": 5,
+  "fields": {
+    "usuario": 1,
+    "informe": 4,
+    "tipo": "aprobado_presidente",
+    "titulo": "Informe Aprobado por Presidente",
+    "mensaje": "El presidente Dr. Juan Pérez García ha aprobado el informe \"Estudiante.pdf\" del estudiante José Gonzales. Debe notificar al estudiante del resultado final.",
+    "leida": false,
+    "fecha_creacion": "2026-07-08T08:31:46.794Z",
+    "fecha_leida": null
+  }
+},
+{
+  "model": "notificaciones.notificacion",
+  "pk": 6,
+  "fields": {
+    "usuario": 4,
+    "informe": 4,
+    "tipo": "aprobado_final",
+    "titulo": "¡Informe APROBADO!",
+    "mensaje": "¡Felicitaciones! Su informe \"Estudiante.pdf\" ha sido APROBADO por la escuela de Ingeniería de Sistemas e Informática. El proceso de validación ha concluido exitosamente.",
+    "leida": false,
+    "fecha_creacion": "2026-07-08T08:37:42.949Z",
+    "fecha_leida": null
+  }
+},
+{
+  "model": "notificaciones.notificacion",
+  "pk": 7,
+  "fields": {
+    "usuario": 2,
+    "informe": 5,
+    "tipo": "asignado_presidente",
+    "titulo": "Informe Asignado a su Escuela",
+    "mensaje": "Se le ha asignado el informe \"Estudiante.pdf\" del estudiante José Gonzales (2020123456). Debe designar un docente revisor de su escuela.",
+    "leida": false,
+    "fecha_creacion": "2026-07-08T08:56:24.795Z",
+    "fecha_leida": null
+  }
+},
+{
+  "model": "notificaciones.notificacion",
+  "pk": 8,
+  "fields": {
+    "usuario": 3,
+    "informe": 5,
+    "tipo": "asignado_docente",
+    "titulo": "Informe Asignado para Revisión",
+    "mensaje": "El presidente Dr. Juan Pérez García le ha asignado el informe \"Estudiante.pdf\" del estudiante José Gonzales. Debe revisar el informe utilizando su banco de observaciones.",
+    "leida": false,
+    "fecha_creacion": "2026-07-08T08:56:46.491Z",
+    "fecha_leida": null
+  }
+},
+{
+  "model": "notificaciones.notificacion",
+  "pk": 9,
+  "fields": {
+    "usuario": 2,
+    "informe": 5,
+    "tipo": "revision_completa",
+    "titulo": "Revisión de Docente Completada",
+    "mensaje": "El docente Ing. Carlos Ramírez ha completado la revisión del informe \"Estudiante.pdf\". Debe revisar el dictamen y aprobar o rechazar.",
+    "leida": false,
+    "fecha_creacion": "2026-07-08T08:57:27.913Z",
+    "fecha_leida": null
+  }
+},
+{
+  "model": "notificaciones.notificacion",
+  "pk": 10,
+  "fields": {
+    "usuario": 3,
+    "informe": 5,
+    "tipo": "rechazado_presidente",
+    "titulo": "Dictamen Rechazado por Presidente",
+    "mensaje": "El presidente Dr. Juan Pérez García ha rechazado su dictamen del informe \"Estudiante.pdf\". Motivo: esta hirrible. Debe revisar nuevamente el informe.",
+    "leida": false,
+    "fecha_creacion": "2026-07-08T08:57:56.505Z",
+    "fecha_leida": null
+  }
+},
+{
+  "model": "notificaciones.notificacion",
+  "pk": 11,
+  "fields": {
+    "usuario": 2,
+    "informe": 6,
+    "tipo": "asignado_presidente",
+    "titulo": "Informe Asignado a su Escuela",
+    "mensaje": "Se le ha asignado el informe \"Estudiante.pdf\" del estudiante José Gonzales (2020123456). Debe designar un docente revisor de su escuela.",
+    "leida": false,
+    "fecha_creacion": "2026-07-08T09:12:28.619Z",
+    "fecha_leida": null
+  }
+},
+{
+  "model": "notificaciones.notificacion",
+  "pk": 12,
+  "fields": {
+    "usuario": 3,
+    "informe": 6,
+    "tipo": "asignado_docente",
+    "titulo": "Informe Asignado para Revisión",
+    "mensaje": "El presidente Dr. Juan Pérez García le ha asignado el informe \"Estudiante.pdf\" del estudiante José Gonzales. Debe revisar el informe utilizando su banco de observaciones.",
+    "leida": false,
+    "fecha_creacion": "2026-07-08T09:12:52.634Z",
+    "fecha_leida": null
+  }
+},
+{
+  "model": "notificaciones.notificacion",
+  "pk": 13,
+  "fields": {
+    "usuario": 2,
+    "informe": 6,
+    "tipo": "revision_completa",
+    "titulo": "Revisión de Docente Completada",
+    "mensaje": "El docente Ing. Carlos Ramírez ha completado la revisión del informe \"Estudiante.pdf\". Debe revisar el dictamen y aprobar o rechazar.",
+    "leida": false,
+    "fecha_creacion": "2026-07-08T09:27:46.902Z",
+    "fecha_leida": null
+  }
+},
+{
+  "model": "notificaciones.notificacion",
+  "pk": 14,
+  "fields": {
+    "usuario": 3,
+    "informe": 6,
+    "tipo": "rechazado_presidente",
+    "titulo": "Dictamen Rechazado por Presidente",
+    "mensaje": "El presidente Dr. Juan Pérez García ha rechazado su dictamen del informe \"Estudiante.pdf\". Motivo: revisa bien. Debe revisar nuevamente el informe.",
+    "leida": false,
+    "fecha_creacion": "2026-07-08T09:31:40.190Z",
+    "fecha_leida": null
+  }
+},
+{
+  "model": "notificaciones.notificacion",
+  "pk": 15,
+  "fields": {
+    "usuario": 2,
+    "informe": 6,
+    "tipo": "revision_completa",
+    "titulo": "Revisión de Docente Completada",
+    "mensaje": "El docente Ing. Carlos Ramírez ha completado la revisión del informe \"Estudiante.pdf\". Debe revisar el dictamen y aprobar o rechazar.",
+    "leida": false,
+    "fecha_creacion": "2026-07-08T09:32:39.278Z",
+    "fecha_leida": null
+  }
+},
+{
+  "model": "notificaciones.notificacion",
+  "pk": 16,
+  "fields": {
+    "usuario": 1,
+    "informe": 6,
+    "tipo": "aprobado_presidente",
+    "titulo": "Informe Aprobado por Presidente",
+    "mensaje": "El presidente Dr. Juan Pérez García ha aprobado el informe \"Estudiante.pdf\" del estudiante José Gonzales. Debe notificar al estudiante del resultado final.",
+    "leida": false,
+    "fecha_creacion": "2026-07-08T09:35:13.985Z",
+    "fecha_leida": null
+  }
+},
+{
+  "model": "notificaciones.notificacion",
+  "pk": 17,
+  "fields": {
+    "usuario": 4,
+    "informe": 6,
+    "tipo": "aprobado_final",
+    "titulo": "¡Informe APROBADO!",
+    "mensaje": "¡Felicitaciones! Su informe \"Estudiante.pdf\" ha sido APROBADO por la escuela de Ingeniería de Sistemas e Informática. El proceso de validación ha concluido exitosamente.",
+    "leida": false,
+    "fecha_creacion": "2026-07-08T09:38:46.674Z",
+    "fecha_leida": null
+  }
+},
+{
+  "model": "notificaciones.notificacion",
+  "pk": 18,
+  "fields": {
+    "usuario": 2,
+    "informe": 8,
+    "tipo": "asignado_presidente",
+    "titulo": "Informe Asignado a su Escuela",
+    "mensaje": "Se le ha asignado el informe \"Estudiante.pdf\" del estudiante José Gonzales (2020123456). Debe designar un docente revisor de su escuela.",
+    "leida": false,
+    "fecha_creacion": "2026-07-08T18:30:29.357Z",
+    "fecha_leida": null
+  }
+},
+{
+  "model": "notificaciones.notificacion",
+  "pk": 19,
+  "fields": {
+    "usuario": 3,
+    "informe": 8,
+    "tipo": "asignado_docente",
+    "titulo": "Informe Asignado para Revisión",
+    "mensaje": "El presidente Dr. Juan Pérez García le ha asignado el informe \"Estudiante.pdf\" del estudiante José Gonzales. Debe revisar el informe utilizando su banco de observaciones.",
+    "leida": false,
+    "fecha_creacion": "2026-07-08T18:31:16.028Z",
+    "fecha_leida": null
+  }
+},
+{
+  "model": "notificaciones.notificacion",
+  "pk": 20,
+  "fields": {
+    "usuario": 2,
+    "informe": 8,
+    "tipo": "revision_completa",
+    "titulo": "Revisión de Docente Completada",
+    "mensaje": "El docente Ing. Carlos Ramírez ha completado la revisión del informe \"Estudiante.pdf\". Debe revisar el dictamen y aprobar o rechazar.",
+    "leida": false,
+    "fecha_creacion": "2026-07-08T18:33:47.613Z",
+    "fecha_leida": null
+  }
+},
+{
+  "model": "notificaciones.notificacion",
+  "pk": 21,
+  "fields": {
+    "usuario": 3,
+    "informe": 8,
+    "tipo": "rechazado_presidente",
+    "titulo": "Dictamen Rechazado por Presidente",
+    "mensaje": "El presidente Dr. Juan Pérez García ha rechazado su dictamen del informe \"Estudiante.pdf\". Motivo: vuelve a revisar mrd. Debe revisar nuevamente el informe.",
+    "leida": false,
+    "fecha_creacion": "2026-07-08T18:34:47.359Z",
+    "fecha_leida": null
+  }
+},
+{
+  "model": "notificaciones.notificacion",
+  "pk": 22,
+  "fields": {
+    "usuario": 2,
+    "informe": 8,
+    "tipo": "revision_completa",
+    "titulo": "Revisión de Docente Completada",
+    "mensaje": "El docente Ing. Carlos Ramírez ha completado la revisión del informe \"Estudiante.pdf\". Debe revisar el dictamen y aprobar o rechazar.",
+    "leida": false,
+    "fecha_creacion": "2026-07-08T18:35:14.917Z",
+    "fecha_leida": null
+  }
+},
+{
+  "model": "notificaciones.notificacion",
+  "pk": 23,
+  "fields": {
+    "usuario": 1,
+    "informe": 8,
+    "tipo": "aprobado_presidente",
+    "titulo": "Informe Aprobado por Presidente",
+    "mensaje": "El presidente Dr. Juan Pérez García ha aprobado el informe \"Estudiante.pdf\" del estudiante José Gonzales. Debe notificar al estudiante del resultado final.",
+    "leida": false,
+    "fecha_creacion": "2026-07-08T18:35:36.938Z",
+    "fecha_leida": null
+  }
+},
+{
+  "model": "notificaciones.notificacion",
+  "pk": 24,
+  "fields": {
+    "usuario": 2,
+    "informe": 7,
+    "tipo": "asignado_presidente",
+    "titulo": "Informe Asignado a su Escuela",
+    "mensaje": "Se le ha asignado el informe \"Estudiante.pdf\" del estudiante José Gonzales (2020123456). Debe designar un docente revisor de su escuela.",
+    "leida": false,
+    "fecha_creacion": "2026-07-08T18:36:15.803Z",
+    "fecha_leida": null
+  }
+},
+{
+  "model": "notificaciones.notificacion",
+  "pk": 25,
+  "fields": {
+    "usuario": 4,
+    "informe": 8,
+    "tipo": "aprobado_final",
+    "titulo": "¡Informe APROBADO!",
+    "mensaje": "¡Felicitaciones! Su informe \"Estudiante.pdf\" ha sido APROBADO por la escuela de Ingeniería de Sistemas e Informática. El proceso de validación ha concluido exitosamente.",
+    "leida": false,
+    "fecha_creacion": "2026-07-08T18:36:21.833Z",
+    "fecha_leida": null
+  }
+},
+{
+  "model": "notificaciones.notificacion",
+  "pk": 26,
+  "fields": {
+    "usuario": 3,
+    "informe": 7,
+    "tipo": "asignado_docente",
+    "titulo": "Informe Asignado para Revisión",
+    "mensaje": "El presidente Dr. Juan Pérez García le ha asignado el informe \"Estudiante.pdf\" del estudiante José Gonzales. Debe revisar el informe utilizando su banco de observaciones.",
+    "leida": false,
+    "fecha_creacion": "2026-07-08T18:36:37.759Z",
+    "fecha_leida": null
+  }
+},
+{
+  "model": "notificaciones.notificacion",
+  "pk": 27,
+  "fields": {
+    "usuario": 2,
+    "informe": 7,
+    "tipo": "revision_completa",
+    "titulo": "Revisión de Docente Completada",
+    "mensaje": "El docente Ing. Carlos Ramírez ha completado la revisión del informe \"Estudiante.pdf\". Debe revisar el dictamen y aprobar o rechazar.",
+    "leida": false,
+    "fecha_creacion": "2026-07-08T18:37:39.059Z",
+    "fecha_leida": null
+  }
+},
+{
+  "model": "notificaciones.notificacion",
+  "pk": 28,
+  "fields": {
+    "usuario": 1,
+    "informe": 7,
+    "tipo": "aprobado_presidente",
+    "titulo": "Informe Aprobado por Presidente",
+    "mensaje": "El presidente Dr. Juan Pérez García ha aprobado el informe \"Estudiante.pdf\" del estudiante José Gonzales. Debe notificar al estudiante del resultado final.",
+    "leida": false,
+    "fecha_creacion": "2026-07-08T18:38:00.303Z",
+    "fecha_leida": null
+  }
+},
+{
+  "model": "notificaciones.notificacion",
+  "pk": 29,
+  "fields": {
+    "usuario": 4,
+    "informe": 7,
+    "tipo": "aprobado_final",
+    "titulo": "¡Informe APROBADO!",
+    "mensaje": "¡Felicitaciones! Su informe \"Estudiante.pdf\" ha sido APROBADO por la escuela de Ingeniería de Sistemas e Informática. El proceso de validación ha concluido exitosamente.",
+    "leida": false,
+    "fecha_creacion": "2026-07-08T18:38:19.109Z",
+    "fecha_leida": null
+  }
+},
+{
+  "model": "notificaciones.notificacion",
+  "pk": 30,
+  "fields": {
+    "usuario": 2,
+    "informe": 10,
+    "tipo": "asignado_presidente",
+    "titulo": "Informe Asignado a su Escuela",
+    "mensaje": "Se le ha asignado el informe \"Estudiante.pdf\" del estudiante José Gonzales (2020123456). Debe designar un docente revisor de su escuela.",
+    "leida": false,
+    "fecha_creacion": "2026-07-08T18:39:17.521Z",
+    "fecha_leida": null
+  }
+},
+{
+  "model": "notificaciones.notificacion",
+  "pk": 31,
+  "fields": {
+    "usuario": 3,
+    "informe": 10,
+    "tipo": "asignado_docente",
+    "titulo": "Informe Asignado para Revisión",
+    "mensaje": "El presidente Dr. Juan Pérez García le ha asignado el informe \"Estudiante.pdf\" del estudiante José Gonzales. Debe revisar el informe utilizando su banco de observaciones.",
+    "leida": false,
+    "fecha_creacion": "2026-07-08T18:39:27.197Z",
+    "fecha_leida": null
+  }
+},
+{
+  "model": "notificaciones.notificacion",
+  "pk": 32,
+  "fields": {
+    "usuario": 2,
+    "informe": 10,
+    "tipo": "revision_completa",
+    "titulo": "Revisión de Docente Completada",
+    "mensaje": "El docente Ing. Carlos Ramírez ha completado la revisión del informe \"Estudiante.pdf\". Debe revisar el dictamen y aprobar o rechazar.",
+    "leida": false,
+    "fecha_creacion": "2026-07-08T18:40:13.103Z",
+    "fecha_leida": null
+  }
+},
+{
+  "model": "notificaciones.notificacion",
+  "pk": 33,
+  "fields": {
+    "usuario": 1,
+    "informe": 10,
+    "tipo": "rechazado_presidente",
+    "titulo": "Informe Rechazado por Presidente",
+    "mensaje": "El presidente Dr. Juan Pérez García ha rechazado el informe \"Estudiante.pdf\" del estudiante José Gonzales. Debe notificar al estudiante para que realice las correcciones.",
+    "leida": false,
+    "fecha_creacion": "2026-07-08T18:50:56.621Z",
+    "fecha_leida": null
+  }
+},
+{
+  "model": "notificaciones.notificacion",
+  "pk": 34,
+  "fields": {
+    "usuario": 4,
+    "informe": 10,
+    "tipo": "rechazado_estudiante",
+    "titulo": "Informe Rechazado por Presidente - Requiere Correcciones",
+    "mensaje": "Su informe \"Estudiante.pdf\" fue revisado por el docente Ing. Carlos Ramírez, pero el Presidente de Escuela Dr. Juan Pérez García solicitó correcciones adicionales. Motivo del rechazo: se rechazo porque no cumplio con las normas. Por favor corrija su informe y envíelo nuevamente.",
+    "leida": false,
+    "fecha_creacion": "2026-07-08T18:54:24.641Z",
+    "fecha_leida": null
+  }
+},
+{
+  "model": "notificaciones.notificacion",
+  "pk": 35,
+  "fields": {
+    "usuario": 2,
+    "informe": 11,
+    "tipo": "asignado_presidente",
+    "titulo": "Informe Asignado a su Escuela",
+    "mensaje": "Se le ha asignado el informe \"Estudiante.pdf\" del estudiante José Gonzales (2020123456). Debe designar un docente revisor de su escuela.",
+    "leida": false,
+    "fecha_creacion": "2026-07-08T19:01:16.868Z",
+    "fecha_leida": null
+  }
+},
+{
+  "model": "notificaciones.notificacion",
+  "pk": 36,
+  "fields": {
+    "usuario": 3,
+    "informe": 11,
+    "tipo": "asignado_docente",
+    "titulo": "Informe Asignado para Revisión",
+    "mensaje": "El presidente Dr. Juan Pérez García le ha asignado el informe \"Estudiante.pdf\" del estudiante José Gonzales. Debe revisar el informe utilizando su banco de observaciones.",
+    "leida": false,
+    "fecha_creacion": "2026-07-08T19:01:27.299Z",
+    "fecha_leida": null
+  }
+},
+{
+  "model": "notificaciones.notificacion",
+  "pk": 37,
+  "fields": {
+    "usuario": 2,
+    "informe": 11,
+    "tipo": "revision_completa",
+    "titulo": "Revisión de Docente Completada",
+    "mensaje": "El docente Ing. Carlos Ramírez ha completado la revisión del informe \"Estudiante.pdf\". Debe revisar el dictamen y aprobar o rechazar.",
+    "leida": false,
+    "fecha_creacion": "2026-07-08T19:01:55.023Z",
+    "fecha_leida": null
+  }
+},
+{
+  "model": "notificaciones.notificacion",
+  "pk": 38,
+  "fields": {
+    "usuario": 1,
+    "informe": 11,
+    "tipo": "rechazado_presidente",
+    "titulo": "Informe Rechazado por Presidente",
+    "mensaje": "El presidente Dr. Juan Pérez García ha rechazado el informe \"Estudiante.pdf\" del estudiante José Gonzales. Debe notificar al estudiante para que realice las correcciones.",
+    "leida": false,
+    "fecha_creacion": "2026-07-08T19:02:18.667Z",
+    "fecha_leida": null
+  }
+},
+{
+  "model": "notificaciones.notificacion",
+  "pk": 39,
+  "fields": {
+    "usuario": 4,
+    "informe": 11,
+    "tipo": "rechazado_estudiante",
+    "titulo": "Informe Rechazado por Presidente - Requiere Correcciones",
+    "mensaje": "Su informe \"Estudiante.pdf\" fue revisado por el docente Ing. Carlos Ramírez, pero el Presidente de Escuela Dr. Juan Pérez García solicitó correcciones adicionales. Motivo del rechazo: esta rechazado tu informe. Por favor corrija su informe y envíelo nuevamente.",
+    "leida": false,
+    "fecha_creacion": "2026-07-08T19:02:38.440Z",
+    "fecha_leida": null
+  }
+}
+]

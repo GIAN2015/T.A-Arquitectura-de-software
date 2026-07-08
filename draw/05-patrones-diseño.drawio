@@ -1,0 +1,263 @@
+<mxfile host="app.diagrams.net" modified="2026-07-08T12:00:00.000Z" agent="5.0" version="24.0.0">
+  <diagram name="Patrones de Diseño" id="patrones-diseno">
+    <mxGraphModel dx="1422" dy="2400" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1800" pageHeight="2400" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+        
+        <!-- TÍTULO -->
+        <mxCell id="titulo" value="&lt;h1&gt;🧩 Patrones de Diseño Implementados&lt;/h1&gt;&lt;p&gt;Sistema de Validación de Informes UNTELS - 8 Patrones&lt;/p&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=16;" vertex="1" parent="1">
+          <mxGeometry x="600" y="20" width="600" height="60" as="geometry"/>
+        </mxCell>
+        
+        <!-- ==================== PATRÓN 1: REPOSITORY ==================== -->
+        <mxCell id="patron1-box" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;strokeWidth=3;" vertex="1" parent="1">
+          <mxGeometry x="80" y="120" width="800" height="350" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="patron1-titulo" value="&lt;b&gt;1️⃣ Repository Pattern&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#666666;strokeColor=#000000;fontColor=#ffffff;fontSize=15;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="80" y="120" width="800" height="40" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="patron1-desc" value="&lt;b&gt;Propósito:&lt;/b&gt; Abstrae el acceso a la capa de datos&lt;br&gt;&lt;b&gt;Beneficio:&lt;/b&gt; Independencia del ORM, queries optimizadas centralizadas&lt;br&gt;&lt;b&gt;Ubicación:&lt;/b&gt; apps/datos/repositorios/" style="text;html=1;strokeColor=none;fillColor=#fff2cc;align=left;verticalAlign=top;whiteSpace=wrap;rounded=1;fontSize=11;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="100" y="170" width="760" height="50" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="patron1-code" value="&lt;b&gt;class InformeRepository:&lt;/b&gt;&lt;br&gt;    &quot;&quot;&quot;Repository para Informes&quot;&quot;&quot;&lt;br&gt;    &lt;br&gt;    @staticmethod&lt;br&gt;    def obtener_por_id(informe_id):&lt;br&gt;        &quot;&quot;&quot;Obtiene informe con relaciones precargadas&quot;&quot;&quot;&lt;br&gt;        return Informe.objects.select_related(&lt;br&gt;            'usuario',&lt;br&gt;            'escuela',&lt;br&gt;            'docente_revisor',&lt;br&gt;            'presidente_asignado'&lt;br&gt;        ).get(id=informe_id)&lt;br&gt;    &lt;br&gt;    @staticmethod&lt;br&gt;    def obtener_con_observaciones(informe_id):&lt;br&gt;        &quot;&quot;&quot;Evita N+1 queries&quot;&quot;&quot;&lt;br&gt;        return Informe.objects.prefetch_related(&lt;br&gt;            'observaciones'&lt;br&gt;        ).get(id=informe_id)&lt;br&gt;&lt;br&gt;&lt;b&gt;# Uso en Servicio:&lt;/b&gt;&lt;br&gt;informe = InformeRepository.obtener_con_observaciones(id)&lt;br&gt;# ✅ Una sola query optimizada" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=1;fontSize=10;fontFamily=Courier New;fillColor=#f5f5f5;strokeColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="100" y="230" width="760" height="230" as="geometry"/>
+        </mxCell>
+        
+        <!-- ==================== PATRÓN 2: SERVICE LAYER ==================== -->
+        <mxCell id="patron2-box" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;strokeWidth=3;" vertex="1" parent="1">
+          <mxGeometry x="920" y="120" width="800" height="350" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="patron2-titulo" value="&lt;b&gt;2️⃣ Service Layer Pattern&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d79b00;strokeColor=#000000;fontColor=#ffffff;fontSize=15;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="920" y="120" width="800" height="40" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="patron2-desc" value="&lt;b&gt;Propósito:&lt;/b&gt; Encapsula toda la lógica de negocio&lt;br&gt;&lt;b&gt;Beneficio:&lt;/b&gt; Reutilizable, testeable sin framework&lt;br&gt;&lt;b&gt;Ubicación:&lt;/b&gt; apps/negocio/servicios/" style="text;html=1;strokeColor=none;fillColor=#fff2cc;align=left;verticalAlign=top;whiteSpace=wrap;rounded=1;fontSize=11;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="940" y="170" width="760" height="50" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="patron2-code" value="&lt;b&gt;class DocenteService:&lt;/b&gt;&lt;br&gt;    &quot;&quot;&quot;Toda la lógica de negocio de docentes&quot;&quot;&quot;&lt;br&gt;    &lt;br&gt;    @staticmethod&lt;br&gt;    def validar_informe_con_ia(informe_id, docente):&lt;br&gt;        &quot;&quot;&quot;Valida informe con IA&lt;br&gt;        &lt;br&gt;        Returns:&lt;br&gt;            tuple: (success: bool, data: any, error: str)&lt;br&gt;        &quot;&quot;&quot;&lt;br&gt;        try:&lt;br&gt;            # 1. Validar permisos&lt;br&gt;            informe = Informe.objects.get(id=informe_id, docente=docente)&lt;br&gt;            &lt;br&gt;            # 2. Validar estado de negocio&lt;br&gt;            if informe.estado != 'pendiente_docente':&lt;br&gt;                return False, None, &quot;Estado inválido&quot;&lt;br&gt;            &lt;br&gt;            # 3. Llamar IA&lt;br&gt;            observaciones = validar_con_groq(informe, banco)&lt;br&gt;            &lt;br&gt;            # 4. Persistir&lt;br&gt;            for obs in observaciones:&lt;br&gt;                ObservacionGenerada.objects.create(...)&lt;br&gt;            &lt;br&gt;            return True, observaciones, None&lt;br&gt;        except Exception as e:&lt;br&gt;            return False, None, str(e)&lt;br&gt;&lt;br&gt;&lt;b&gt;# ✅ Patrón de respuesta estándar (success, data, error)&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=1;fontSize=9;fontFamily=Courier New;fillColor=#ffe6cc;strokeColor=#d79b00;" vertex="1" parent="1">
+          <mxGeometry x="940" y="230" width="760" height="230" as="geometry"/>
+        </mxCell>
+        
+        <!-- ==================== PATRÓN 3: STATE MACHINE ==================== -->
+        <mxCell id="patron3-box" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;strokeWidth=3;" vertex="1" parent="1">
+          <mxGeometry x="80" y="510" width="800" height="420" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="patron3-titulo" value="&lt;b&gt;3️⃣ State Machine Pattern&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d6b656;strokeColor=#000000;fontColor=#ffffff;fontSize=15;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="80" y="510" width="800" height="40" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="patron3-desc" value="&lt;b&gt;Propósito:&lt;/b&gt; Gestiona transiciones de estado del informe (11 estados)&lt;br&gt;&lt;b&gt;Beneficio:&lt;/b&gt; Imposible hacer transiciones inválidas, flujo documentado&lt;br&gt;&lt;b&gt;Ubicación:&lt;/b&gt; apps/informes/state.py" style="text;html=1;strokeColor=none;fillColor=#fff2cc;align=left;verticalAlign=top;whiteSpace=wrap;rounded=1;fontSize=11;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="100" y="560" width="760" height="50" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="patron3-code" value="&lt;b&gt;class BaseInformeState:&lt;/b&gt;&lt;br&gt;    value = None&lt;br&gt;    allowed_transitions = set()&lt;br&gt;    &lt;br&gt;    def can_transition_to(self, next_state):&lt;br&gt;        return next_state in self.allowed_transitions&lt;br&gt;    &lt;br&gt;    def transition(self, informe, next_state):&lt;br&gt;        if not self.can_transition_to(next_state):&lt;br&gt;            raise InformeStateError(&lt;br&gt;                f&quot;No se puede cambiar de '{self.value}' a '{next_state}'&quot;&lt;br&gt;            )&lt;br&gt;        informe.estado = next_state&lt;br&gt;&lt;br&gt;&lt;b&gt;class PendienteDocenteState(BaseInformeState):&lt;/b&gt;&lt;br&gt;    value = 'pendiente_docente'&lt;br&gt;    allowed_transitions = {'validando_ia'}&lt;br&gt;&lt;br&gt;&lt;b&gt;class ValidandoIAState(BaseInformeState):&lt;/b&gt;&lt;br&gt;    value = 'validando_ia'&lt;br&gt;    allowed_transitions = {'revision_docente'}&lt;br&gt;&lt;br&gt;&lt;b&gt;# Uso en modelo:&lt;/b&gt;&lt;br&gt;class Informe(models.Model):&lt;br&gt;    def transition_to(self, next_state):&lt;br&gt;        state = get_state(self.estado)&lt;br&gt;        state.transition(self, next_state)  # ✅ Valida antes de cambiar&lt;br&gt;&lt;br&gt;&lt;b&gt;# ❌ Esto lanzará error:&lt;/b&gt;&lt;br&gt;informe.transition_to('aprobado_final')  # De pendiente_docente → Error&lt;br&gt;&lt;br&gt;&lt;b&gt;# ✅ Esto funciona:&lt;/b&gt;&lt;br&gt;informe.transition_to('validando_ia')  # Transición permitida" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=1;fontSize=9;fontFamily=Courier New;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="100" y="620" width="760" height="300" as="geometry"/>
+        </mxCell>
+        
+        <!-- ==================== PATRÓN 4: STRATEGY ==================== -->
+        <mxCell id="patron4-box" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;strokeWidth=3;" vertex="1" parent="1">
+          <mxGeometry x="920" y="510" width="800" height="420" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="patron4-titulo" value="&lt;b&gt;4️⃣ Strategy Pattern&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#b85450;strokeColor=#000000;fontColor=#ffffff;fontSize=15;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="920" y="510" width="800" height="40" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="patron4-desc" value="&lt;b&gt;Propósito:&lt;/b&gt; Selección dinámica de API de IA&lt;br&gt;&lt;b&gt;Beneficio:&lt;/b&gt; Cambiar de API sin modificar código, fallback automático&lt;br&gt;&lt;b&gt;Ubicación:&lt;/b&gt; apps/observaciones/services.py" style="text;html=1;strokeColor=none;fillColor=#fff2cc;align=left;verticalAlign=top;whiteSpace=wrap;rounded=1;fontSize=11;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="940" y="560" width="760" height="50" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="patron4-code" value="&lt;b&gt;def validar_con_groq(informe, banco):&lt;/b&gt;&lt;br&gt;    &quot;&quot;&quot;Strategy: Selecciona la API según la key&quot;&quot;&quot;&lt;br&gt;    &lt;br&gt;    GROQ_API_KEY = os.getenv('GROQ_API_KEY', '')&lt;br&gt;    &lt;br&gt;    # ESTRATEGIA 1: xAI Grok&lt;br&gt;    if GROQ_API_KEY.startswith('xai-'):&lt;br&gt;        return _validar_con_xai(informe, banco)&lt;br&gt;    &lt;br&gt;    # ESTRATEGIA 2: Groq (LLaMA)&lt;br&gt;    elif GROQ_API_KEY.startswith('gsk_'):&lt;br&gt;        return _validar_con_groq_api(informe, banco)&lt;br&gt;    &lt;br&gt;    # ESTRATEGIA 3: Fallback local&lt;br&gt;    else:&lt;br&gt;        return _validacion_local(informe, banco)&lt;br&gt;&lt;br&gt;&lt;b&gt;def _validar_con_xai(informe, banco):&lt;/b&gt;&lt;br&gt;    &quot;&quot;&quot;Estrategia xAI Grok&quot;&quot;&quot;&lt;br&gt;    url = 'https://api.x.ai/v1/chat/completions'&lt;br&gt;    modelo = 'grok-beta'&lt;br&gt;    &lt;br&gt;    try:&lt;br&gt;        response = requests.post(url, json={...})&lt;br&gt;        &lt;br&gt;        if response.status_code == 400:  # Sin créditos&lt;br&gt;            return _validacion_local(informe, banco)  # Fallback&lt;br&gt;        &lt;br&gt;        return parsear_respuesta_ia(response.json())&lt;br&gt;    except:&lt;br&gt;        return _validacion_local(informe, banco)  # Fallback&lt;br&gt;&lt;br&gt;&lt;b&gt;def _validacion_local(informe, banco):&lt;/b&gt;&lt;br&gt;    &quot;&quot;&quot;Fallback sin IA&quot;&quot;&quot;&lt;br&gt;    return [{'seccion': 'Sistema', 'observacion': 'Sin IA'}]&lt;br&gt;&lt;br&gt;&lt;b&gt;# ✅ Cambiar de API: solo cambiar el .env&lt;/b&gt;&lt;br&gt;&lt;b&gt;# ✅ Fallback automático si falla&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=1;fontSize=9;fontFamily=Courier New;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="1">
+          <mxGeometry x="940" y="620" width="760" height="300" as="geometry"/>
+        </mxCell>
+        
+        <!-- ==================== PATRÓN 5: DECORATOR ==================== -->
+        <mxCell id="patron5-box" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;strokeWidth=3;" vertex="1" parent="1">
+          <mxGeometry x="80" y="970" width="800" height="380" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="patron5-titulo" value="&lt;b&gt;5️⃣ Decorator Pattern&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#6c8ebf;strokeColor=#000000;fontColor=#ffffff;fontSize=15;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="80" y="970" width="800" height="40" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="patron5-desc" value="&lt;b&gt;Propósito:&lt;/b&gt; Añadir autorización a vistas&lt;br&gt;&lt;b&gt;Beneficio:&lt;/b&gt; Declarativo, reutilizable, DRY&lt;br&gt;&lt;b&gt;Ubicación:&lt;/b&gt; apps/core/decorators.py" style="text;html=1;strokeColor=none;fillColor=#fff2cc;align=left;verticalAlign=top;whiteSpace=wrap;rounded=1;fontSize=11;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="100" y="1020" width="760" height="50" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="patron5-code" value="&lt;b&gt;def requiere_rol(*roles_permitidos):&lt;/b&gt;&lt;br&gt;    &quot;&quot;&quot;Decorator para autorización por rol&quot;&quot;&quot;&lt;br&gt;    &lt;br&gt;    def decorator(view_func):&lt;br&gt;        @wraps(view_func)&lt;br&gt;        def wrapper(request, *args, **kwargs):&lt;br&gt;            # FUNCIONALIDAD AÑADIDA: Validar sesión&lt;br&gt;            if 'usuario_id' not in request.session:&lt;br&gt;                messages.error(request, 'Debe iniciar sesión')&lt;br&gt;                return redirect('login')&lt;br&gt;            &lt;br&gt;            # FUNCIONALIDAD AÑADIDA: Validar rol&lt;br&gt;            tipo_usuario = request.session.get('usuario_tipo')&lt;br&gt;            if tipo_usuario not in roles_permitidos:&lt;br&gt;                messages.error(request, 'No tiene permisos')&lt;br&gt;                return redirect('login')&lt;br&gt;            &lt;br&gt;            # Ejecutar vista original&lt;br&gt;            return view_func(request, *args, **kwargs)&lt;br&gt;        &lt;br&gt;        return wrapper&lt;br&gt;    return decorator&lt;br&gt;&lt;br&gt;&lt;b&gt;# Uso en vistas:&lt;/b&gt;&lt;br&gt;@requiere_rol('docente')&lt;br&gt;def panel_docente_view(request):&lt;br&gt;    # ✅ Solo docentes pueden acceder&lt;br&gt;    pass&lt;br&gt;&lt;br&gt;@requiere_rol('presidente', 'secretaria')&lt;br&gt;def vista_compartida(request):&lt;br&gt;    # ✅ Presidentes y secretarias pueden acceder&lt;br&gt;    pass" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=1;fontSize=9;fontFamily=Courier New;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="100" y="1080" width="760" height="260" as="geometry"/>
+        </mxCell>
+        
+        <!-- ==================== PATRÓN 6: OBSERVER ==================== -->
+        <mxCell id="patron6-box" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;strokeWidth=3;" vertex="1" parent="1">
+          <mxGeometry x="920" y="970" width="800" height="380" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="patron6-titulo" value="&lt;b&gt;6️⃣ Observer Pattern&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d6b656;strokeColor=#000000;fontColor=#ffffff;fontSize=15;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="920" y="970" width="800" height="40" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="patron6-desc" value="&lt;b&gt;Propósito:&lt;/b&gt; Sistema de notificaciones basado en eventos&lt;br&gt;&lt;b&gt;Beneficio:&lt;/b&gt; Desacoplamiento, extensible&lt;br&gt;&lt;b&gt;Ubicación:&lt;/b&gt; apps/notificaciones/services.py" style="text;html=1;strokeColor=none;fillColor=#fff2cc;align=left;verticalAlign=top;whiteSpace=wrap;rounded=1;fontSize=11;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="940" y="1020" width="760" height="50" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="patron6-code" value="&lt;b&gt;class NotificacionService:&lt;/b&gt;&lt;br&gt;    &quot;&quot;&quot;Observer: Observa eventos del sistema&quot;&quot;&quot;&lt;br&gt;    &lt;br&gt;    @staticmethod&lt;br&gt;    def crear_notificacion(usuario, tipo, titulo, mensaje, informe=None):&lt;br&gt;        &quot;&quot;&quot;Método base para crear notificaciones&quot;&quot;&quot;&lt;br&gt;        return Notificacion.objects.create(&lt;br&gt;            usuario=usuario,&lt;br&gt;            tipo=tipo,&lt;br&gt;            titulo=titulo,&lt;br&gt;            mensaje=mensaje,&lt;br&gt;            informe=informe,&lt;br&gt;            leida=False&lt;br&gt;        )&lt;br&gt;    &lt;br&gt;    @staticmethod&lt;br&gt;    def notificar_informe_asignado(informe, docente):&lt;br&gt;        &quot;&quot;&quot;OBSERVER: Reacciona al evento 'informe asignado'&quot;&quot;&quot;&lt;br&gt;        return NotificacionService.crear_notificacion(&lt;br&gt;            usuario=docente,&lt;br&gt;            tipo='asignacion_docente',&lt;br&gt;            titulo='Nuevo informe asignado',&lt;br&gt;            mensaje=f'Informe de {informe.usuario.nombre}',&lt;br&gt;            informe=informe&lt;br&gt;        )&lt;br&gt;    &lt;br&gt;    @staticmethod&lt;br&gt;    def notificar_dictamen_enviado(informe, presidente):&lt;br&gt;        &quot;&quot;&quot;OBSERVER: Reacciona al evento 'dictamen enviado'&quot;&quot;&quot;&lt;br&gt;        return NotificacionService.crear_notificacion(&lt;br&gt;            usuario=presidente,&lt;br&gt;            tipo='dictamen_pendiente',&lt;br&gt;            titulo='Dictamen pendiente',&lt;br&gt;            mensaje=f'Docente envió dictamen',&lt;br&gt;            informe=informe&lt;br&gt;        )&lt;br&gt;&lt;br&gt;&lt;b&gt;# ✅ Fácil agregar nuevos eventos sin modificar código existente&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=1;fontSize=9;fontFamily=Courier New;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="940" y="1080" width="760" height="260" as="geometry"/>
+        </mxCell>
+        
+        <!-- ==================== PATRÓN 7: FACADE ==================== -->
+        <mxCell id="patron7-box" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;strokeWidth=3;" vertex="1" parent="1">
+          <mxGeometry x="80" y="1390" width="800" height="320" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="patron7-titulo" value="&lt;b&gt;7️⃣ Facade Pattern&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#9673a6;strokeColor=#000000;fontColor=#ffffff;fontSize=15;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="80" y="1390" width="800" height="40" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="patron7-desc" value="&lt;b&gt;Propósito:&lt;/b&gt; Simplificar operaciones complejas&lt;br&gt;&lt;b&gt;Beneficio:&lt;/b&gt; API fácil de usar, oculta complejidad&lt;br&gt;&lt;b&gt;Ubicación:&lt;/b&gt; Servicios de negocio" style="text;html=1;strokeColor=none;fillColor=#fff2cc;align=left;verticalAlign=top;whiteSpace=wrap;rounded=1;fontSize=11;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="100" y="1440" width="760" height="50" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="patron7-code" value="&lt;b&gt;class DocenteService:&lt;/b&gt;&lt;br&gt;    &quot;&quot;&quot;FACADE: Simplifica operaciones complejas&quot;&quot;&quot;&lt;br&gt;    &lt;br&gt;    @staticmethod&lt;br&gt;    def validar_informe_con_ia(informe_id, docente):&lt;br&gt;        &quot;&quot;&quot;&lt;br&gt;        FACADE: Oculta la complejidad de:&lt;br&gt;        1. Obtener informe (Repository)&lt;br&gt;        2. Validar estado (State Machine)&lt;br&gt;        3. Obtener banco (Repository)&lt;br&gt;        4. Llamar IA (External Service)&lt;br&gt;        5. Persistir observaciones (Repository)&lt;br&gt;        6. Actualizar estado (State Machine)&lt;br&gt;        7. Notificar (Observer)&lt;br&gt;        &lt;br&gt;        El usuario solo llama un método simple ✅&lt;br&gt;        &quot;&quot;&quot;&lt;br&gt;        # Internamente coordina TODO&lt;br&gt;        informe = InformeRepository.obtener_por_id(informe_id)&lt;br&gt;        banco = BancoRepository.obtener_activo(docente)&lt;br&gt;        observaciones = validar_con_groq(informe, banco)&lt;br&gt;        # ... más lógica compleja&lt;br&gt;        return True, observaciones, None&lt;br&gt;&lt;br&gt;&lt;b&gt;# Uso simple desde vista:&lt;/b&gt;&lt;br&gt;success, obs, error = DocenteService.validar_informe_con_ia(id, docente)&lt;br&gt;&lt;b&gt;# ✅ Una llamada = 7 operaciones complejas coordinadas&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=1;fontSize=9;fontFamily=Courier New;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="1">
+          <mxGeometry x="100" y="1500" width="760" height="200" as="geometry"/>
+        </mxCell>
+        
+        <!-- ==================== PATRÓN 8: TEMPLATE METHOD ==================== -->
+        <mxCell id="patron8-box" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;strokeWidth=3;" vertex="1" parent="1">
+          <mxGeometry x="920" y="1390" width="800" height="320" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="patron8-titulo" value="&lt;b&gt;8️⃣ Template Method Pattern&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#82b366;strokeColor=#000000;fontColor=#ffffff;fontSize=15;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="920" y="1390" width="800" height="40" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="patron8-desc" value="&lt;b&gt;Propósito:&lt;/b&gt; Algoritmo de formateo de dictámenes&lt;br&gt;&lt;b&gt;Beneficio:&lt;/b&gt; Extensible, reutilizable&lt;br&gt;&lt;b&gt;Ubicación:&lt;/b&gt; apps/core/templatetags/dictamen_filters.py" style="text;html=1;strokeColor=none;fillColor=#fff2cc;align=left;verticalAlign=top;whiteSpace=wrap;rounded=1;fontSize=11;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="940" y="1440" width="760" height="50" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="patron8-code" value="&lt;b&gt;@register.filter(name='formatear_dictamen')&lt;/b&gt;&lt;br&gt;def formatear_dictamen(texto):&lt;br&gt;    &quot;&quot;&quot;Template Method: Algoritmo de parseo&quot;&quot;&quot;&lt;br&gt;    &lt;br&gt;    html_parts = []&lt;br&gt;    lines = texto.split('\n')&lt;br&gt;    &lt;br&gt;    for line in lines:&lt;br&gt;        # PASO 1: Detectar tipo de línea&lt;br&gt;        tipo = _detectar_tipo_linea(line)&lt;br&gt;        &lt;br&gt;        # PASO 2: Aplicar formato según tipo&lt;br&gt;        if tipo == 'encabezado':&lt;br&gt;            html = _formatear_encabezado(line)&lt;br&gt;        elif tipo == 'observacion':&lt;br&gt;            html = _formatear_observacion(line)&lt;br&gt;        else:&lt;br&gt;            html = _formatear_parrafo(line)&lt;br&gt;        &lt;br&gt;        html_parts.append(html)&lt;br&gt;    &lt;br&gt;    return mark_safe(''.join(html_parts))&lt;br&gt;&lt;br&gt;&lt;b&gt;def _detectar_tipo_linea(line):&lt;/b&gt;&lt;br&gt;    &quot;&quot;&quot;Paso customizable&quot;&quot;&quot;&lt;br&gt;    if line.startswith('🔴'):&lt;br&gt;        return 'observacion'&lt;br&gt;    # ...&lt;br&gt;&lt;br&gt;&lt;b&gt;def _formatear_observacion(line):&lt;/b&gt;&lt;br&gt;    &quot;&quot;&quot;Paso customizable&quot;&quot;&quot;&lt;br&gt;    return f'&lt;div class=&quot;card border-danger&quot;&gt;{line}&lt;/div&gt;'&lt;br&gt;&lt;br&gt;&lt;b&gt;# ✅ Fácil agregar nuevos tipos de formateo&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=1;fontSize=9;fontFamily=Courier New;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="940" y="1500" width="760" height="200" as="geometry"/>
+        </mxCell>
+        
+        <!-- ==================== RESUMEN ==================== -->
+        <mxCell id="resumen-titulo" value="&lt;b&gt;📊 RESUMEN DE PATRONES&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=15;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="80" y="1750" width="1640" height="40" as="geometry"/>
+        </mxCell>
+        
+        <!-- Tabla Resumen -->
+        <mxCell id="tabla-header-patron" value="Patrón" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#666666;strokeColor=#000000;fontColor=#ffffff;fontSize=12;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="80" y="1800" width="280" height="35" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="tabla-header-ubicacion" value="Ubicación" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#666666;strokeColor=#000000;fontColor=#ffffff;fontSize=12;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="360" y="1800" width="500" height="35" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="tabla-header-beneficio" value="Beneficio Principal" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#666666;strokeColor=#000000;fontColor=#ffffff;fontSize=12;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="860" y="1800" width="860" height="35" as="geometry"/>
+        </mxCell>
+        
+        <!-- Fila 1 -->
+        <mxCell id="t1-p" value="Repository" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=11;align=left;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="80" y="1835" width="280" height="30" as="geometry"/>
+        </mxCell>
+        <mxCell id="t1-u" value="apps/datos/repositorios/" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=10;align=left;fontFamily=Courier New;" vertex="1" parent="1">
+          <mxGeometry x="360" y="1835" width="500" height="30" as="geometry"/>
+        </mxCell>
+        <mxCell id="t1-b" value="Independencia de ORM, queries optimizadas" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=11;align=left;" vertex="1" parent="1">
+          <mxGeometry x="860" y="1835" width="860" height="30" as="geometry"/>
+        </mxCell>
+        
+        <!-- Fila 2 -->
+        <mxCell id="t2-p" value="Service Layer" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=11;align=left;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="80" y="1865" width="280" height="30" as="geometry"/>
+        </mxCell>
+        <mxCell id="t2-u" value="apps/negocio/servicios/" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=10;align=left;fontFamily=Courier New;" vertex="1" parent="1">
+          <mxGeometry x="360" y="1865" width="500" height="30" as="geometry"/>
+        </mxCell>
+        <mxCell id="t2-b" value="Reutilizable, testeable sin framework" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=11;align=left;" vertex="1" parent="1">
+          <mxGeometry x="860" y="1865" width="860" height="30" as="geometry"/>
+        </mxCell>
+        
+        <!-- Fila 3 -->
+        <mxCell id="t3-p" value="State Machine" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;align=left;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="80" y="1895" width="280" height="30" as="geometry"/>
+        </mxCell>
+        <mxCell id="t3-u" value="apps/informes/state.py" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=10;align=left;fontFamily=Courier New;" vertex="1" parent="1">
+          <mxGeometry x="360" y="1895" width="500" height="30" as="geometry"/>
+        </mxCell>
+        <mxCell id="t3-b" value="Seguridad en transiciones, flujo documentado" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;align=left;" vertex="1" parent="1">
+          <mxGeometry x="860" y="1895" width="860" height="30" as="geometry"/>
+        </mxCell>
+        
+        <!-- Fila 4 -->
+        <mxCell id="t4-p" value="Strategy" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11;align=left;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="80" y="1925" width="280" height="30" as="geometry"/>
+        </mxCell>
+        <mxCell id="t4-u" value="apps/observaciones/services.py" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=10;align=left;fontFamily=Courier New;" vertex="1" parent="1">
+          <mxGeometry x="360" y="1925" width="500" height="30" as="geometry"/>
+        </mxCell>
+        <mxCell id="t4-b" value="Flexibilidad para cambiar APIs, fallback automático" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11;align=left;" vertex="1" parent="1">
+          <mxGeometry x="860" y="1925" width="860" height="30" as="geometry"/>
+        </mxCell>
+        
+        <!-- Fila 5 -->
+        <mxCell id="t5-p" value="Decorator" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;align=left;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="80" y="1955" width="280" height="30" as="geometry"/>
+        </mxCell>
+        <mxCell id="t5-u" value="apps/core/decorators.py" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=10;align=left;fontFamily=Courier New;" vertex="1" parent="1">
+          <mxGeometry x="360" y="1955" width="500" height="30" as="geometry"/>
+        </mxCell>
+        <mxCell id="t5-b" value="Declarativo, reutilizable, DRY" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;align=left;" vertex="1" parent="1">
+          <mxGeometry x="860" y="1955" width="860" height="30" as="geometry"/>
+        </mxCell>
+        
+        <!-- Fila 6 -->
+        <mxCell id="t6-p" value="Observer" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;align=left;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="80" y="1985" width="280" height="30" as="geometry"/>
+        </mxCell>
+        <mxCell id="t6-u" value="apps/notificaciones/services.py" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=10;align=left;fontFamily=Courier New;" vertex="1" parent="1">
+          <mxGeometry x="360" y="1985" width="500" height="30" as="geometry"/>
+        </mxCell>
+        <mxCell id="t6-b" value="Desacoplamiento, extensible" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;align=left;" vertex="1" parent="1">
+          <mxGeometry x="860" y="1985" width="860" height="30" as="geometry"/>
+        </mxCell>
+        
+        <!-- Fila 7 -->
+        <mxCell id="t7-p" value="Facade" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=11;align=left;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="80" y="2015" width="280" height="30" as="geometry"/>
+        </mxCell>
+        <mxCell id="t7-u" value="apps/negocio/servicios/" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=10;align=left;fontFamily=Courier New;" vertex="1" parent="1">
+          <mxGeometry x="360" y="2015" width="500" height="30" as="geometry"/>
+        </mxCell>
+        <mxCell id="t7-b" value="Simplifica complejidad, API fácil de usar" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=11;align=left;" vertex="1" parent="1">
+          <mxGeometry x="860" y="2015" width="860" height="30" as="geometry"/>
+        </mxCell>
+        
+        <!-- Fila 8 -->
+        <mxCell id="t8-p" value="Template Method" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;align=left;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="80" y="2045" width="280" height="30" as="geometry"/>
+        </mxCell>
+        <mxCell id="t8-u" value="apps/core/templatetags/dictamen_filters.py" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=10;align=left;fontFamily=Courier New;" vertex="1" parent="1">
+          <mxGeometry x="360" y="2045" width="500" height="30" as="geometry"/>
+        </mxCell>
+        <mxCell id="t8-b" value="Extensibilidad, reutilización de algoritmo" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;align=left;" vertex="1" parent="1">
+          <mxGeometry x="860" y="2045" width="860" height="30" as="geometry"/>
+        </mxCell>
+        
+        <!-- CONCLUSIÓN -->
+        <mxCell id="conclusion" value="&lt;b&gt;✅ CONCLUSIÓN&lt;/b&gt;&lt;br&gt;&lt;br&gt;El sistema implementa 8 patrones de diseño de forma rigurosa:&lt;br&gt;&lt;br&gt;• &lt;b&gt;Estructurales&lt;/b&gt;: Repository, Facade, Decorator&lt;br&gt;• &lt;b&gt;Comportamentales&lt;/b&gt;: State Machine, Strategy, Template Method, Observer, Service Layer&lt;br&gt;&lt;br&gt;Cada patrón tiene un propósito claro y beneficios medibles en mantenibilidad, extensibilidad y testabilidad." style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;align=left;" vertex="1" parent="1">
+          <mxGeometry x="80" y="2110" width="1640" height="150" as="geometry"/>
+        </mxCell>
+        
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

@@ -1,0 +1,379 @@
+<mxfile host="app.diagrams.net" modified="2026-07-08T12:00:00.000Z" agent="5.0" version="24.0.0">
+  <diagram name="Secuencia Validación IA" id="secuencia-ia">
+    <mxGraphModel dx="1422" dy="1600" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1400" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+        
+        <!-- TÍTULO -->
+        <mxCell id="titulo" value="&lt;h1&gt;Diagrama de Secuencia: Validación con IA&lt;/h1&gt;&lt;p&gt;Flujo completo del proceso de validación automática&lt;/p&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=16;" vertex="1" parent="1">
+          <mxGeometry x="400" y="20" width="800" height="60" as="geometry"/>
+        </mxCell>
+        
+        <!-- ACTORES / COMPONENTES -->
+        <mxCell id="docente-actor" value="👨‍🏫 Docente" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=13;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="80" y="120" width="150" height="50" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="vista-comp" value="Vista&lt;br&gt;docente_views.py" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="280" y="120" width="150" height="50" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="servicio-comp" value="Servicio&lt;br&gt;DocenteService" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=12;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="480" y="120" width="150" height="50" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="state-comp" value="State Machine&lt;br&gt;InformeState" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="680" y="120" width="150" height="50" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="ia-comp" value="IA Service&lt;br&gt;validar_con_groq" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=12;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="880" y="120" width="150" height="50" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="api-comp" value="API Externa&lt;br&gt;xAI / Groq" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=12;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="1080" y="120" width="150" height="50" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="bd-comp" value="Base de Datos&lt;br&gt;Django ORM" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="1280" y="120" width="150" height="50" as="geometry"/>
+        </mxCell>
+        
+        <!-- LÍNEAS DE VIDA -->
+        <mxCell id="line-docente" value="" style="endArrow=none;dashed=1;html=1;strokeWidth=2;strokeColor=#9673a6;" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="155" y="1320" as="sourcePoint"/>
+            <mxPoint x="155" y="190" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        
+        <mxCell id="line-vista" value="" style="endArrow=none;dashed=1;html=1;strokeWidth=2;strokeColor=#6c8ebf;" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="355" y="1320" as="sourcePoint"/>
+            <mxPoint x="355" y="190" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        
+        <mxCell id="line-servicio" value="" style="endArrow=none;dashed=1;html=1;strokeWidth=2;strokeColor=#d79b00;" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="555" y="1320" as="sourcePoint"/>
+            <mxPoint x="555" y="190" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        
+        <mxCell id="line-state" value="" style="endArrow=none;dashed=1;html=1;strokeWidth=2;strokeColor=#d6b656;" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="755" y="1320" as="sourcePoint"/>
+            <mxPoint x="755" y="190" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        
+        <mxCell id="line-ia" value="" style="endArrow=none;dashed=1;html=1;strokeWidth=2;strokeColor=#b85450;" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="955" y="1320" as="sourcePoint"/>
+            <mxPoint x="955" y="190" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        
+        <mxCell id="line-api" value="" style="endArrow=none;dashed=1;html=1;strokeWidth=2;strokeColor=#666666;" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="1155" y="1320" as="sourcePoint"/>
+            <mxPoint x="1155" y="190" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        
+        <mxCell id="line-bd" value="" style="endArrow=none;dashed=1;html=1;strokeWidth=2;strokeColor=#82b366;" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="1355" y="1320" as="sourcePoint"/>
+            <mxPoint x="1355" y="190" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        
+        <!-- SECUENCIA DE MENSAJES -->
+        
+        <!-- 1. Click Validar IA -->
+        <mxCell id="msg1" value="" style="endArrow=classic;html=1;strokeWidth=2;strokeColor=#9673a6;" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="155" y="220" as="sourcePoint"/>
+            <mxPoint x="355" y="220" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="label1" value="1. Click &quot;Validar con IA&quot;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=11;" vertex="1" connectable="0" parent="msg1">
+          <mxGeometry x="-0.2" y="-2" relative="1" as="geometry">
+            <mxPoint y="-10" as="offset"/>
+          </mxGeometry>
+        </mxCell>
+        
+        <!-- 2. validar_informe_con_ia() -->
+        <mxCell id="msg2" value="" style="endArrow=classic;html=1;strokeWidth=2;strokeColor=#6c8ebf;" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="355" y="260" as="sourcePoint"/>
+            <mxPoint x="555" y="260" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="label2" value="2. validar_informe_con_ia(informe_id, docente)" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=11;fontFamily=Courier New;" vertex="1" connectable="0" parent="msg2">
+          <mxGeometry x="-0.2" y="-2" relative="1" as="geometry">
+            <mxPoint x="20" y="-10" as="offset"/>
+          </mxGeometry>
+        </mxCell>
+        
+        <!-- 3. Obtener informe -->
+        <mxCell id="msg3" value="" style="endArrow=classic;html=1;strokeWidth=2;strokeColor=#d79b00;" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="555" y="300" as="sourcePoint"/>
+            <mxPoint x="1355" y="300" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="label3" value="3. Informe.objects.get(id=informe_id, docente=docente)" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=10;fontFamily=Courier New;" vertex="1" connectable="0" parent="msg3">
+          <mxGeometry x="-0.2" y="-2" relative="1" as="geometry">
+            <mxPoint x="50" y="-10" as="offset"/>
+          </mxGeometry>
+        </mxCell>
+        
+        <!-- 4. Return informe -->
+        <mxCell id="msg4" value="" style="endArrow=classic;html=1;strokeWidth=2;strokeColor=#82b366;dashed=1;" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="1355" y="330" as="sourcePoint"/>
+            <mxPoint x="555" y="330" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="label4" value="informe" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=10;" vertex="1" connectable="0" parent="msg4">
+          <mxGeometry x="-0.2" y="-2" relative="1" as="geometry">
+            <mxPoint y="-10" as="offset"/>
+          </mxGeometry>
+        </mxCell>
+        
+        <!-- 5. Validar estado -->
+        <mxCell id="box-validacion" value="if estado not in [pendiente_docente, rechazado_presidente]:&lt;br&gt;    return False, None, &quot;Estado inválido&quot;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=10;fontFamily=Courier New;align=left;" vertex="1" parent="1">
+          <mxGeometry x="450" y="360" width="420" height="40" as="geometry"/>
+        </mxCell>
+        
+        <!-- 6. Cambiar a validando_ia -->
+        <mxCell id="msg6" value="" style="endArrow=classic;html=1;strokeWidth=2;strokeColor=#d79b00;" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="555" y="430" as="sourcePoint"/>
+            <mxPoint x="755" y="430" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="label6" value="6. informe.transition_to('validando_ia')" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=10;fontFamily=Courier New;" vertex="1" connectable="0" parent="msg6">
+          <mxGeometry x="-0.2" y="-2" relative="1" as="geometry">
+            <mxPoint x="20" y="-10" as="offset"/>
+          </mxGeometry>
+        </mxCell>
+        
+        <!-- 7. Validar transición -->
+        <mxCell id="box-state" value="✅ Valida: pendiente_docente → validando_ia" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=10;fontStyle=1;align=center;" vertex="1" parent="1">
+          <mxGeometry x="680" y="460" width="280" height="30" as="geometry"/>
+        </mxCell>
+        
+        <!-- 8. Save estado -->
+        <mxCell id="msg8" value="" style="endArrow=classic;html=1;strokeWidth=2;strokeColor=#d6b656;" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="755" y="510" as="sourcePoint"/>
+            <mxPoint x="1355" y="510" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="label8" value="8. UPDATE informes SET estado='validando_ia'" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=10;fontFamily=Courier New;" vertex="1" connectable="0" parent="msg8">
+          <mxGeometry x="-0.2" y="-2" relative="1" as="geometry">
+            <mxPoint x="50" y="-10" as="offset"/>
+          </mxGeometry>
+        </mxCell>
+        
+        <!-- 9. Obtener banco -->
+        <mxCell id="msg9" value="" style="endArrow=classic;html=1;strokeWidth=2;strokeColor=#d79b00;" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="555" y="550" as="sourcePoint"/>
+            <mxPoint x="1355" y="550" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="label9" value="9. BancoObservaciones.objects.filter(docente=docente, activo=True).first()" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=10;fontFamily=Courier New;" vertex="1" connectable="0" parent="msg9">
+          <mxGeometry x="-0.2" y="-2" relative="1" as="geometry">
+            <mxPoint x="100" y="-10" as="offset"/>
+          </mxGeometry>
+        </mxCell>
+        
+        <!-- 10. Return banco -->
+        <mxCell id="msg10" value="" style="endArrow=classic;html=1;strokeWidth=2;strokeColor=#82b366;dashed=1;" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="1355" y="580" as="sourcePoint"/>
+            <mxPoint x="555" y="580" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="label10" value="banco" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=10;" vertex="1" connectable="0" parent="msg10">
+          <mxGeometry x="-0.2" y="-2" relative="1" as="geometry">
+            <mxPoint y="-10" as="offset"/>
+          </mxGeometry>
+        </mxCell>
+        
+        <!-- 11. Llamar IA -->
+        <mxCell id="msg11" value="" style="endArrow=classic;html=1;strokeWidth=2;strokeColor=#d79b00;" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="555" y="620" as="sourcePoint"/>
+            <mxPoint x="955" y="620" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="label11" value="11. validar_con_groq(informe, banco)" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=10;fontFamily=Courier New;" vertex="1" connectable="0" parent="msg11">
+          <mxGeometry x="-0.2" y="-2" relative="1" as="geometry">
+            <mxPoint x="20" y="-10" as="offset"/>
+          </mxGeometry>
+        </mxCell>
+        
+        <!-- 12. Construir prompt -->
+        <mxCell id="box-prompt" value="Prompt = &quot;BANCO: {banco.contenido}&lt;br&gt;INFORME: {informe.contenido}&lt;br&gt;TAREA: Detecta errores y genera JSON...&quot;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=9;fontFamily=Courier New;align=left;" vertex="1" parent="1">
+          <mxGeometry x="880" y="650" width="350" height="50" as="geometry"/>
+        </mxCell>
+        
+        <!-- 13. Detectar API por prefijo -->
+        <mxCell id="box-strategy" value="if api_key.startswith('xai-'):&lt;br&gt;    url = 'https://api.x.ai/v1/...'&lt;br&gt;elif api_key.startswith('gsk_'):&lt;br&gt;    url = 'https://api.groq.com/...'&lt;br&gt;else: fallback_local()" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=9;fontFamily=Courier New;align=left;" vertex="1" parent="1">
+          <mxGeometry x="880" y="720" width="350" height="70" as="geometry"/>
+        </mxCell>
+        
+        <!-- 14. POST a API -->
+        <mxCell id="msg14" value="" style="endArrow=classic;html=1;strokeWidth=3;strokeColor=#b85450;" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="955" y="820" as="sourcePoint"/>
+            <mxPoint x="1155" y="820" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="label14" value="14. POST /chat/completions&lt;br&gt;{model, messages, temperature}" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=10;fontFamily=Courier New;fontStyle=1" vertex="1" connectable="0" parent="msg14">
+          <mxGeometry x="-0.2" y="-2" relative="1" as="geometry">
+            <mxPoint x="10" y="-20" as="offset"/>
+          </mxGeometry>
+        </mxCell>
+        
+        <!-- 15. Procesamiento IA -->
+        <mxCell id="box-ia-processing" value="⚡ IA procesando (10-30 segundos)&lt;br&gt;Analizando informe con banco de observaciones..." style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=11;fontStyle=2;align=center;" vertex="1" parent="1">
+          <mxGeometry x="1080" y="850" width="280" height="50" as="geometry"/>
+        </mxCell>
+        
+        <!-- 16. Return JSON observaciones -->
+        <mxCell id="msg16" value="" style="endArrow=classic;html=1;strokeWidth=3;strokeColor=#666666;dashed=1;" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="1155" y="930" as="sourcePoint"/>
+            <mxPoint x="955" y="930" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="label16" value="16. JSON observaciones&lt;br&gt;[{seccion, observacion, severidad, ubicacion}]" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=10;fontFamily=Courier New;fontStyle=1" vertex="1" connectable="0" parent="msg16">
+          <mxGeometry x="-0.2" y="-2" relative="1" as="geometry">
+            <mxPoint x="-10" y="-20" as="offset"/>
+          </mxGeometry>
+        </mxCell>
+        
+        <!-- 17. Return observaciones a servicio -->
+        <mxCell id="msg17" value="" style="endArrow=classic;html=1;strokeWidth=2;strokeColor=#b85450;dashed=1;" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="955" y="970" as="sourcePoint"/>
+            <mxPoint x="555" y="970" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="label17" value="observaciones_list" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=10;" vertex="1" connectable="0" parent="msg17">
+          <mxGeometry x="-0.2" y="-2" relative="1" as="geometry">
+            <mxPoint y="-10" as="offset"/>
+          </mxGeometry>
+        </mxCell>
+        
+        <!-- 18. Loop: Crear observaciones -->
+        <mxCell id="loop-box" value="LOOP [for obs in observaciones_list]" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=11;fontStyle=1;align=left;" vertex="1" parent="1">
+          <mxGeometry x="480" y="1010" width="900" height="30" as="geometry"/>
+        </mxCell>
+        
+        <!-- 19. INSERT observacion -->
+        <mxCell id="msg19" value="" style="endArrow=classic;html=1;strokeWidth=2;strokeColor=#d79b00;" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="555" y="1060" as="sourcePoint"/>
+            <mxPoint x="1355" y="1060" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="label19" value="19. ObservacionGenerada.objects.create(informe, seccion, observacion, severidad, estado='pendiente')" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=9;fontFamily=Courier New;" vertex="1" connectable="0" parent="msg19">
+          <mxGeometry x="-0.2" y="-2" relative="1" as="geometry">
+            <mxPoint x="120" y="-10" as="offset"/>
+          </mxGeometry>
+        </mxCell>
+        
+        <!-- End loop -->
+        <mxCell id="loop-end" value="END LOOP" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=11;fontStyle=1;align=left;" vertex="1" parent="1">
+          <mxGeometry x="480" y="1090" width="900" height="25" as="geometry"/>
+        </mxCell>
+        
+        <!-- 20. Cambiar a revision_docente -->
+        <mxCell id="msg20" value="" style="endArrow=classic;html=1;strokeWidth=2;strokeColor=#d79b00;" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="555" y="1140" as="sourcePoint"/>
+            <mxPoint x="755" y="1140" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="label20" value="20. informe.transition_to('revision_docente')" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=10;fontFamily=Courier New;" vertex="1" connectable="0" parent="msg20">
+          <mxGeometry x="-0.2" y="-2" relative="1" as="geometry">
+            <mxPoint x="20" y="-10" as="offset"/>
+          </mxGeometry>
+        </mxCell>
+        
+        <!-- 21. Update estado -->
+        <mxCell id="msg21" value="" style="endArrow=classic;html=1;strokeWidth=2;strokeColor=#d6b656;" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="755" y="1180" as="sourcePoint"/>
+            <mxPoint x="1355" y="1180" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="label21" value="21. UPDATE informes SET estado='revision_docente', banco_usado_id={banco.id}" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=9;fontFamily=Courier New;" vertex="1" connectable="0" parent="msg21">
+          <mxGeometry x="-0.2" y="-2" relative="1" as="geometry">
+            <mxPoint x="80" y="-10" as="offset"/>
+          </mxGeometry>
+        </mxCell>
+        
+        <!-- 22. Return success -->
+        <mxCell id="msg22" value="" style="endArrow=classic;html=1;strokeWidth=2;strokeColor=#d79b00;dashed=1;" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="555" y="1220" as="sourcePoint"/>
+            <mxPoint x="355" y="1220" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="label22" value="22. return (True, observaciones, None)" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=10;fontFamily=Courier New;" vertex="1" connectable="0" parent="msg22">
+          <mxGeometry x="-0.2" y="-2" relative="1" as="geometry">
+            <mxPoint x="10" y="-10" as="offset"/>
+          </mxGeometry>
+        </mxCell>
+        
+        <!-- 23. Mostrar observaciones -->
+        <mxCell id="msg23" value="" style="endArrow=classic;html=1;strokeWidth=2;strokeColor=#6c8ebf;dashed=1;" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="355" y="1260" as="sourcePoint"/>
+            <mxPoint x="155" y="1260" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="label23" value="23. Render template con observaciones" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=10;" vertex="1" connectable="0" parent="msg23">
+          <mxGeometry x="-0.2" y="-2" relative="1" as="geometry">
+            <mxPoint y="-10" as="offset"/>
+          </mxGeometry>
+        </mxCell>
+        
+        <!-- RESULTADO FINAL -->
+        <mxCell id="resultado-box" value="✅ RESULTADO: Docente ve lista de observaciones generadas por IA&lt;br&gt;Puede confirmar, descartar o editar cada observación" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;fontStyle=1;align=center;" vertex="1" parent="1">
+          <mxGeometry x="80" y="1300" width="680" height="50" as="geometry"/>
+        </mxCell>
+        
+        <!-- MÉTRICAS -->
+        <mxCell id="metricas-titulo" value="⏱️ MÉTRICAS DE RENDIMIENTO" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#666666;strokeColor=#000000;fontColor=#ffffff;fontSize=13;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="820" y="1300" width="610" height="30" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="metrica1" value="• Tiempo total: 10-30 segundos" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;align=left;" vertex="1" parent="1">
+          <mxGeometry x="820" y="1330" width="300" height="25" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="metrica2" value="• Llamada a IA: 8-25 segundos" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11;align=left;" vertex="1" parent="1">
+          <mxGeometry x="1130" y="1330" width="300" height="25" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="metrica3" value="• Persistencia BD: 1-2 segundos" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;align=left;" vertex="1" parent="1">
+          <mxGeometry x="820" y="1360" width="300" height="25" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="metrica4" value="• Antes (manual): 2-3 días ❌" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=11;align=left;" vertex="1" parent="1">
+          <mxGeometry x="1130" y="1360" width="300" height="25" as="geometry"/>
+        </mxCell>
+        
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

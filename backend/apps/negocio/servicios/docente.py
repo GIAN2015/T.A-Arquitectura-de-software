@@ -107,9 +107,6 @@ class DocenteService:
             # Extraer contenido del archivo
             contenido = DocenteService._extraer_contenido_archivo(archivo)
             
-            if not contenido or len(contenido.strip()) < 50:
-                return False, None, "El archivo está vacío o tiene muy poco contenido (mínimo 50 caracteres)"
-            
             # Crear banco (automáticamente se vuelve activo)
             banco = BancoObservacionesDocente.objects.create(
                 docente=docente,
