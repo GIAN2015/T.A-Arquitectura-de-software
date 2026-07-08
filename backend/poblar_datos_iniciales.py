@@ -236,16 +236,26 @@ def crear_usuarios_demo():
         print("✓ Usuario secretaria ya existe")
 
     # Presidente (requiere escuela asignada para que su panel funcione)
-    if not Usuario.objects.filter(codigo='PRESIDENTE001').exists():
-        escuela = Escuela.objects.first()
-        presidente = Usuario.objects.create(
-            codigo='PRESIDENTE001',
-            nombre='Dr. Carlos Mendoza Silva',
-            tipo_usuario='presidente',
-            escuela=escuela
-        )
+    escuela, _ = Escuela.objects.get_or_create(
+        codigo='ISI',
+        defaults={'nombre': 'Ingeniería de Sistemas e Informática'}
+    )
+
+    presidente, creado = Usuario.objects.get_or_create(
+        codigo='PRESIDENTE001',
+        defaults={
+            'nombre': 'Dr. Carlos Mendoza Silva',
+            'tipo_usuario': 'presidente',
+            'escuela': escuela,
+        }
+    )
+    if creado:
         presidente.set_password('presidente123')
         print("✓ Usuario presidente creado: PRESIDENTE001 / presidente123")
+    elif presidente.escuela_id is None:
+        presidente.escuela = escuela
+        presidente.save()
+        print("✓ Usuario presidente ya existía, se le asignó la escuela ISI")
     else:
         print("✓ Usuario presidente ya existe")
 
