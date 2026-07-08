@@ -38,35 +38,29 @@ Sistema integral para la **Universidad Nacional Tecnológica de Lima Sur (UNTELS
 
 ## 🏗️ Arquitectura del Proyecto
 
+### Arquitectura de 3 Capas
+
 ```
 T.A-Arquitectura-de-software/
-├── backend/                    # Django Backend (Clean Architecture)
-│   ├── apps/
-│   │   ├── core/              # Núcleo: vistas, decoradores
-│   │   ├── usuarios/          # Gestión de usuarios
-│   │   ├── informes/          # Modelo de informes + State Machine
-│   │   ├── observaciones/     # IA + Banco de observaciones
-│   │   ├── escuelas/          # Escuelas profesionales
-│   │   ├── notificaciones/    # Sistema de notificaciones
-│   │   ├── negocio/           # ⭐ Capa de Negocio (Servicios)
-│   │   ├── datos/             # ⭐ Capa de Datos (Repositorios)
-│   │   └── presentacion/      # ⭐ Capa de Presentación (Vistas)
-│   ├── config/                # Configuración Django
+│
+├── 🎨 frontend/                   # CAPA 1: Presentación
+│   ├── templates/                 # Templates HTML
+│   └── static/                    # CSS, JS
+│
+├── 🔧 backend/                    # CAPA 2: Lógica de Negocio
+│   ├── apps/                      # Apps Django
+│   ├── config/                    # Configuración
 │   └── manage.py
 │
-├── frontend/                   # Templates + Static Files
-│   ├── templates/
-│   │   ├── estudiante/        # UI Estudiantes
-│   │   ├── docente/           # UI Docentes
-│   │   ├── presidente/        # UI Presidentes
-│   │   ├── secretaria/        # UI Secretarias
-│   │   └── admin/             # UI Administradores
-│   └── static/                # CSS, JS, Imágenes
-│
-├── database/                   # SQLite Database
-├── docs/                       # 📚 Documentación detallada
-└── media/                      # Archivos subidos (PDFs, DOCX)
+└── 💾 database/                   # CAPA 3: Datos
+    └── db.sqlite3                 # SQLite
 ```
+
+### Las 3 Capas
+
+1. **Frontend** - Interfaz de usuario
+2. **Backend** - Lógica del servidor
+3. **Database** - Persistencia
 
 ---
 

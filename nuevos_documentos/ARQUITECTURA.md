@@ -1,471 +1,467 @@
-# 📐 Arquitectura del Sistema
+# 📐 Arquitectura del Sistema - UNTELS
 
-> Documentación completa de la arquitectura del Sistema de Validación de Informes UNTELS
+> Sistema de Validación de Informes con Arquitectura de 3 Capas
 
 ---
 
 ## 📋 Tabla de Contenidos
 
-1. [Visión General](#visión-general)
-2. [Clean Architecture](#clean-architecture)
-3. [Capas del Sistema](#capas-del-sistema)
+1. [Definición de la Arquitectura](#definición-de-la-arquitectura)
+2. [Las 3 Capas del Sistema](#las-3-capas-del-sistema)
+3. [Organización Interna del Backend](#organización-interna-del-backend)
 4. [Principios SOLID](#principios-solid)
-5. [Separación de Responsabilidades](#separación-de-responsabilidades)
-6. [Flujo de Datos](#flujo-de-datos)
+5. [Flujo de Datos](#flujo-de-datos)
 
 ---
 
-## 🎯 Visión General
+## 🎯 Definición de la Arquitectura
 
-El sistema está construido siguiendo los principios de **Clean Architecture** (Arquitectura Limpia) propuesta por Robert C. Martin (Uncle Bob), con una separación clara de responsabilidades en capas concéntricas.
+### Tipo de Arquitectura
 
-### Objetivos Arquitectónicos
+**Arquitectura de 3 Capas (Three-Tier Architecture)**
 
-✅ **Independencia de Frameworks**: La lógica de negocio no depende de Django  
-✅ **Testeable**: Cada capa puede probarse independientemente  
-✅ **Independencia de UI**: El frontend puede cambiar sin afectar la lógica  
-✅ **Independencia de Base de Datos**: Fácil migración a PostgreSQL/MySQL  
-✅ **Mantenible**: Código organizado y fácil de entender
+Esta es una arquitectura clásica y probada que separa el sistema en 3 capas independientes:
 
----
+1. **Capa de Presentación** (Frontend)
+2. **Capa de Lógica de Negocio** (Backend)  
+3. **Capa de Datos** (Database)
 
-## 🏛️ Clean Architecture
+### ¿Por qué 3 Capas?
 
-### Diagrama de Capas
-
-```
-┌─────────────────────────────────────────────────────────────┐
-│                        🌐 FRONTEND                          │
-│          (Templates Django + Bootstrap + JS)                │
-└─────────────────────────────────────────────────────────────┘
-                              ↕
-┌─────────────────────────────────────────────────────────────┐
-│                  📱 CAPA DE PRESENTACIÓN                    │
-│              (apps/presentacion/web/*_views.py)             │
-│                                                              │
-│  • EstudianteViews    • DocenteViews                       │
-│  • PresidenteViews    • SecretariaViews                    │
-└─────────────────────────────────────────────────────────────┘
-                              ↕
-┌─────────────────────────────────────────────────────────────┐
-│                   💼 CAPA DE NEGOCIO                        │
-│               (apps/negocio/servicios/*.py)                 │
-│                                                              │
-│  • EstudianteService  • DocenteService                     │
-│  • PresidenteService  • SecretariaService                  │
-│  • NotificacionService                                      │
-│                                                              │
-│  ⭐ CONTIENE TODA LA LÓGICA DE NEGOCIO                     │
-└─────────────────────────────────────────────────────────────┘
-                              ↕
-┌─────────────────────────────────────────────────────────────┐
-│                   🗄️ CAPA DE DATOS                         │
-│             (apps/datos/repositorios/*.py)                  │
-│                                                              │
-│  • UsuarioRepository  • InformeRepository                  │
-│  • ObservacionRepository  • ReglamentoRepository          │
-│                                                              │
-│  ⭐ PATRÓN REPOSITORY - Abstracción de BD                  │
-└─────────────────────────────────────────────────────────────┘
-                              ↕
-┌─────────────────────────────────────────────────────────────┐
-│                     💾 MODELOS ORM                          │
-│                    (apps/*/models.py)                       │
-│                                                              │
-│  • Usuario    • Informe    • Observacion                   │
-│  • Escuela    • Notificacion                               │
-└─────────────────────────────────────────────────────────────┘
-                              ↕
-┌─────────────────────────────────────────────────────────────┐
-│                    🗃️ BASE DE DATOS                        │
-│                    (SQLite / PostgreSQL)                    │
-└─────────────────────────────────────────────────────────────┘
-```
+✅ **Separación clara de responsabilidades**  
+✅ **Fácil de mantener y escalar**  
+✅ **Cada capa puede desarrollarse independientemente**  
+✅ **Estándar de la industria**  
+✅ **Fácil de entender**
 
 ---
 
-## 📚 Capas del Sistema
+## 🏗️ Las 3 Capas del Sistema
 
-### 1. **Capa de Presentación** (Presentation Layer)
-
-**Ubicación**: `backend/apps/presentacion/web/`
-
-**Responsabilidad**: Manejar las peticiones HTTP y renderizar las vistas
-
-```python
-# Ejemplo: apps/presentacion/web/docente_views.py
-@requiere_rol('docente')
-def panel_docente_view(request):
-    """Vista del dashboard del docente"""
-    docente = Usuario.objects.get(id=request.session['usuario_id'])
-    
-    # Delegar la lógica al servicio
-    informes = DocenteService.obtener_informes_asignados(docente)
-    stats = DocenteService.obtener_estadisticas(docente)
-    
-    return render(request, 'docente/dashboard.html', {
-        'informes': informes,
-        'stats': stats
-    })
 ```
-
-**Características**:
-- ✅ NO contiene lógica de negocio
-- ✅ Solo valida formularios y datos de entrada
-- ✅ Delega todo a la capa de servicios
-- ✅ Renderiza templates o devuelve JSON
+┌─────────────────────────────────────────────────────────────┐
+│                    🌐 USUARIO FINAL                         │
+└─────────────────────┬───────────────────────────────────────┘
+                      │ Interactúa
+                      ▼
+╔═════════════════════════════════════════════════════════════╗
+║  🎨 CAPA 1: PRESENTACIÓN (Frontend)                        ║
+║  Carpeta: frontend/                                         ║
+║                                                              ║
+║  Responsabilidad:                                            ║
+║  • Mostrar la interfaz de usuario                            ║
+║  • Capturar interacciones del usuario                        ║
+║  • Enviar peticiones al backend                              ║
+║  • Renderizar respuestas                                     ║
+║                                                              ║
+║  Tecnologías:                                                ║
+║  - Templates Django (HTML)                                   ║
+║  - Bootstrap 5.3 (CSS)                                       ║
+║  - JavaScript Vanilla                                        ║
+║  - Bootstrap Icons                                           ║
+║                                                              ║
+║  Contenido:                                                  ║
+║  frontend/                                                   ║
+║  ├── templates/                                              ║
+║  │   ├── estudiante/     # UI para estudiantes               ║
+║  │   ├── docente/        # UI para docentes                  ║
+║  │   ├── presidente/     # UI para presidentes               ║
+║  │   └── secretaria/     # UI para secretarias               ║
+║  └── static/                                                 ║
+║      ├── css/            # Estilos personalizados            ║
+║      ├── js/             # JavaScript                        ║
+║      └── images/         # Imágenes                          ║
+╚═════════════════════════════════════════════════════════════╝
+                      │ HTTP Request
+                      ▼
+╔═════════════════════════════════════════════════════════════╗
+║  🔧 CAPA 2: LÓGICA DE NEGOCIO (Backend)                    ║
+║  Carpeta: backend/                                          ║
+║                                                              ║
+║  Responsabilidad:                                            ║
+║  • Procesar la lógica del negocio                            ║
+║  • Validar datos                                             ║
+║  • Implementar reglas de negocio                             ║
+║  • Coordinar entre frontend y database                       ║
+║  • Gestionar autenticación y autorización                    ║
+║                                                              ║
+║  Tecnologías:                                                ║
+║  - Django 4.2 (Framework web)                                ║
+║  - Python 3.9+                                               ║
+║  - Django ORM                                                ║
+║                                                              ║
+║  Organización Interna (apps Django):                         ║
+║  backend/apps/                                               ║
+║  ├── presentacion/       # Vistas HTTP por rol               ║
+║  ├── negocio/            # Servicios con lógica              ║
+║  ├── datos/              # Repositorios (acceso a BD)        ║
+║  ├── usuarios/           # Gestión de usuarios               ║
+║  ├── informes/           # Gestión de informes + Estados     ║
+║  ├── observaciones/      # IA + Banco de observaciones       ║
+║  ├── escuelas/           # Escuelas profesionales            ║
+║  ├── notificaciones/     # Sistema de notificaciones         ║
+║  └── core/               # Utilidades compartidas            ║
+╚═════════════════════════════════════════════════════════════╝
+                      │ Query/Insert/Update
+                      ▼
+╔═════════════════════════════════════════════════════════════╗
+║  💾 CAPA 3: DATOS (Database)                               ║
+║  Carpeta: database/                                         ║
+║                                                              ║
+║  Responsabilidad:                                            ║
+║  • Almacenar datos de forma persistente                      ║
+║  • Garantizar integridad de datos                            ║
+║  • Gestionar transacciones                                   ║
+║  • Optimizar consultas                                       ║
+║                                                              ║
+║  Tecnologías:                                                ║
+║  - SQLite (Desarrollo)                                       ║
+║  - PostgreSQL (Producción - recomendado)                     ║
+║                                                              ║
+║  Contenido:                                                  ║
+║  database/                                                   ║
+║  └── db.sqlite3          # Base de datos                     ║
+║                                                              ║
+║  Tablas Principales:                                         ║
+║  - usuarios_usuario      # Usuarios del sistema              ║
+║  - informes_informe      # Informes de prácticas             ║
+║  - observaciones_*       # Observaciones e IA                ║
+║  - escuelas_escuela      # Escuelas profesionales            ║
+║  - notificaciones_*      # Notificaciones                    ║
+╚═════════════════════════════════════════════════════════════╝
+```
 
 ---
 
-### 2. **Capa de Negocio** (Business Logic Layer)
+## 🎨 Capa 1: Presentación (Frontend)
 
-**Ubicación**: `backend/apps/negocio/servicios/`
+### Ubicación
 
-**Responsabilidad**: Toda la lógica de negocio del sistema
-
-```python
-# Ejemplo: apps/negocio/servicios/docente.py
-class DocenteService:
-    """Servicio de negocio para operaciones de docentes"""
-    
-    @staticmethod
-    def validar_informe_con_ia(informe_id, docente, banco_especifico=None):
-        """
-        Valida un informe usando IA con el banco de observaciones
-        
-        LÓGICA DE NEGOCIO:
-        1. Verificar que el informe esté en estado correcto
-        2. Obtener banco de observaciones
-        3. Llamar a la API de IA
-        4. Procesar respuesta y crear observaciones
-        5. Actualizar estado del informe
-        """
-        # ... lógica completa ...
-        return True, observaciones, None
+```
+frontend/
+├── templates/
+│   ├── base.html
+│   ├── base_v2.html
+│   ├── login.html
+│   ├── estudiante/
+│   │   ├── dashboard.html
+│   │   └── enviar_informe.html
+│   ├── docente/
+│   │   ├── dashboard.html
+│   │   ├── revisar.html
+│   │   └── banco.html
+│   ├── presidente/
+│   │   ├── dashboard.html
+│   │   └── revisar.html
+│   └── secretaria/
+│       ├── dashboard.html
+│       └── notificar.html
+└── static/
+    ├── css/
+    │   └── untels-theme.css
+    ├── js/
+    │   └── multi-tab-sessions.js
+    └── images/
 ```
 
-**Características**:
-- ✅ Contiene TODA la lógica de negocio
-- ✅ Métodos estáticos (stateless)
-- ✅ Retorna tuplas `(success, data, error)`
-- ✅ Independiente del framework
-- ✅ Fácilmente testeable
+### Responsabilidad
 
-**Servicios Implementados**:
+- ✅ Renderizar HTML para cada rol de usuario
+- ✅ Capturar eventos (clicks, formularios)
+- ✅ Enviar peticiones HTTP al backend
+- ✅ Mostrar respuestas al usuario
+- ✅ Experiencia de usuario (UX)
 
-| Servicio | Archivo | Responsabilidad |
-|----------|---------|-----------------|
-| `DocenteService` | `docente.py` | Gestión de banco, validación IA, dictámenes |
-| `PresidenteService` | `presidente.py` | Asignación de docentes, aprobación/rechazo |
-| `SecretariaService` | `secretaria.py` | Derivación, notificaciones finales |
-| `NotificacionService` | `apps/notificaciones/services.py` | Sistema de notificaciones |
+### Características
+
+- **Responsive**: Se adapta a móvil, tablet, desktop
+- **Por Rol**: Cada usuario ve su interfaz específica
+- **Bootstrap 5.3**: Framework CSS moderno
+- **Paleta UNTELS**: Azul #1a3a6b oficial
 
 ---
 
-### 3. **Capa de Datos** (Data Access Layer)
+## 🔧 Capa 2: Lógica de Negocio (Backend)
 
-**Ubicación**: `backend/apps/datos/repositorios/`
+### Ubicación
 
-**Responsabilidad**: Abstracción del acceso a la base de datos
-
-```python
-# Ejemplo: apps/datos/repositorios/informes.py
-class InformeRepository:
-    """Repositorio para acceso a datos de Informes"""
-    
-    @staticmethod
-    def obtener_por_estado(estado, limit=None):
-        """Obtiene informes filtrados por estado"""
-        query = Informe.objects.filter(estado=estado)
-        if limit:
-            query = query[:limit]
-        return query.select_related('usuario', 'escuela')
-    
-    @staticmethod
-    def obtener_con_observaciones(informe_id):
-        """Obtiene informe con observaciones precargadas"""
-        return Informe.objects.prefetch_related(
-            'observaciones'
-        ).get(id=informe_id)
+```
+backend/
+├── apps/
+│   ├── presentacion/        # Vistas Django (HTTP)
+│   ├── negocio/             # Servicios (Lógica)
+│   ├── datos/               # Repositorios (Acceso a BD)
+│   ├── usuarios/            # App de usuarios
+│   ├── informes/            # App de informes
+│   ├── observaciones/       # App de IA
+│   ├── escuelas/            # App de escuelas
+│   ├── notificaciones/      # App de notificaciones
+│   └── core/                # Utilidades
+├── config/                  # Configuración Django
+│   ├── settings/
+│   ├── urls.py
+│   └── wsgi.py
+└── manage.py                # CLI Django
 ```
 
-**Características**:
-- ✅ **Patrón Repository**: Abstrae el ORM
-- ✅ Queries optimizadas con `select_related` y `prefetch_related`
-- ✅ Fácil cambio de ORM o BD
-- ✅ Centraliza acceso a datos
+### Responsabilidad
+
+- ✅ Implementar todas las reglas de negocio
+- ✅ Validar datos de entrada
+- ✅ Procesar lógica compleja
+- ✅ Autenticación y autorización
+- ✅ Integración con APIs externas (IA)
+- ✅ Gestionar el flujo multi-rol
+
+### Organización Interna
+
+El backend está organizado en **apps Django** que siguen principios de Clean Architecture:
+
+| App | Propósito |
+|-----|-----------|
+| **presentacion/** | Vistas HTTP (controladores) |
+| **negocio/** | Servicios con lógica de negocio |
+| **datos/** | Repositorios (patrón Repository) |
+| **usuarios/** | Modelo Usuario + lógica |
+| **informes/** | Modelo Informe + State Machine |
+| **observaciones/** | Modelo Observación + IA |
+| **escuelas/** | Modelo Escuela |
+| **notificaciones/** | Modelo Notificación |
+| **core/** | Decoradores, middleware, utils |
 
 ---
 
-### 4. **Capa de Modelos** (Domain Models)
+## 💾 Capa 3: Datos (Database)
 
-**Ubicación**: `backend/apps/*/models.py`
+### Ubicación
 
-**Responsabilidad**: Representar las entidades del dominio
-
-```python
-# Ejemplo: apps/informes/models.py
-class Informe(models.Model):
-    """Modelo de dominio: Informe de práctica preprofesional"""
-    
-    # Estados del flujo
-    ESTADO_ENVIADO = 'enviado'
-    ESTADO_VALIDANDO_IA = 'validando_ia'
-    # ... más estados
-    
-    # Campos
-    usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
-    estado = models.CharField(max_length=50, choices=ESTADO_CHOICES)
-    
-    # Métodos de dominio
-    def transition_to(self, next_state):
-        """Transición de estado usando State Machine"""
-        state = get_state(self.estado)
-        state.transition(self, next_state)
+```
+database/
+└── db.sqlite3
 ```
 
-**Características**:
-- ✅ Representan conceptos del negocio
-- ✅ Contienen reglas de dominio
-- ✅ Validaciones de integridad
-- ✅ Métodos de comportamiento
+### Responsabilidad
+
+- ✅ Persistir todos los datos del sistema
+- ✅ Garantizar integridad referencial
+- ✅ Gestionar transacciones ACID
+- ✅ Indexar para optimizar consultas
+- ✅ Respaldar información
+
+### Modelo de Datos
+
+El sistema tiene **8 tablas principales**:
+
+1. **usuarios_usuario** - Usuarios (estudiantes, docentes, etc.)
+2. **informes_informe** - Informes de prácticas
+3. **observaciones_observaciongenerada** - Observaciones de IA
+4. **observaciones_bancoobservacionesdocente** - Bancos personalizados
+5. **escuelas_escuela** - Escuelas profesionales
+6. **notificaciones_notificacion** - Notificaciones
+7. **reglamento_reglamento** - Reglamentos (opcional)
+8. **core_* ** - Tablas auxiliares
+
+Ver más detalles en [BASE_DE_DATOS.md](BASE_DE_DATOS.md)
+
+---
+
+## 🔀 Flujo de Datos
+
+### Ejemplo: Estudiante Sube Informe
+
+```
+1. 🌐 Usuario: Hace clic en "Subir Informe"
+   ↓
+2. 🎨 CAPA 1 (Frontend):
+   - frontend/templates/estudiante/enviar_informe.html
+   - Captura archivo y datos
+   - Envía POST /estudiante/enviar/
+   ↓
+3. 🔧 CAPA 2 (Backend):
+   - backend/apps/presentacion/web/estudiante_views.py
+   - Recibe request HTTP
+   - Valida datos
+   - Extrae texto del PDF/DOCX
+   - Crea objeto Informe
+   - Llama al ORM para guardar
+   ↓
+4. 💾 CAPA 3 (Database):
+   - database/db.sqlite3
+   - INSERT INTO informes_informe ...
+   - Retorna ID del nuevo registro
+   ↓
+5. 🔧 CAPA 2 (Backend):
+   - Crea notificación para secretaria
+   - Retorna HTTP 200 + mensaje de éxito
+   ↓
+6. 🎨 CAPA 1 (Frontend):
+   - Muestra mensaje "Informe enviado correctamente"
+   - Redirige al dashboard
+```
+
+### Flujo Completo del Sistema
+
+```
+Estudiante (sube) → Backend (valida) → Database (guarda)
+     ↓
+Secretaria (deriva) → Backend (asigna) → Database (actualiza)
+     ↓
+Presidente (asigna docente) → Backend (notifica) → Database
+     ↓
+Docente (valida con IA) → Backend (llama API) → Database (guarda obs)
+     ↓
+Docente (envía dictamen) → Backend (procesa) → Database
+     ↓
+Presidente (aprueba/rechaza) → Backend → Database
+     ↓
+Secretaria (notifica) → Backend → Database
+     ↓
+Estudiante (recibe resultado)
+```
 
 ---
 
 ## 🔷 Principios SOLID
 
-### 1. **S - Single Responsibility Principle**
+Aunque el sistema tiene 3 capas, dentro del backend aplicamos principios SOLID:
 
-Cada clase tiene una única responsabilidad:
+### S - Single Responsibility
+
+Cada módulo tiene una responsabilidad:
 
 ```python
-# ✅ CORRECTO: Cada servicio tiene una responsabilidad
+# ✅ CORRECTO
 class DocenteService:
     """Solo operaciones de docentes"""
     pass
 
-class PresidenteService:
-    """Solo operaciones de presidentes"""
-    pass
-
-# ❌ INCORRECTO: Un servicio que hace todo
-class MegaService:
-    """Hace docentes, presidentes, secretarias..."""
+class InformeService:
+    """Solo operaciones de informes"""
     pass
 ```
 
-### 2. **O - Open/Closed Principle**
+### O - Open/Closed
 
 Abierto para extensión, cerrado para modificación:
 
 ```python
-# ✅ CORRECTO: Strategy Pattern para APIs de IA
+# Fácil agregar nueva API de IA sin modificar código existente
 def validar_con_api(contenido, banco):
-    if GROQ_API_KEY.startswith('xai-'):
-        return validar_con_xai(contenido, banco)
-    elif GROQ_API_KEY.startswith('gsk_'):
-        return validar_con_groq(contenido, banco)
-    else:
-        return validacion_local(contenido, banco)
+    if api_key.startswith('xai-'):
+        return validar_con_xai()
+    elif api_key.startswith('gsk_'):
+        return validar_con_groq()
+    # Agregar nueva API aquí
 ```
 
-### 3. **L - Liskov Substitution Principle**
+### L - Liskov Substitution
 
-Los objetos deben ser reemplazables por instancias de sus subtipos:
+Las subclases deben ser reemplazables:
 
 ```python
-# ✅ CORRECTO: State Machine con polimorfismo
 class BaseInformeState:
     def transition(self, informe, next_state):
-        if not self.can_transition_to(next_state):
-            raise InformeStateError(...)
-        informe.estado = next_state
+        # Implementación base
 
-# Todas las clases hijas pueden reemplazar a la base
 class EnviadoState(BaseInformeState):
-    allowed_transitions = {'pendiente_secretaria'}
+    # Puede reemplazar a la base
+    pass
 ```
 
-### 4. **I - Interface Segregation Principle**
+### I - Interface Segregation
 
-Interfaces específicas en lugar de generales:
+Interfaces específicas:
 
 ```python
-# ✅ CORRECTO: Servicios específicos por rol
+# Servicios específicos por dominio
 class DocenteService:
     obtener_informes_asignados()
     validar_informe_con_ia()
-    enviar_dictamen_a_presidente()
 
 class PresidenteService:
-    obtener_informes_pendientes()
     asignar_docente()
     aprobar_dictamen()
 ```
 
-### 5. **D - Dependency Inversion Principle**
+### D - Dependency Inversion
 
-Depender de abstracciones, no de concreciones:
-
-```python
-# ✅ CORRECTO: Servicios no dependen de vistas
-# Vistas dependen de servicios (abstracción)
-
-def panel_docente_view(request):
-    # La vista depende del servicio (abstracción)
-    informes = DocenteService.obtener_informes_asignados(docente)
-    # NO hace: Informe.objects.filter(...) directamente
-```
-
----
-
-## 🔀 Separación de Responsabilidades
-
-### Estructura de Directorios
-
-```
-apps/
-├── core/                   # Núcleo compartido
-│   ├── decorators.py      # @requiere_rol
-│   ├── admin_views.py     # Vistas admin
-│   └── templatetags/      # Filtros custom
-│
-├── usuarios/              # Dominio: Usuarios
-│   ├── models.py         # Usuario (modelo)
-│   └── ...
-│
-├── informes/              # Dominio: Informes
-│   ├── models.py         # Informe (modelo)
-│   ├── state.py          # State Machine
-│   └── ...
-│
-├── observaciones/         # Dominio: Observaciones
-│   ├── models.py         # ObservacionGenerada, BancoObservaciones
-│   ├── services.py       # Validación con IA
-│   └── ...
-│
-├── negocio/              # ⭐ LÓGICA DE NEGOCIO
-│   └── servicios/
-│       ├── docente.py
-│       ├── presidente.py
-│       ├── secretaria.py
-│       └── estudiante.py
-│
-├── datos/                # ⭐ ACCESO A DATOS
-│   └── repositorios/
-│       ├── informes.py
-│       ├── usuarios.py
-│       └── observaciones.py
-│
-└── presentacion/         # ⭐ CAPA DE PRESENTACIÓN
-    └── web/
-        ├── estudiante_views.py
-        ├── docente_views.py
-        ├── presidente_views.py
-        └── secretaria_views.py
-```
-
----
-
-## 📊 Flujo de Datos
-
-### Ejemplo Completo: Validar Informe con IA
-
-```
-1. Usuario hace clic en "Validar con IA"
-   ↓
-2. 🌐 FRONTEND: Envía POST a /docente/revisar/123/
-   ↓
-3. 📱 PRESENTACIÓN: docente_views.py::docente_revisar_informe()
-   - Valida sesión y rol
-   - Extrae parámetros del request
-   ↓
-4. 💼 NEGOCIO: DocenteService.validar_informe_con_ia(123, docente, banco)
-   - Verifica estado del informe
-   - Obtiene banco de observaciones
-   - Llama a validar_con_groq()
-   ↓
-5. 🤖 SERVICIOS: validar_con_groq(informe, banco)
-   - Construye prompt
-   - Llama API de IA
-   - Parsea respuesta JSON
-   ↓
-6. 🗄️ DATOS: InformeRepository.actualizar_estado(123, 'validando_ia')
-   - Ejecuta query
-   - Actualiza BD
-   ↓
-7. 💾 BASE DE DATOS: UPDATE informes SET estado='validando_ia' ...
-   ↓
-8. ⬅️ Respuesta sube por las capas
-   ↓
-9. 📱 PRESENTACIÓN: Renderiza template con resultados
-   ↓
-10. 🌐 FRONTEND: Usuario ve las observaciones generadas
-```
-
----
-
-## ✅ Ventajas de Esta Arquitectura
-
-### 1. **Testabilidad**
+Depender de abstracciones:
 
 ```python
-# Test unitario de servicio (sin BD, sin Django)
-def test_validar_informe():
-    # Mock del informe
-    informe_mock = Mock()
-    informe_mock.contenido = "Texto de prueba"
-    
-    # Test del servicio
-    success, obs, error = DocenteService.validar_informe_con_ia(
-        informe_id=1,
-        docente=Mock(),
-        banco_especifico=Mock()
-    )
-    
-    assert success == True
-    assert len(obs) > 0
+# ✅ Vista depende del servicio (abstracción)
+informes = DocenteService.obtener_informes_asignados(docente)
+
+# ❌ NO depende del ORM directamente
+informes = Informe.objects.filter(...)  # Evitar en vistas
 ```
 
-### 2. **Mantenibilidad**
+---
+
+## 📊 Ventajas de las 3 Capas
+
+### 1. Separación de Responsabilidades
+
+- **Frontend**: Solo se preocupa de la UI
+- **Backend**: Solo se preocupa de la lógica
+- **Database**: Solo se preocupa de los datos
+
+### 2. Desarrollo Paralelo
+
+- ✅ Equipo de frontend puede trabajar independientemente
+- ✅ Equipo de backend puede trabajar independientemente
+- ✅ DBA puede optimizar la BD independientemente
+
+### 3. Escalabilidad
+
+- ✅ Cada capa puede escalarse por separado
+- ✅ Frontend: CDN, múltiples instancias
+- ✅ Backend: Load balancer, microservicios
+- ✅ Database: Replicación, sharding
+
+### 4. Mantenibilidad
 
 - ✅ Cambios en UI no afectan la lógica
-- ✅ Cambios en BD no afectan los servicios
-- ✅ Fácil encontrar dónde está cada cosa
+- ✅ Cambios en lógica no afectan la UI
+- ✅ Cambios en BD (SQLite → PostgreSQL) transparentes
 
-### 3. **Escalabilidad**
-
-- ✅ Fácil agregar nuevos roles
-- ✅ Fácil agregar nuevas APIs de IA
-- ✅ Servicios pueden convertirse en microservicios
-
-### 4. **Reutilización**
+### 5. Testabilidad
 
 ```python
-# El mismo servicio puede usarse desde:
-# - Vistas web (Django views)
-# - API REST (Django REST Framework)
-# - Comandos de management (manage.py commands)
-# - Tasks asíncronos (Celery)
-# - CLI (Command Line Interface)
+# Test de lógica de negocio sin DB ni UI
+def test_validar_informe():
+    service = DocenteService()
+    result = service.validar_informe_con_ia(...)
+    assert result == expected
 ```
 
 ---
 
-## 🎓 Conclusión
+## 🎓 Resumen
 
-El Sistema de Validación de Informes UNTELS implementa **Clean Architecture** de forma rigurosa, separando claramente:
+### Arquitectura: 3 Capas
 
-- ✅ **Presentación**: Manejo de HTTP y templates
-- ✅ **Negocio**: Lógica de dominio
-- ✅ **Datos**: Acceso a BD
+1. **🎨 Frontend** (`frontend/`) - Presentación e interfaz
+2. **🔧 Backend** (`backend/`) - Lógica de negocio
+3. **💾 Database** (`database/`) - Persistencia de datos
 
-Esto resulta en un sistema:
-- 🎯 Fácil de entender
-- 🧪 Fácil de probar
-- 🔧 Fácil de mantener
-- 🚀 Fácil de escalar
+### Tecnologías
+
+| Capa | Tecnologías |
+|------|-------------|
+| Frontend | Django Templates, Bootstrap 5, JavaScript |
+| Backend | Django 4.2, Python 3.9+, Django ORM |
+| Database | SQLite (dev), PostgreSQL (prod) |
+
+### Conclusión
+
+**"Arquitectura de 3 Capas clásica y probada, con organización interna del backend siguiendo principios de Clean Code y SOLID"**
+
+- ✅ Clara y fácil de entender
+- ✅ Estándar de la industria
+- ✅ Escalable y mantenible
+- ✅ Testeable
+- ✅ Profesional
 
 ---
 
-**Siguiente**: [Backend](BACKEND.md) →
+**Ver también**: [Backend](BACKEND.md) | [Frontend](FRONTEND.md) | [Base de Datos](BASE_DE_DATOS.md) | [Patrones](PATRONES.md)

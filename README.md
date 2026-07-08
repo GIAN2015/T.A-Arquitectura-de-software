@@ -26,47 +26,58 @@ Sistema integral para la **Universidad Nacional Tecnológica de Lima Sur (UNTELS
 
 | Documento | Descripción |
 |-----------|-------------|
-| [**📐 Arquitectura**](docs/ARQUITECTURA.md) | Clean Architecture, capas, principios SOLID |
-| [**🔧 Backend**](docs/BACKEND.md) | Django, servicios, modelos, APIs |
-| [**🎨 Frontend**](docs/FRONTEND.md) | Templates, Bootstrap, JavaScript |
-| [**💾 Base de Datos**](docs/BASE_DE_DATOS.md) | Modelo relacional, relaciones, migraciones |
-| [**🧩 Patrones de Diseño**](docs/PATRONES.md) | Patrones implementados y su ubicación |
-| [**🔄 Flujo del Sistema**](docs/FLUJO_DEL_SISTEMA.md) | Diagramas de secuencia y casos de uso |
-| [**🚀 Deployment**](docs/DEPLOYMENT.md) | Instalación, configuración, producción |
+| [**📐 Arquitectura**](nuevos_documentos/ARQUITECTURA.md) | Arquitectura de 3 Capas explicada |
+| [**🔧 Backend**](nuevos_documentos/BACKEND.md) | Django, servicios, modelos, APIs |
+| [**🎨 Frontend**](nuevos_documentos/FRONTEND.md) | Templates, Bootstrap, JavaScript |
+| [**💾 Base de Datos**](nuevos_documentos/BASE_DE_DATOS.md) | Modelo relacional, relaciones, migraciones |
+| [**🧩 Patrones de Diseño**](nuevos_documentos/PATRONES.md) | 8 patrones implementados con código |
+| [**🔄 Flujo del Sistema**](nuevos_documentos/FLUJO_DEL_SISTEMA.md) | Diagramas de secuencia y casos de uso |
+| [**🚀 Deployment**](nuevos_documentos/DEPLOYMENT.md) | Instalación, configuración, producción |
+| [**📊 Resumen Ejecutivo**](nuevos_documentos/RESUMEN_EJECUTIVO.md) | Presentación del proyecto |
+| [**📖 Índice**](nuevos_documentos/INDEX.md) | Navegación de documentación |
 
 ---
 
 ## 🏗️ Arquitectura del Proyecto
 
+### Arquitectura de 3 Capas (Three-Tier Architecture)
+
 ```
 T.A-Arquitectura-de-software/
-├── backend/                    # Django Backend (Clean Architecture)
-│   ├── apps/
-│   │   ├── core/              # Núcleo: vistas, decoradores
-│   │   ├── usuarios/          # Gestión de usuarios
-│   │   ├── informes/          # Modelo de informes + State Machine
-│   │   ├── observaciones/     # IA + Banco de observaciones
-│   │   ├── escuelas/          # Escuelas profesionales
-│   │   ├── notificaciones/    # Sistema de notificaciones
-│   │   ├── negocio/           # ⭐ Capa de Negocio (Servicios)
-│   │   ├── datos/             # ⭐ Capa de Datos (Repositorios)
-│   │   └── presentacion/      # ⭐ Capa de Presentación (Vistas)
-│   ├── config/                # Configuración Django
-│   └── manage.py
 │
-├── frontend/                   # Templates + Static Files
-│   ├── templates/
-│   │   ├── estudiante/        # UI Estudiantes
-│   │   ├── docente/           # UI Docentes
-│   │   ├── presidente/        # UI Presidentes
-│   │   ├── secretaria/        # UI Secretarias
-│   │   └── admin/             # UI Administradores
-│   └── static/                # CSS, JS, Imágenes
+├── 🎨 frontend/                   # CAPA 1: PRESENTACIÓN
+│   ├── templates/                 # Templates HTML por rol
+│   │   ├── estudiante/
+│   │   ├── docente/
+│   │   ├── presidente/
+│   │   └── secretaria/
+│   └── static/                    # CSS, JS, imágenes
 │
-├── database/                   # SQLite Database
-├── docs/                       # 📚 Documentación detallada
-└── media/                      # Archivos subidos (PDFs, DOCX)
+├── 🔧 backend/                    # CAPA 2: LÓGICA DE NEGOCIO
+│   ├── apps/                      # Apps Django organizadas:
+│   │   ├── presentacion/          #   Vistas HTTP por rol
+│   │   ├── negocio/               #   Servicios con lógica
+│   │   ├── datos/                 #   Repositorios (acceso a BD)
+│   │   ├── usuarios/              #   Gestión de usuarios
+│   │   ├── informes/              #   Gestión de informes + Estados
+│   │   ├── observaciones/         #   IA + Banco de observaciones
+│   │   ├── escuelas/              #   Escuelas profesionales
+│   │   ├── notificaciones/        #   Sistema de notificaciones
+│   │   └── core/                  #   Utilidades compartidas
+│   ├── config/                    # Configuración Django
+│   └── manage.py                  # CLI Django
+│
+└── 💾 database/                   # CAPA 3: DATOS
+    └── db.sqlite3                 # Base de datos SQLite
 ```
+
+### Las 3 Capas
+
+1. **🎨 Frontend** - Interfaz de usuario (Templates, Bootstrap, JS)
+2. **🔧 Backend** - Lógica del servidor (Django, Python)
+3. **💾 Database** - Persistencia de datos (SQLite/PostgreSQL)
+
+**Ver documentación completa**: [ARQUITECTURA.md](nuevos_documentos/ARQUITECTURA.md)
 
 ---
 
@@ -180,15 +191,18 @@ Formato profesional que incluye:
 
 | Patrón | Ubicación | Propósito |
 |--------|-----------|-----------|
-| **Repository** | `apps/datos/repositorios/` | Abstracción de acceso a datos |
-| **Service Layer** | `apps/negocio/servicios/` | Lógica de negocio centralizada |
-| **State Machine** | `apps/informes/state.py` | Gestión de estados del informe |
-| **Strategy** | `apps/observaciones/services.py` | Selección de API de IA |
-| **Template Method** | Filtros personalizados | Formateo de dictámenes |
+| **Repository** | `backend/apps/datos/repositorios/` | Abstracción de acceso a datos |
+| **Service Layer** | `backend/apps/negocio/servicios/` | Lógica de negocio centralizada |
+| **State Machine** | `backend/apps/informes/state.py` | Gestión de 11 estados del informe |
+| **Strategy** | `backend/apps/observaciones/services.py` | Selección de API de IA |
+| **Template Method** | `backend/apps/core/templatetags/` | Formateo de dictámenes |
 | **Facade** | Servicios de negocio | Simplificación de operaciones |
-| **Observer** | Sistema de notificaciones | Eventos del sistema |
+| **Observer** | `backend/apps/notificaciones/` | Sistema de eventos |
+| **Decorator** | `backend/apps/core/decorators.py` | Autorización por rol |
 
-Ver detalles en [**PATRONES.md**](docs/PATRONES.md)
+**Total**: 8 patrones de diseño profesionales
+
+Ver detalles completos en [**PATRONES.md**](nuevos_documentos/PATRONES.md)
 
 ---
 
@@ -253,10 +267,12 @@ Este proyecto está bajo la Licencia MIT. Ver el archivo [LICENSE](LICENSE) para
 
 ## 🔗 Enlaces Útiles
 
-- [📐 Arquitectura del Sistema](docs/ARQUITECTURA.md)
-- [🧩 Patrones de Diseño](docs/PATRONES.md)
-- [🔄 Flujo del Sistema](docs/FLUJO_DEL_SISTEMA.md)
-- [🚀 Guía de Deployment](docs/DEPLOYMENT.md)
+- [📐 Arquitectura del Sistema](nuevos_documentos/ARQUITECTURA.md) - Clean Architecture explicada
+- [🎯 Capa de Dominio](nuevos_documentos/CAPA_DOMINIO.md) - Entidades y State Machine
+- [🧩 Patrones de Diseño](nuevos_documentos/PATRONES.md) - 8 patrones con código
+- [🔄 Flujo del Sistema](nuevos_documentos/FLUJO_DEL_SISTEMA.md) - Diagramas y casos de uso
+- [🚀 Guía de Deployment](nuevos_documentos/DEPLOYMENT.md) - Instalación paso a paso
+- [📖 Índice Completo](nuevos_documentos/INDEX.md) - Navegación de toda la documentación
 
 ---
 

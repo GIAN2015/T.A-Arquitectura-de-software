@@ -38,7 +38,11 @@
 
 ## 🏗️ Arquitectura Implementada
 
-### Clean Architecture (3 Capas)
+### Arquitectura de 3 Capas (Three-Tier Architecture)
+
+1. **frontend/** - Capa de Presentación (UI/UX)
+2. **backend/** - Capa de Lógica de Negocio (Servidor Django)
+3. **database/** - Capa de Datos (Persistencia SQLite)
 
 ```
 ┌─────────────────────────────────────┐

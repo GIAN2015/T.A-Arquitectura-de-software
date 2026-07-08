@@ -27,16 +27,16 @@ Este directorio contiene toda la documentación técnica del **Sistema de Valida
 ---
 
 ### 2. [ARQUITECTURA.md](ARQUITECTURA.md) - Arquitectura del Sistema
-**Clean Architecture y diseño de capas**
+**Arquitectura de 3 Capas explicada**
 
-- 📐 Visión general de Clean Architecture
-- 🏛️ Diagrama de capas (Presentación, Negocio, Datos)
+- 📐 Definición de arquitectura de 3 capas
+- 🏛️ Diagrama completo (Frontend, Backend, Database)
 - 🔷 Principios SOLID aplicados
-- 📚 Separación de responsabilidades
+- 📚 Organización interna del backend
 - 📊 Flujo de datos entre capas
-- ✅ Ventajas de esta arquitectura
+- ✅ Ventajas de las 3 capas
 
-**Ideal para**: Arquitectos de software, desarrolladores senior
+**Ideal para**: Arquitectos de software, desarrolladores, evaluadores
 
 ---
 
